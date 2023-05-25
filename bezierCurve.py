@@ -1,4 +1,3 @@
-import pygame
 from pygame.locals import *
 import pygame_widgets
 from pygame_widgets.button import Button
@@ -8,10 +7,11 @@ pygame.init()
 
 
 # fonts for text
-font_style1 = pygame.font.SysFont("bahnschrift", 45)
-font_style2 = pygame.font.SysFont("bahnschrift", 19)
-font_style3 = pygame.font.SysFont("bahnschrift", 25)
-
+font_style1 = pygame.font.SysFont("calibri", 30)
+font_style2 = pygame.font.SysFont("calibri", 45)
+font_style3 = pygame.font.SysFont("calibri", 25)
+font_style2.bold = True
+# print(pygame.font.get_fonts())
 
 # object of a curve, defined by 4 points
 class BezierCurve(object):
@@ -91,6 +91,8 @@ class BezierCurve(object):
                 # draw start and end points of the curve in circleColor1 and slope points in circleColor2
                 if control_points.index(p) == 1 or control_points.index(p) == 2:
                     pygame.draw.circle(screen, circleColor2, (int(p[0]), int(p[1])), circleRadius2)
+                elif control_points.index(p) == 0:
+                    pygame.draw.circle(screen, circleColor0, (int(p[0]), int(p[1])), circleRadius0)
                 else:
                     pygame.draw.circle(screen, circleColor1, (int(p[0]), int(p[1])), circleRadius1)
 
@@ -113,103 +115,96 @@ selected_curve = None
 # The currently selected point
 selected = None
 show_control_lines = True
-screen = pygame.display.set_mode((screen_width, screen_height))
+delta = [0,0,0]
+screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
 button_0 = Button(
-    # Mandatory Parameters
-    screen,  # Surface to place button on
-    10,  # X-coordinate of top left corner
-    10,  # Y-coordinate of top left corner
-    90,  # Width
-    90,  # Height
-    # Optional Parameters
-    text='add curve',  # Text to display
-    fontSize=26,  # Size of font
-    margin=20,  # Minimum distance between text/image and edge of button
-    inactiveColour=buttonInactiveColour,  # Colour of button when not being interacted with
-    hoverColour=buttonHoverColour,  # Colour of button when being hovered over
-    pressedColour=buttonPressedColour,  # Colour of button when being clicked
-    radius=20,  # Radius of border corners (leave empty for not curved)
-    # onClick=lambda: print('')  # Function to call when clicked on
+    screen,
+    screen_width-230,
+    10,
+    120, # Width
+    90, # Height
+    text='וק ףסוה',
+    fontSize=26,
+    margin=20,
+    font=pygame.font.SysFont("calibri", 26),
+    inactiveColour=buttonInactiveColour,
+    hoverColour=buttonHoverColour,
+    pressedColour=buttonPressedColour,
+    radius=20,
     onClick=lambda: add_curve0()
 )
 
 button_1 = Button(
-    # Mandatory Parameters
-    screen,  # Surface to place button on
-    110,  # X-coordinate of top left corner
-    10,  # Y-coordinate of top left corner
+    screen,
+    110,
+    screen_height-80,
     90,  # Width
-    90,  # Height
-    # Optional Parameters
-    text='clear',  # Text to display
-    fontSize=27,  # Size of font
-    margin=20,  # Minimum distance between text/image and edge of button
-    inactiveColour=buttonInactiveColour,  # Colour of button when not being interacted with
-    hoverColour=buttonHoverColour,  # Colour of button when being hovered over
-    pressedColour=buttonPressedColour,  # Colour of button when being clicked
-    radius=20,  # Radius of border corners (leave empty for not curved)
-    # onClick=lambda: print('')  # Function to call when clicked on
+    70,  # Height
+    text='קחמ',
+    fontSize=27,
+    margin=20,
+    font=pygame.font.SysFont("calibri",27),
+    inactiveColour=buttonInactiveColour,
+    hoverColour=buttonHoverColour,
+    pressedColour=buttonPressedColour,
+    radius=20,
     onRelease=lambda: clear()
 )
 
 button_2 = Button(
-    # Mandatory Parameters
-    screen,  # Surface to place button on
-    screen_width-100,  # X-coordinate of top left corner
-    10,  # Y-coordinate of top left corner
+    screen,
+    screen_width-200,
+    screen_height-80,
     90,  # Width
-    90,  # Height
-    # Optional Parameters
-    text="send to laser",  # Text to display
-    fontSize=20,  # Size of font
-    margin=20,  # Minimum distance between text/image and edge of button
-    inactiveColour=buttonInactiveColour,  # Colour of button when not being interacted with
-    hoverColour=buttonHoverColour,  # Colour of button when being hovered over
-    pressedColour=buttonPressedColour,  # Colour of button when being clicked
-    radius=20,  # Radius of border corners (leave empty for not curved)
-    # onClick=lambda: print('')  # Function to call when clicked on
-    # onClick=lambda: send_to_laser()
+    70,  # Height
+    text="ספדה",
+    fontSize=20,
+    font=pygame.font.SysFont("calibri",20),
+    margin=20,
+    inactiveColour=buttonInactiveColour,
+    hoverColour=buttonHoverColour,
+    pressedColour=buttonPressedColour,
+    radius=20,
+    onClick=lambda: send_to_laser()
 )
 
 button_3 = Button(
-    # Mandatory Parameters
-    screen,  # Surface to place button on
-    screen_width-155,  # X-coordinate of top left corner
-    60,  # Y-coordinate of top left corner
+    screen,
+    screen_width-280,
+    60,
     40,  # Width
     40,  # Height
-    # Optional Parameters
-    text="?",  # Text to display
-    fontSize=30,  # Size of font
-    margin=20,  # Minimum distance between text/image and edge of button
-    inactiveColour=buttonInactiveColour,  # Colour of button when not being interacted with
-    hoverColour=buttonHoverColour,  # Colour of button when being hovered over
-    pressedColour=buttonPressedColour,  # Colour of button when being clicked
-    radius=10,  # Radius of border corners (leave empty for not curved)
-    # onClick=lambda: print('')  # Function to call when clicked on
+    text="?",
+    fontSize=30,
+    margin=20,
+    font=pygame.font.SysFont("calibri",30),
+    inactiveColour=buttonInactiveColour,
+    hoverColour=buttonHoverColour,
+    pressedColour=buttonPressedColour,
+    radius=10,
     # onClick=lambda: show_explanation()
 )
 
 button_4 = Button(
-    # Mandatory Parameters
-    screen,  # Surface to place button on
-    210,  # X-coordinate of top left corner
-    60,  # Y-coordinate of top left corner
-    70,  # Width
-    40,  # Height
-    # Optional Parameters
-    text="preview",  # Text to display
-    fontSize=20,  # Size of font
-    margin=20,  # Minimum distance between text/image and edge of button
-    inactiveColour=buttonInactiveColour,  # Colour of button when not being interacted with
-    hoverColour=buttonHoverColour,  # Colour of button when being hovered over
-    pressedColour=buttonPressedColour,  # Colour of button when being clicked
-    radius=10,  # Radius of border corners (leave empty for not curved)
-    # onClick=lambda: print('')  # Function to call when clicked on
+    screen,
+    210,
+    screen_height-80,
+    screen_width-(210+210),  # Width
+    70,  # Height
+    text="המידקמ הגוצת",
+    fontSize=20,
+    font=pygame.font.SysFont("calibri", 20),
+    margin=20,
+    inactiveColour=buttonInactiveColour,
+    hoverColour=buttonHoverColour,
+    pressedColour=buttonPressedColour,
+    radius=10,
     onClick=lambda: preview()
 )
 
+def send_to_laser():
+    return
 
 def preview():
     global show_control_lines
@@ -223,44 +218,64 @@ def add_curve0():
 
 def msgNumCurves(num):
     if num > 0:
-        value = font_style1.render(str(num) + " curves left", True, white)
+        value = font_style1.render("ורתונ םיווק " + str(num), True, white)
     else:
-        value = font_style1.render("no curves left", True, red)
-    screen.blit(value, [320, 60])
+        value = font_style1.render("תומוקע ורתונ אל", True, red)
+    text_rect = value.get_rect(center=(screen_width / 2, 50+35))
+    screen.blit(value, text_rect)
 
-
-def msgTouch(msg):
+def msg():
     global screen
-    if msg == NO_TOUCH_MSG:
-        value = font_style2.render("move the blue points to change the curve's edges", True, white)
-        screen.blit(value, [230, 10])
-        value = font_style2.render("move the yellow points to change the curve's slope", True, white)
-        screen.blit(value, [230, 30])
-    elif msg == EDGE_TOUCH_MSG:
-        value = font_style3.render("You are changing the curve's edges!", True, white)
-        screen.blit(value, [240, 20])
-    elif msg == SLOPE_TOUCH_MSG:
-        value = font_style3.render("You are changing the curve's slope!", True, white)
-        screen.blit(value, [240, 20])
+    value = font_style2.render("!תודוקנה תועצמאב וקה תרוצ תא ונש", True, white)
+    text_rect = value.get_rect(center=(screen_width / 2, 50))
+    screen.blit(value, text_rect)
+
+    # screen.blit(value, [screen_width/2-70, 10])
+
+# def msgTouch(msg):
+#     global screen
+#     if msg == NO_TOUCH_MSG:
+#         value = font_style2.render("move the blue points to change the curve's edges", True, white)
+#         screen.blit(value, [230, 10])
+#         value = font_style2.render("move the yellow points to change the curve's slope", True, white)
+#         screen.blit(value, [230, 30])
+#     elif msg == EDGE_TOUCH_MSG:
+#         value = font_style3.render("You are changing the curve's edges!", True, white)
+#         screen.blit(value, [240, 20])
+#     elif msg == SLOPE_TOUCH_MSG:
+#         value = font_style3.render("You are changing the curve's slope!", True, white)
+#         screen.blit(value, [240, 20])
 
 def clear():
     global curves
     global selected_curve
     global selected
+    global delta
     curves.clear()
     selected_curve = None
     selected = None
+    delta = [0,0,0]
 
 
 def add_curve():
     global curves
     global selected_curve
     global selected
+    global delta
+    deltaX= delta[0]
+    deltaY= delta[1]
 
-    new_curve = BezierCurve([x0, y0], [x1, y1], [x2, y2], [x3, y3])
+    new_curve = BezierCurve([x0-deltaX, y0-deltaY], [x1-deltaX, y1-deltaY], [x2-deltaX, y2-deltaY], [x3-deltaX, y3-deltaY])
     selected_curve = new_curve
     selected = None
     curves.append(new_curve)
+    delta[0] += 10
+    delta[1] += 10
+    if deltaX > 100:
+        delta[2] += 1
+        delta[0] = 0
+        delta[1] = delta[2]*-20
+
 
 
 def draw_all():
@@ -304,18 +319,25 @@ def main():
         screen.fill(gray)
         draw_all()
         if selected is not None:
-            if pygame.mouse.get_pos()[1] > borderLineHeight + circleRadius1 and pygame.mouse.get_pos()[1] < screen_height - circleRadius1 and pygame.mouse.get_pos()[0] > circleRadius1 and pygame.mouse.get_pos()[0] < screen_width - circleRadius1:
-                selected[0], selected[1] = pygame.mouse.get_pos()
+            if pygame.mouse.get_pos()[1] > borderLineHeight + circleRadius1 and pygame.mouse.get_pos()[1] < borderLine2Height - circleRadius1 and pygame.mouse.get_pos()[0] > circleRadius1 and pygame.mouse.get_pos()[0] < screen_width - circleRadius1:
                 pygame.draw.circle(screen, green, (selected[0], selected[1]), 10)
-            if selected_curve.vertices.index(selected) == 1 or selected_curve.vertices.index(selected) == 2:
-                msgTouch(SLOPE_TOUCH_MSG)
-            else:
-                msgTouch(EDGE_TOUCH_MSG)
-        else:
-            msgTouch(NO_TOUCH_MSG)
+                if selected_curve.vertices.index(selected) == 0:
+                    for i in range(1, 4):
+                        selected_curve.vertices[i][0] = selected_curve.vertices[i][0]+(pygame.mouse.get_pos()[0] - selected[0])
+                        selected_curve.vertices[i][1] = selected_curve.vertices[i][1] + (pygame.mouse.get_pos()[1] - selected[1])
+                selected[0], selected[1] = pygame.mouse.get_pos()
+
+            # if selected_curve.vertices.index(selected) == 1 or selected_curve.vertices.index(selected) == 2:
+            #     msgTouch(SLOPE_TOUCH_MSG)
+            # else:
+            #     msgTouch(EDGE_TOUCH_MSG)
+        # else:
+        #     msgTouch(NO_TOUCH_MSG)
+        msg()
 
         # draw border line
         pygame.draw.line(screen, black, (0, borderLineHeight), (screen_width, borderLineHeight), 5)
+        pygame.draw.line(screen, black, (0, borderLine2Height), (screen_width, borderLine2Height), 5)
         msgNumCurves(maxCurves - len(curves))
         pygame_widgets.update(events)
         pygame.display.update()
