@@ -1,37 +1,45 @@
+import pygame
 # consts
 gray = (100, 100, 100)
 lightgray = (200, 200, 200)
 red = (255, 0, 0)
 green = (0, 255, 0)
+purple = (255, 0, 255)
 blue = (0, 0, 255)
 yellow = (255, 255, 0)
 white = (255, 255, 255)
 black = (0, 0, 0)
 X, Y, Z = 0, 1, 2
-NO_TOUCH_MSG = 0
-EDGE_TOUCH_MSG = 1
-SLOPE_TOUCH_MSG = 2
+# NO_TOUCH_MSG = 0
+# EDGE_TOUCH_MSG = 1
+# SLOPE_TOUCH_MSG = 2
 
-screen_width = 800
-screen_height = 600
+# screen_width = 1200
+# screen_height = 650
+pygame.init()
+infoObject = pygame.display.Info()
+print(infoObject)
+screen_width = infoObject.current_w
+screen_height = infoObject.current_h
 
 borderLineHeight = 110
-borderLine2Height = 150
+borderLine2Height = screen_height-90
 
 # control points values
+circleColor0 = purple
 circleColor1 = blue
 circleColor2 = yellow
-circleRadius1 = 5
-circleRadius2 = 5
-x0 = 500
-y0 = 500
-x1 = 240
-y1 = 500
-x2 = 240
-y2 = 240
-x3 = 500
-y3 = 240
-
+circleRadius0 = 8
+circleRadius1 = 8
+circleRadius2 = 8
+x0 = screen_width/2+400
+y0 = screen_height/2+100
+x1 = screen_width/2+200
+y1 = screen_height/2+100
+x2 = screen_width/2+200
+y2 = screen_height/2-100
+x3 = screen_width/2+400
+y3 = screen_height/2-100
 
 # bezier curve values
 curveColor = red
