@@ -36,17 +36,17 @@ class BezierCurve(object):
         b3y = self.vertices[3][1]
 
         # Compute polynomial coefficients from Bezier points
-        ax = -b0x + 3 * b1x + -3 * b2x + b3x
-        ay = -b0y + 3 * b1y + -3 * b2y + b3y
+        ax = (-b0x + 3 * b1x + -3 * b2x + b3x)
+        ay = (-b0y + 3 * b1y + -3 * b2y + b3y)
 
-        bx = 3 * b0x + -6 * b1x + 3 * b2x
-        by = 3 * b0y + -6 * b1y + 3 * b2y
+        bx = (3 * b0x + -6 * b1x + 3 * b2x)
+        by =  (3 * b0y + -6 * b1y + 3 * b2y)
 
-        cx = -3 * b0x + 3 * b1x
-        cy = -3 * b0y + 3 * b1y
+        cx = (-3 * b0x + 3 * b1x)
+        cy = (-3 * b0y + 3 * b1y)
 
-        dx = b0x
-        dy = b0y
+        dx = (b0x)
+        dy = (b0y)
 
         # Set up the number of steps and step size
         numSteps = numPoints - 1  # arbitrary choice
@@ -56,14 +56,14 @@ class BezierCurve(object):
         pointX = dx
         pointY = dy
 
-        firstFDX = ax * (h * h * h) + bx * (h * h) + cx * h
-        firstFDY = ay * (h * h * h) + by * (h * h) + cy * h
+        firstFDX = (ax * (h * h * h) + bx * (h * h) + cx * h)
+        firstFDY =(ay * (h * h * h) + by * (h * h) + cy * h)
 
-        secondFDX = 6 * ax * (h * h * h) + 2 * bx * (h * h)
-        secondFDY = 6 * ay * (h * h * h) + 2 * by * (h * h)
+        secondFDX = (6 * ax * (h * h * h) + 2 * bx * (h * h))
+        secondFDY =(6 * ay * (h * h * h) + 2 * by * (h * h))
 
-        thirdFDX = 6 * ax * (h * h * h)
-        thirdFDY = 6 * ay * (h * h * h)
+        thirdFDX = (6 * ax * (h * h * h))
+        thirdFDY =(6 * ay * (h * h * h))
 
         # Compute points at each step
         result.append((int(pointX), int(pointY)))
@@ -115,6 +115,7 @@ selected_curve = None
 # The currently selected point
 selected = None
 show_control_lines = True
+show_picture = False
 delta = [0,0,0]
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
@@ -183,7 +184,7 @@ button_3 = Button(
     hoverColour=buttonHoverColour,
     pressedColour=buttonPressedColour,
     radius=10,
-    # onClick=lambda: show_explanation()
+    onClick=lambda: show_popup()
 )
 
 button_4 = Button(
@@ -269,9 +270,10 @@ def add_curve():
     selected_curve = new_curve
     selected = None
     curves.append(new_curve)
-    delta[0] += 10
-    delta[1] += 10
-    if deltaX > 100:
+    # move the curve by delta0X and delta0Y to the left and up
+    delta[0] += delta0X
+    delta[1] += delta0Y
+    if deltaX > screen_width-200 or deltaY > screen_height-200:
         delta[2] += 1
         delta[0] = 0
         delta[1] = delta[2]*-20
@@ -283,15 +285,21 @@ def draw_all():
     for curve in curves:
         curve.draw()
 
+def show_popup():
+    global show_picture
+    show_picture = True
+
+
 
 def main():
     global curves
     global selected_curve
     global selected
     global show_control_lines
+    global show_picture
 
     clock = pygame.time.Clock()
-
+    add_curve0()
     running = True
     while running:
         events = pygame.event.get()
@@ -303,6 +311,8 @@ def main():
                     clear()
                 elif event.key == pygame.K_a:
                     add_curve0()
+                # elif event.key == pygame.K_SPACE:
+                #     show_popup()
                 else:
                     running = False
             elif event.type == MOUSEBUTTONDOWN and event.button == 1:
@@ -314,6 +324,7 @@ def main():
             elif event.type == MOUSEBUTTONUP and event.button == 1:
                 selected = None
                 show_control_lines = True
+                show_picture = False
 
         # Draw stuff
         screen.fill(gray)
@@ -321,11 +332,22 @@ def main():
         if selected is not None:
             if pygame.mouse.get_pos()[1] > borderLineHeight + circleRadius1 and pygame.mouse.get_pos()[1] < borderLine2Height - circleRadius1 and pygame.mouse.get_pos()[0] > circleRadius1 and pygame.mouse.get_pos()[0] < screen_width - circleRadius1:
                 pygame.draw.circle(screen, green, (selected[0], selected[1]), 10)
+                # if clicked on the purple point, which moves the whole curve
                 if selected_curve.vertices.index(selected) == 0:
+                    # check if all points are in the screen
+                    inScreen = True
                     for i in range(1, 4):
-                        selected_curve.vertices[i][0] = selected_curve.vertices[i][0]+(pygame.mouse.get_pos()[0] - selected[0])
-                        selected_curve.vertices[i][1] = selected_curve.vertices[i][1] + (pygame.mouse.get_pos()[1] - selected[1])
-                selected[0], selected[1] = pygame.mouse.get_pos()
+                        if selected_curve.vertices[i][0] <= circleRadius1 or selected_curve.vertices[i][0] >= screen_width - circleRadius1 or selected_curve.vertices[i][1] <= borderLineHeight or selected_curve.vertices[i][1] >= borderLine2Height:
+                            inScreen = False
+                    # if so, move the curve
+                    if inScreen:
+                        for i in range(1, 4):
+                            selected_curve.vertices[i][0] = selected_curve.vertices[i][0]+(pygame.mouse.get_pos()[0] - selected[0])
+                            selected_curve.vertices[i][1] = selected_curve.vertices[i][1] + (pygame.mouse.get_pos()[1] - selected[1])
+                        selected[0], selected[1] = pygame.mouse.get_pos()
+                else:
+                    # move the selected point
+                    selected[0], selected[1] = pygame.mouse.get_pos()
 
             # if selected_curve.vertices.index(selected) == 1 or selected_curve.vertices.index(selected) == 2:
             #     msgTouch(SLOPE_TOUCH_MSG)
@@ -339,6 +361,10 @@ def main():
         pygame.draw.line(screen, black, (0, borderLineHeight), (screen_width, borderLineHeight), 5)
         pygame.draw.line(screen, black, (0, borderLine2Height), (screen_width, borderLine2Height), 5)
         msgNumCurves(maxCurves - len(curves))
+        if show_picture:
+            popup_x = (screen_width - image.get_width()) // 2
+            popup_y = (screen_height - image.get_height()) // 2
+            screen.blit(image, (popup_x, popup_y))
         pygame_widgets.update(events)
         pygame.display.update()
         # Flip screen
