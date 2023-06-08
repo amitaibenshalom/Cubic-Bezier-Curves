@@ -25,6 +25,9 @@ screen_height = infoObject.current_h
 borderLineHeight = 110
 borderLine2Height = screen_height-90
 
+delta0X = 70
+delta0Y = 0
+
 # control points values
 circleColor0 = purple
 circleColor1 = blue
@@ -33,20 +36,26 @@ circleRadius0 = 8
 circleRadius1 = 8
 circleRadius2 = 8
 x0 = screen_width/2+400
-y0 = screen_height/2+100
-x1 = screen_width/2+200
+y0 = screen_height/2+200
+
+x1 = screen_width/2+350
 y1 = screen_height/2+100
-x2 = screen_width/2+200
+
+x2 = screen_width/2+450
 y2 = screen_height/2-100
+
 x3 = screen_width/2+400
-y3 = screen_height/2-100
+y3 = screen_height/2-200
 
 # bezier curve values
 curveColor = red
-curveWidth = 2
-maxCurves = 30
+curveWidth = 5
+maxCurves = 15
 
 # button values
 buttonInactiveColour=(250, 50, 10)
 buttonHoverColour=(150, 0, 0)
 buttonPressedColour=(0, 200, 20)
+
+# get the image from the diratory "pictures"
+image = pygame.image.load("pictures/INFO1.gif")
