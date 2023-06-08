@@ -58,4 +58,4 @@ buttonHoverColour=(150, 0, 0)
 buttonPressedColour=(0, 200, 20)
 
 # get the image from the diratory "pictures"
-image = pygame.image.load("pictures/INFO1.gif")
+image = pygame.image.load("INFO1.gif")
