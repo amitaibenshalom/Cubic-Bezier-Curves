@@ -1,4 +1,4 @@
-from consts_28_8_2023 import *
+from consts import *
 
 pygame.init()
 
