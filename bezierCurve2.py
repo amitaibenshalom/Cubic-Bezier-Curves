@@ -4,15 +4,12 @@ pygame.init()
 
 port = 'COM5'
 baudrate = 115200
-arduino = serial.Serial(port, baudrate)
+# arduino = serial.Serial(port, baudrate)
 
 
 # fonts for text
-# font_style1 = pygame.font.SysFont("calibri", 30)
 font_style2 = pygame.font.SysFont("calibri", 45)
-# font_style3 = pygame.font.SysFont("calibri", 25)
 font_style2.bold = True
-# print(pygame.font.get_fonts())
 
 
 class Button(object):
@@ -166,9 +163,9 @@ def check_buttons():
 def send_to_laser():
     global curves
     # print the values of the points in the curves
-    # for curve in curves:
-    #     print(curve.vertices)
-    # return
+    for curve in curves:
+        print(curve.vertices)
+    return
 
     # fist, send a key that will tell the arduino to start reading
     if not send_one_number(starting_key):
@@ -338,12 +335,14 @@ def main():
 
     running = True
     while running:
+        '''
         try:
             if arduino.in_waiting > 0:
                 received_data = arduino.readline().decode('utf-8').rstrip()
                 print("Received from Arduino:", received_data)
         finally:
             pass
+        '''
         events = pygame.event.get()
         for event in events:
             if event.type == QUIT:
@@ -376,6 +375,7 @@ def main():
 
         # Draw stuff
         screen.blit(pic_bg0, [0, 0])
+        # pygame.draw.rect(screen, lightgray, ((screen_width-(borderLine2Height-borderLineHeight))/2,(screen_height-(borderLine2Height-borderLineHeight))/2,borderLine2Height-borderLineHeight,borderLine2Height-borderLineHeight))
         draw_all()
         if selected is not None:
             if pygame.mouse.get_pos()[1] > borderLineHeight + circleRadius1 and pygame.mouse.get_pos()[1] < borderLine2Height - circleRadius1 and pygame.mouse.get_pos()[0] > circleRadius1 and pygame.mouse.get_pos()[0] < screen_width - circleRadius1:
