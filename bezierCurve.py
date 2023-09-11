@@ -4,7 +4,7 @@ pygame.init()
 
 port = 'COM5'
 baudrate = 115200
-arduino = serial.Serial(port, baudrate)
+# arduino = serial.Serial(port, baudrate)
 
 
 # fonts for text
@@ -165,10 +165,9 @@ def check_buttons():
 # send the points as ratio between place and screen size
 def send_to_laser():
     global curves
-    # print the values of the points in the curves
-    # for curve in curves:
-    #     print(curve.vertices)
-    # return
+    for curve in curves:
+        print(curve.vertices)
+    return
 
     # fist, send a key that will tell the arduino to start reading
     if not send_one_number(starting_key):
@@ -185,14 +184,7 @@ def send_to_laser():
         for point in curve.vertices:
             send_one_number(point[1])
             send_one_number(screen_width-point[0])
-        # send_one_number(50/mm_per_pixel_x)
-        # send_one_number(50/mm_per_pixel_y)
-        # send_one_number(50/mm_per_pixel_x)
-        # send_one_number(100/mm_per_pixel_y)
-        # send_one_number(100/mm_per_pixel_x)
-        # send_one_number(100/mm_per_pixel_y)
-        # send_one_number(100/mm_per_pixel_x)
-        # send_one_number(50/mm_per_pixel_y)
+
         # wait for arduino to send a key that will tell us it finished reading the curve
         # t0 = time.time()
         # while arduino.in_waiting == 0 and time.time() < t0 + MAX_TIME_WAITING_FOR_ARDUINO:
@@ -338,12 +330,14 @@ def main():
 
     running = True
     while running:
+        '''
         try:
             if arduino.in_waiting > 0:
                 received_data = arduino.readline().decode('utf-8').rstrip()
                 print("Received from Arduino:", received_data)
         finally:
             pass
+        '''
         events = pygame.event.get()
         for event in events:
             if event.type == QUIT:
