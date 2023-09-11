@@ -160,3 +160,10 @@ starting_key = -2
 next_curve_key = -3
 end_key = -4
 
+send_to_arduino = False
+drawing_curve = False
+curve_index = 0
+waiting = [False,False] # two flags to indicate if we are waiting for the arduino to send us data: first is reading a curve, second is drawing one
+last_time = [0,0] # to limit the time we wait for the arduino to send us data
+
+
