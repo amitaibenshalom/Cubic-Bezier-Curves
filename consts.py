@@ -21,8 +21,8 @@ orange = (255, 165, 0)
 X, Y, Z = 0, 1, 2
 
 
-# screen_width = 1200
-# screen_height = 650
+# screen_width = 1000
+# screen_height = 600
 pygame.init()
 infoObject = pygame.display.Info()
 print(infoObject)
@@ -30,8 +30,8 @@ screen_width = infoObject.current_w
 screen_height = infoObject.current_h
 screenColor = gray
 
-borderLineHeight = 150
-borderLine2Height = screen_height-150
+borderLineHeight = 142
+borderLine2Height = screen_height-142
 tolerance = 3
 
 delta0X = 30
@@ -150,10 +150,11 @@ pic_buttonCircle = pygame.transform.scale(pic_buttonCircle, buttonCircleSize)
 pic_buttonPressedCircle = pygame.transform.scale(pic_buttonPressedCircle, buttonCircleSize)
 
 contour_heart = [[(screen_width/2, 600),(1145,345),(screen_width/2+120,80),(screen_width/2, 250)],[(screen_width/2,600),(225,345),(screen_width/2-120,80),(screen_width/2,250)]]
-contour_square = [[[screen_width/2+250, 400], [screen_width/2+250, 170], [screen_width/2+250, 170], [screen_width/2, 170]],[[screen_width/2, 600], [screen_width/2+250, 600], [screen_width/2+250, 600], [screen_width/2+250, 400]],[[screen_width/2, 600], [screen_width/2-250, 600], [screen_width/2-250, 600], [screen_width/2-250, 400]],[[screen_width/2-250, 400], [screen_width/2-250, 170], [screen_width/2-250, 170], [screen_width/2, 170]]]
+contour_square = [[[screen_width/2+230, 400], [screen_width/2+230, 170], [screen_width/2+230, 170], [screen_width/2, 170]],[[screen_width/2, 600], [screen_width/2+230, 600], [screen_width/2+230, 600], [screen_width/2+230, 400]],[[screen_width/2, 600], [screen_width/2-230, 600], [screen_width/2-230, 600], [screen_width/2-230, 400]],[[screen_width/2-230, 400], [screen_width/2-230, 170], [screen_width/2-230, 170], [screen_width/2, 170]]]
 contour_drop = [[(screen_width/2,600),(900,600),(900,500),(900,450)],[(900,450),(850,250),(750,250),(screen_width/2,150)],[(screen_width/2,600),(550,600),(470,500),(470,450)],[(470,450),(500,250),(600,200),(screen_width/2,150)]]
 
 MAX_TIME_WAITING_FOR_ARDUINO = 5 # seconds
+MAX_DRAWING_TIME_FOR_ARDUINO = 10 # seconds
 time_delay_arduino = 0.005 # seconds
 starting_key = -2
 next_curve_key = -3
