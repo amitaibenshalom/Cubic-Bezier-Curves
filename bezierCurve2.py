@@ -134,9 +134,9 @@ class BezierCurve(object):
 
             # Draw control "lines"
             # pygame.draw.lines(screen, lightgray, False, [(x[0], x[1]) for x in control_points])
-            pygame.draw.lines(screen, lightgray, False,
+            pygame.draw.lines(screen, control_lines_color, False,
                               [(x[0], x[1]) for x in control_points[:2]])
-            pygame.draw.lines(screen, lightgray, False,
+            pygame.draw.lines(screen, control_lines_color, False,
                               [(x[0], x[1]) for x in control_points[2:]])
 
         # Draw bezier curve
@@ -161,52 +161,6 @@ def check_buttons():
         button.check()
 
 
-'''
-# send the points as ratio between place and screen size
-def send_to_laser():
-    global curves
-    # print the values of the points in the curves
-    # for curve in curves:
-    #     print(curve.vertices)
-    # return
-
-    # fist, send a key that will tell the arduino to start reading
-    if not send_one_number(starting_key):
-        return False
-    print("sent starting key to laser")
-    time.sleep(time_delay_arduino)
-    # then, send the number of curves
-    if not send_one_number(-len(curves)):
-        return False
-    print("sent number of curves")
-    # time.sleep(time_delay_arduino)
-    # then, send the points of each curve
-    for curve in curves:
-        for point in curve.vertices:
-            send_one_number(point[1])
-            send_one_number(screen_width - point[0])
-
-        # wait for arduino to send a key that will tell us it finished reading the curve
-        t0 = time.time()
-        while arduino.in_waiting == 0 and time.time() < t0 + MAX_TIME_WAITING_FOR_ARDUINO:
-            pass
-        if arduino.in_waiting == 0:
-            print("arduino didn't send key")
-            return False
-        # received_data = arduino.readline().decode('utf-8').rstrip()
-        print("arduino sent key")
-        time.sleep(time_delay_arduino)
-
-        # send a key that will tell the arduino to go to the next curve
-        # send_one_number(next_curve_key)
-    # send a key that will tell the arduino to stop reading
-    print("sent all points")
-    send_one_number(end_key)
-    print("sent end key")
-    return True
-'''
-
-
 def check_arduino():
     global curves_to_send
     global waiting
@@ -214,6 +168,7 @@ def check_arduino():
     global drawing_curve
     global curve_index
     global send_to_arduino
+    global ButtonPrint
 
     if waiting[1]:
         if arduino.in_waiting > 0:
@@ -223,6 +178,8 @@ def check_arduino():
             curve_index += 1
             if curve_index >= len(curves_to_send):
                 send_to_arduino = False
+                ButtonPrint.img = pic_buttonPrint
+                ButtonPrint.imgon = pic_buttonPressedPrint
                 # send a key that will tell the arduino to stop reading
                 print("sent all curves")
                 send_one_number(end_key)
@@ -266,10 +223,13 @@ def send_to_laser():
     global drawing_curve
     global curve_index
     global send_to_arduino
+    global ButtonPrint
     # print the values of the points in the curves
     # for curve in curves:
     #     print(curve.vertices)
     # return
+    if send_to_arduino:
+        return False
     curves_to_send = curves.copy()
     if not send_one_number(starting_key):  # fist, send a key that will tell the arduino to start reading
         return False
@@ -281,6 +241,9 @@ def send_to_laser():
     drawing_curve = False
     curve_index = 0
     send_to_arduino = True
+    # change the picture of the send to laser button
+    ButtonPrint.img = pic_buttonOffPrint
+    ButtonPrint.imgon = pic_buttonOffPrint
     return True
 
 
@@ -443,7 +406,8 @@ def main():
 
         # Draw stuff
         screen.blit(pic_bg0, [0, 0])
-        pygame.draw.rect(screen, lightgray, ((screen_width-(borderLine2Height-borderLineHeight))/2,(screen_height-(borderLine2Height-borderLineHeight))/2,borderLine2Height-borderLineHeight,borderLine2Height-borderLineHeight))
+        # draw a rectangle in the middle of the screen to show the laser cutting area
+        pygame.draw.rect(screen, cuttingAreaColor, ((screen_width-(borderLine2Height-borderLineHeight))/2,(screen_height-(borderLine2Height-borderLineHeight))/2,borderLine2Height-borderLineHeight,borderLine2Height-borderLineHeight))
         draw_all()
         if selected is not None:
             if pygame.mouse.get_pos()[1] > borderLineHeight + circleRadius1 and pygame.mouse.get_pos()[1] < borderLine2Height - circleRadius1 and pygame.mouse.get_pos()[0] > circleRadius1 and pygame.mouse.get_pos()[0] < screen_width - circleRadius1:

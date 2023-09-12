@@ -6,7 +6,8 @@ import time
 
 # consts
 gray = (100, 100, 100)
-lightgray = (200, 200, 200)
+lightgray = (180, 180, 180)
+verylightgray = (220, 220, 220)
 red = (255, 0, 0)
 pink = (255, 0, 255)
 light_red = (255, 100, 100)
@@ -29,6 +30,7 @@ print(infoObject)
 screen_width = infoObject.current_w
 screen_height = infoObject.current_h
 screenColor = gray
+cuttingAreaColor = verylightgray
 
 borderLineHeight = 142
 borderLine2Height = screen_height-142
@@ -63,6 +65,7 @@ pixel_per_cm_screen = 90/1.9
 # bezier curve values
 curveColor = red
 selectedCurveColor = green
+control_lines_color = lightgray
 curveWidth = 6
 maxCurves = 15
 
@@ -76,6 +79,7 @@ contour0radius = 100
 buttonInactiveColour=yellow
 buttonHoverColour=red
 buttonPressedColour=green
+buttonOfflineColour=gray
 
 button_height = int(1.6/16.5 * screen_height)
 
@@ -114,6 +118,7 @@ pic_buttonPreview = pygame.image.load("pictures/buttonPreview.jpg")
 pic_buttonPressedPreview = pygame.image.load("pictures/buttonPressedPreview.jpg")
 pic_buttonPrint = pygame.image.load("pictures/buttonPrint.jpg")
 pic_buttonPressedPrint = pygame.image.load("pictures/buttonPressedPrint.jpg")
+pic_buttonOffPrint = pygame.image.load("pictures/buttonOffPrint.jpg")
 pic_bg0 = pygame.image.load("pictures/bg0.jpg")
 pic_bg1 = pygame.image.load("pictures/bgWithButtons.jpg")
 pic_infoHeb = pygame.image.load("pictures/infoHeb.jpg")
@@ -137,6 +142,7 @@ pic_buttonPreview = pygame.transform.scale(pic_buttonPreview, buttonPreviewSize)
 pic_buttonPressedPreview = pygame.transform.scale(pic_buttonPressedPreview, buttonPreviewSize)
 pic_buttonPrint = pygame.transform.scale(pic_buttonPrint, buttonPrintSize)
 pic_buttonPressedPrint = pygame.transform.scale(pic_buttonPressedPrint, buttonPrintSize)
+pic_buttonOffPrint = pygame.transform.scale(pic_buttonOffPrint, buttonPrintSize)
 pic_bg0 = pygame.transform.scale(pic_bg0, (screen_width, screen_height))
 pic_bg1 = pygame.transform.scale(pic_bg1, (screen_width, screen_height))
 pic_infoHeb = pygame.transform.scale(pic_infoHeb, infoHebSize)
