@@ -163,6 +163,7 @@ def check_buttons():
 
 def check_arduino():
     global curves_to_send
+    global curves
     global waiting
     global last_time
     global drawing_curve
@@ -174,6 +175,7 @@ def check_arduino():
         if arduino.in_waiting > 0:
             received_data = arduino.readline().decode('utf-8').rstrip()
             waiting[1] = False
+            curves[curve_index].color = curveColor
             print("arduino finished drawing the curve")
             curve_index += 1
             if curve_index >= len(curves_to_send):
@@ -190,6 +192,7 @@ def check_arduino():
         elif time.time() - last_time[1] > MAX_DRAWING_TIME_FOR_ARDUINO:
             print("ERROR: arduino didn't send drawing done key")
             return False
+        curves[curve_index].color = color_for_drawing_curve
         return True
 
     if waiting[0]:

@@ -66,6 +66,7 @@ pixel_per_cm_screen = 90/1.9
 curveColor = red
 selectedCurveColor = green
 control_lines_color = lightgray
+color_for_drawing_curve = green
 curveWidth = 6
 maxCurves = 15
 
