@@ -4,7 +4,12 @@ pygame.init()
 
 port = 'COM5'
 baudrate = 115200
-arduino = serial.Serial(port, baudrate)
+arduino = None
+try:
+    arduino = serial.Serial(port, baudrate)
+    found_arduino = True
+except:
+    print('ARDUINO NOT CONNECTED')
 
 
 # fonts for text
@@ -163,7 +168,6 @@ def check_buttons():
 
 def check_arduino():
     global curves_to_send
-    global curves
     global waiting
     global last_time
     global drawing_curve
@@ -175,7 +179,6 @@ def check_arduino():
         if arduino.in_waiting > 0:
             received_data = arduino.readline().decode('utf-8').rstrip()
             waiting[1] = False
-            curves[curve_index].color = curveColor
             print("arduino finished drawing the curve")
             curve_index += 1
             if curve_index >= len(curves_to_send):
@@ -192,7 +195,6 @@ def check_arduino():
         elif time.time() - last_time[1] > MAX_DRAWING_TIME_FOR_ARDUINO:
             print("ERROR: arduino didn't send drawing done key")
             return False
-        curves[curve_index].color = color_for_drawing_curve
         return True
 
     if waiting[0]:
@@ -216,6 +218,7 @@ def check_arduino():
         waiting[0] = True # waiting for arduino to send key that will tell us it finished reading the curve
         waiting[1] = False # NOT waiting for arduino to send key that will tell us it finished drawing the curve
         last_time[0] = time.time()
+    return True
 
 
 
@@ -227,10 +230,17 @@ def send_to_laser():
     global curve_index
     global send_to_arduino
     global ButtonPrint
+    global found_arduino
     # print the values of the points in the curves
     # for curve in curves:
     #     print(curve.vertices)
     # return
+    if not found_arduino:
+        print("ERROR: No Laser Connected")
+        return False
+    if len(curves) == 0:
+        print("No curves to send")
+        return True
     if send_to_arduino:
         return False
     curves_to_send = curves.copy()
@@ -370,10 +380,10 @@ def main():
     global selected
     global show_control_lines
     global show_picture
+    global send_to_arduino
 
     clock = pygame.time.Clock()
     sqaure()
-
     running = True
     while running:
 
@@ -444,15 +454,18 @@ def main():
         pygame.display.flip()
 
         # check if sending to arduino
-        if send_to_arduino:
-            check_arduino()
-        else:
-            try:
-                if arduino.in_waiting > 0:
-                    received_data = arduino.readline().decode('utf-8').rstrip()
-                    print("Received from Arduino:", received_data)
-            finally:
-                pass
+        if found_arduino:
+            if send_to_arduino:
+                if not check_arduino():
+                    print("--- SOMETHING WENT WRONG WITH THE ARDUINO !!! ---")
+                    send_to_arduino = False
+            else:
+                try:
+                    if arduino.in_waiting > 0:
+                        received_data = arduino.readline().decode('utf-8').rstrip()
+                        print("Received from Arduino:", received_data)
+                finally:
+                    pass
 
 
         clock.tick(100)

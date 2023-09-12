@@ -66,7 +66,6 @@ pixel_per_cm_screen = 90/1.9
 curveColor = red
 selectedCurveColor = green
 control_lines_color = lightgray
-color_for_drawing_curve = green
 curveWidth = 6
 maxCurves = 15
 
@@ -161,12 +160,13 @@ contour_square = [[[screen_width/2+230, 400], [screen_width/2+230, 170], [screen
 contour_drop = [[(screen_width/2,600),(900,600),(900,500),(900,450)],[(900,450),(850,250),(750,250),(screen_width/2,150)],[(screen_width/2,600),(550,600),(470,500),(470,450)],[(470,450),(500,250),(600,200),(screen_width/2,150)]]
 
 MAX_TIME_WAITING_FOR_ARDUINO = 5 # seconds
-MAX_DRAWING_TIME_FOR_ARDUINO = 10 # seconds
+MAX_DRAWING_TIME_FOR_ARDUINO = 20 # seconds
 time_delay_arduino = 0.005 # seconds
 starting_key = -2
 next_curve_key = -3
 end_key = -4
 
+found_arduino = False
 send_to_arduino = False
 drawing_curve = False
 curve_index = 0

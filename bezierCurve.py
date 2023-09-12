@@ -4,7 +4,7 @@ pygame.init()
 
 port = 'COM5'
 baudrate = 115200
-# arduino = serial.Serial(port, baudrate)
+arduino = serial.Serial(port, baudrate)
 
 
 # fonts for text
@@ -165,9 +165,9 @@ def check_buttons():
 # send the points as ratio between place and screen size
 def send_to_laser():
     global curves
-    for curve in curves:
-        print(curve.vertices)
-    return
+    # for curve in curves:
+    #     print(curve.vertices)
+    # return
 
     # fist, send a key that will tell the arduino to start reading
     if not send_one_number(starting_key):
@@ -330,14 +330,14 @@ def main():
 
     running = True
     while running:
-        '''
+
         try:
             if arduino.in_waiting > 0:
                 received_data = arduino.readline().decode('utf-8').rstrip()
                 print("Received from Arduino:", received_data)
         finally:
             pass
-        '''
+
         events = pygame.event.get()
         for event in events:
             if event.type == QUIT:
