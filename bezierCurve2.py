@@ -4,7 +4,12 @@ pygame.init()
 
 port = 'COM5'
 baudrate = 115200
-arduino = serial.Serial(port, baudrate)
+arduino = None
+try:
+    arduino = serial.Serial(port, baudrate)
+    found_arduino = True
+except:
+    print('ARDUINO NOT CONNECTED')
 
 
 # fonts for text
@@ -134,9 +139,9 @@ class BezierCurve(object):
 
             # Draw control "lines"
             # pygame.draw.lines(screen, lightgray, False, [(x[0], x[1]) for x in control_points])
-            pygame.draw.lines(screen, lightgray, False,
+            pygame.draw.lines(screen, control_lines_color, False,
                               [(x[0], x[1]) for x in control_points[:2]])
-            pygame.draw.lines(screen, lightgray, False,
+            pygame.draw.lines(screen, control_lines_color, False,
                               [(x[0], x[1]) for x in control_points[2:]])
 
         # Draw bezier curve
@@ -145,6 +150,7 @@ class BezierCurve(object):
 
 
 curves = [] # list of all curves
+curves_to_send = []
 contour = []
 selected_curve = None
 selected = None # The currently selected point
@@ -160,101 +166,97 @@ def check_buttons():
         button.check()
 
 
-'''
-# send the points as ratio between place and screen size
-def send_to_laser():
-    global curves
-    # print the values of the points in the curves
-    # for curve in curves:
-    #     print(curve.vertices)
-    # return
+def check_arduino():
+    global curves_to_send
+    global waiting
+    global last_time
+    global drawing_curve
+    global curve_index
+    global send_to_arduino
+    global ButtonPrint
 
-    # fist, send a key that will tell the arduino to start reading
-    if not send_one_number(starting_key):
-        return False
-    print("sent starting key to laser")
-    time.sleep(time_delay_arduino)
-    # then, send the number of curves
-    if not send_one_number(-len(curves)):
-        return False
-    print("sent number of curves")
-    # time.sleep(time_delay_arduino)
-    # then, send the points of each curve
-    for curve in curves:
+    if waiting[1]:
+        if arduino.in_waiting > 0:
+            received_data = arduino.readline().decode('utf-8').rstrip()
+            waiting[1] = False
+            print("arduino finished drawing the curve")
+            curve_index += 1
+            if curve_index >= len(curves_to_send):
+                send_to_arduino = False
+                ButtonPrint.img = pic_buttonPrint
+                ButtonPrint.imgon = pic_buttonPressedPrint
+                # send a key that will tell the arduino to stop reading
+                print("sent all curves")
+                send_one_number(end_key)
+                print("sent end key")
+                return True
+            else:
+                drawing_curve = False
+        elif time.time() - last_time[1] > MAX_DRAWING_TIME_FOR_ARDUINO:
+            print("ERROR: arduino didn't send drawing done key")
+            return False
+        return True
+
+    if waiting[0]:
+        if arduino.in_waiting > 0:
+            received_data = arduino.readline().decode('utf-8').rstrip()
+            waiting[0] = False
+            waiting[1] = True
+            last_time[1] = time.time()
+            print("arduino finished reading the curve")
+        elif time.time() - last_time[0] > MAX_TIME_WAITING_FOR_ARDUINO:
+            print("ERROR: arduino didn't send reading done key")
+            return False
+        return True
+
+    if not drawing_curve:
+        curve = curves_to_send[curve_index]
         for point in curve.vertices:
             send_one_number(point[1])
             send_one_number(screen_width - point[0])
-
-        # wait for arduino to send a key that will tell us it finished reading the curve
-        t0 = time.time()
-        while arduino.in_waiting == 0 and time.time() < t0 + MAX_TIME_WAITING_FOR_ARDUINO:
-            pass
-        if arduino.in_waiting == 0:
-            print("arduino didn't send key")
-            return False
-        # received_data = arduino.readline().decode('utf-8').rstrip()
-        print("arduino sent key")
-        time.sleep(time_delay_arduino)
-
-        # send a key that will tell the arduino to go to the next curve
-        # send_one_number(next_curve_key)
-    # send a key that will tell the arduino to stop reading
-    print("sent all points")
-    send_one_number(end_key)
-    print("sent end key")
+        drawing_curve = True
+        waiting[0] = True # waiting for arduino to send key that will tell us it finished reading the curve
+        waiting[1] = False # NOT waiting for arduino to send key that will tell us it finished drawing the curve
+        last_time[0] = time.time()
     return True
-'''
+
 
 
 # send the points as ratio between place and screen size
 def send_to_laser():
     global curves
+    global curves_to_send
+    global drawing_curve
+    global curve_index
+    global send_to_arduino
+    global ButtonPrint
+    global found_arduino
     # print the values of the points in the curves
     # for curve in curves:
     #     print(curve.vertices)
     # return
-
-    # fist, send a key that will tell the arduino to start reading
-    if not send_one_number(starting_key):
+    if not found_arduino:
+        print("ERROR: No Laser Connected")
+        return False
+    if len(curves) == 0:
+        print("No curves to send")
+        return True
+    if send_to_arduino:
+        return False
+    curves_to_send = curves.copy()
+    if not send_one_number(starting_key):  # fist, send a key that will tell the arduino to start reading
         return False
     print("sent starting key to laser")
-    # time.sleep(time_delay_arduino)
     # then, send the number of curves
-    if not send_one_number(-len(curves)):
+    if not send_one_number(-len(curves_to_send)):
         return False
     print("sent number of curves")
-    # time.sleep(time_delay_arduino)
-    # then, send the points of each curve
-    for curve in curves:
-        for point in curve.vertices:
-            send_one_number(point[1])
-            send_one_number(screen_width-point[0])
-        # wait for arduino to send a key that will tell us it finished reading the curve
-        t0 = time.time()
-        while arduino.in_waiting == 0 and time.time() < t0 + MAX_TIME_WAITING_FOR_ARDUINO:
-            pass
-            # print("waiting for arduino to send key")
-        if arduino.in_waiting == 0:
-            print("arduino didn't send key")
-            return False
-        print("arduino done reading curve " + str(curves.index(curve)))
-        received_data = arduino.readline().decode('utf-8').rstrip()
-
-        # wait for arduino to send a key that will tell us that it is finished drawing the curve
-        t0 = time.time()
-        while arduino.in_waiting == 0 and time.time() < t0 + MAX_DRAWING_TIME_FOR_ARDUINO:
-            pass
-        if arduino.in_waiting == 0:
-            print("arduino took to much time drawing the curve")
-            return False
-        received_data = arduino.readline().decode('utf-8').rstrip()
-        print("arduino done drawing curve " + str(curves.index(curve)))
-        # time.sleep(time_delay_arduino)
-
-    # send a key that will tell the arduino to stop reading
-    print("sent all curves")
-    send_one_number(end_key)
-    print("sent end key")
+    drawing_curve = False
+    curve_index = 0
+    send_to_arduino = True
+    # change the picture of the send to laser button
+    ButtonPrint.img = pic_buttonOffPrint
+    ButtonPrint.imgon = pic_buttonOffPrint
     return True
 
 
@@ -378,19 +380,12 @@ def main():
     global selected
     global show_control_lines
     global show_picture
+    global send_to_arduino
 
     clock = pygame.time.Clock()
     sqaure()
-
     running = True
     while running:
-
-        try:
-            if arduino.in_waiting > 0:
-                received_data = arduino.readline().decode('utf-8').rstrip()
-                print("Received from Arduino:", received_data)
-        finally:
-            pass
 
         events = pygame.event.get()
         for event in events:
@@ -424,7 +419,8 @@ def main():
 
         # Draw stuff
         screen.blit(pic_bg0, [0, 0])
-        pygame.draw.rect(screen, lightgray, ((screen_width-(borderLine2Height-borderLineHeight))/2,(screen_height-(borderLine2Height-borderLineHeight))/2,borderLine2Height-borderLineHeight,borderLine2Height-borderLineHeight))
+        # draw a rectangle in the middle of the screen to show the laser cutting area
+        pygame.draw.rect(screen, cuttingAreaColor, ((screen_width-(borderLine2Height-borderLineHeight))/2,(screen_height-(borderLine2Height-borderLineHeight))/2,borderLine2Height-borderLineHeight,borderLine2Height-borderLineHeight))
         draw_all()
         if selected is not None:
             if pygame.mouse.get_pos()[1] > borderLineHeight + circleRadius1 and pygame.mouse.get_pos()[1] < borderLine2Height - circleRadius1 and pygame.mouse.get_pos()[0] > circleRadius1 and pygame.mouse.get_pos()[0] < screen_width - circleRadius1:
@@ -456,6 +452,22 @@ def main():
         pygame.display.update()
         # Flip screen
         pygame.display.flip()
+
+        # check if sending to arduino
+        if found_arduino:
+            if send_to_arduino:
+                if not check_arduino():
+                    print("--- SOMETHING WENT WRONG WITH THE ARDUINO !!! ---")
+                    send_to_arduino = False
+            else:
+                try:
+                    if arduino.in_waiting > 0:
+                        received_data = arduino.readline().decode('utf-8').rstrip()
+                        print("Received from Arduino:", received_data)
+                finally:
+                    pass
+
+
         clock.tick(100)
         # print clock.get_fps()
     pygame.quit()
