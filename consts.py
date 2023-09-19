@@ -36,7 +36,7 @@ screenColor = gray
 cuttingAreaColor = verylightgray
 
 borderLineHeight = int(142 / const_height_screen * screen_height)
-borderLine2Height = int((screen_height-142) / const_height_screen * screen_height)
+borderLine2Height = int((const_height_screen-142) / const_height_screen * screen_height)
 tolerance = 3
 
 delta0X = int(30 / const_width_screen * screen_width)
@@ -112,7 +112,6 @@ dialogBoxButtonBorderHoverColour = black
 dialogBoxButtonBorderPressedColour = black
 dialogBoxButtonBorderInactiveColour = black
 '''
-
 
 # button values
 buttonInactiveColour = yellow
