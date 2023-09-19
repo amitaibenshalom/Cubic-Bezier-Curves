@@ -113,7 +113,6 @@ dialogBoxButtonBorderPressedColour = black
 dialogBoxButtonBorderInactiveColour = black
 '''
 
-
 # button values
 buttonInactiveColour = yellow
 buttonHoverColour = red
