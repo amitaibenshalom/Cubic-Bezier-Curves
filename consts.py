@@ -24,6 +24,9 @@ X, Y, Z = 0, 1, 2
 
 # screen_width = 1000
 # screen_height = 600
+const_width_screen = 1366  # DO NOT CHANGE - for calculations of proportional sizes
+const_height_screen = 768  # DO NOT CHANGE - for calculations of proportional sizes
+
 pygame.init()
 infoObject = pygame.display.Info()
 print(infoObject)
@@ -32,47 +35,55 @@ screen_height = infoObject.current_h
 screenColor = gray
 cuttingAreaColor = verylightgray
 
-borderLineHeight = 142
-borderLine2Height = screen_height-142
+borderLineHeight = int(142 / const_height_screen * screen_height)
+borderLine2Height = int((screen_height-142) / const_height_screen * screen_height)
 tolerance = 3
 
-delta0X = 30
-delta0Y = 0
-delta0Z = -50
+delta0X = int(30 / const_width_screen * screen_width)
+delta0Y = int(0 / const_height_screen * screen_height)
+delta0Z = int(-50 / const_height_screen * screen_height)
 MAX_LINES_PER_ROW = 8
 
 # control points values
 circleColor0 = purple
 circleColor1 = blue
 circleColor2 = yellow
-circleRadius0 = 8
-circleRadius1 = 8
-circleRadius2 = 8
+circleRadius0 = int(8 / const_width_screen * screen_width)
+circleRadius1 = int(8 / const_width_screen * screen_width)
+circleRadius2 = int(8 / const_width_screen * screen_width)
 
-x0 = 800
-y0 = 450
-x1 = 850
-y1 = 350
-x2 = 750
-y2 = 350
-x3 = 800
-y3 = 250
+x0 = int(800 / const_width_screen * screen_width)
+y0 = int(450 / const_height_screen * screen_height)
+x1 = int(850 / const_width_screen * screen_width)
+y1 = int(350 / const_height_screen * screen_height)
+x2 = int(750 / const_width_screen * screen_width)
+y2 = int(350 / const_height_screen * screen_height)
+x3 = int(800 / const_width_screen * screen_width)
+y3 = int(250 / const_height_screen * screen_height)
+# x0 = 800
+# y0 = 450
+# x1 = 850
+# y1 = 350
+# x2 = 750
+# y2 = 350
+# x3 = 800
+# y3 = 250
 
-mm_per_pixel_x = 295/1366
-mm_per_pixel_y = 165/768
+# mm_per_pixel_x = 295/1366
+# mm_per_pixel_y = 165/768
 pixel_per_cm_screen = 90/1.9
 
 # bezier curve values
 curveColor = red
 selectedCurveColor = green
 control_lines_color = lightgray
-curveWidth = 6
+curveWidth = int(6 / const_width_screen * screen_width)
 maxCurves = 15
 
 # contour values
 contourColor = black
-contourWidth = 8
-contour0radius = 100
+contourWidth = int(8 / const_width_screen * screen_width)
+# contour0radius = 100
 
 '''
 # dialog box values
@@ -104,14 +115,14 @@ dialogBoxButtonBorderInactiveColour = black
 
 
 # button values
-buttonInactiveColour=yellow
-buttonHoverColour=red
-buttonPressedColour=green
-buttonOfflineColour=gray
+buttonInactiveColour = yellow
+buttonHoverColour = red
+buttonPressedColour = green
+buttonOfflineColour = gray
 
 button_height = int(1.6/16.5 * screen_height)
 
-#sizes of buttons and images
+# sizes of buttons and images
 buttonAddSize = (int(8.1/29.5 * screen_width),button_height)
 buttonDeleteSize = (int(4.7/29.5 * screen_width), button_height)
 buttonInfoSize = (button_height, button_height)
@@ -125,7 +136,7 @@ infoHebSize = (int(11.7/29.5 * screen_width), int(9/16.5 * screen_height))
 infoEngSize = (int(11.7/29.5 * screen_width), int(9/16.5 * screen_height))
 infoArabSize = (int(11.7/29.5 * screen_width), int(9/16.5 * screen_height))
 
-#positions of the buttons
+# positions of the buttons
 buttonAddPosition = (int(15.3/29.5 * screen_width), int(14.2/16.5 * screen_height))
 buttonDeletePosition = (int(0.5/29.5 * screen_width), int(14.2/16.5 * screen_height))
 buttonInfoPosition = (int(0.5/29.5 * screen_width), int(0.5/16.5 * screen_height))
@@ -135,7 +146,7 @@ buttonHeartPosition = (int((0.5+buttonInfoSize[0]/pixel_per_cm_screen+0.5)/29.5 
 buttonDropPosition = (int((0.5+buttonInfoSize[0]/pixel_per_cm_screen+0.5+buttonHeartSize[0]/pixel_per_cm_screen+0.5)/29.5 * screen_width), int(0.5/16.5 * screen_height))
 buttonCirclePosition = (int((0.5+buttonInfoSize[0]/pixel_per_cm_screen+0.5+buttonHeartSize[0]/pixel_per_cm_screen+0.5+buttonDropSize[0]/pixel_per_cm_screen+0.5)/29.5 * screen_width), int(0.5/16.5 * screen_height))
 
-# get the image from the diratory "pictures"
+# get the image from the directory "pictures"
 pic_buttonDelete = pygame.image.load("pictures/buttonDelete.jpg")
 pic_buttonPressedDelete = pygame.image.load("pictures/buttonPressedDelete.jpg")
 pic_buttonInfo = pygame.image.load("pictures/buttonInfo.jpg")
@@ -183,13 +194,18 @@ pic_buttonPressedDrop = pygame.transform.scale(pic_buttonPressedDrop, buttonDrop
 pic_buttonCircle = pygame.transform.scale(pic_buttonCircle, buttonCircleSize)
 pic_buttonPressedCircle = pygame.transform.scale(pic_buttonPressedCircle, buttonCircleSize)
 
-contour_heart = [[(screen_width/2, 600),(1145,345),(screen_width/2+120,80),(screen_width/2, 250)] , [(screen_width/2,250),(screen_width/2-120,80),(225,345),(screen_width/2,600)]]
-contour_square = [[[screen_width/2, 600], [screen_width/2+230, 600], [screen_width/2+230, 600], [screen_width/2+230, 400]] , [[screen_width/2+230, 400], [screen_width/2+230, 170], [screen_width/2+230, 170], [screen_width/2, 170]], [[screen_width/2, 170], [screen_width/2-230, 170], [screen_width/2-230, 170], [screen_width/2-230, 400]], [[screen_width/2-230, 400], [screen_width/2-230, 600], [screen_width/2-230, 600], [screen_width/2, 600]]]
-contour_drop = [[(screen_width/2,600),(900,600),(900,500),(900,450)],[(900,450),(850,250),(750,250),(screen_width/2,150)] , [(screen_width/2,600),(550,600),(470,500),(470,450)],[(470,450),(500,250),(600,200),(screen_width/2,150)]]
+# contour_heart = [[(screen_width/2, 600),(1145,345),(screen_width/2+120,80),(screen_width/2, 250)] , [(screen_width/2,250),(screen_width/2-120,80),(225,345),(screen_width/2,600)]]
+# contour_square = [[[screen_width/2, 600], [screen_width/2+230, 600], [screen_width/2+230, 600], [screen_width/2+230, 400]] , [[screen_width/2+230, 400], [screen_width/2+230, 170], [screen_width/2+230, 170], [screen_width/2, 170]], [[screen_width/2, 170], [screen_width/2-230, 170], [screen_width/2-230, 170], [screen_width/2-230, 400]], [[screen_width/2-230, 400], [screen_width/2-230, 600], [screen_width/2-230, 600], [screen_width/2, 600]]]
+# contour_drop = [[(screen_width/2,600),(900,600),(900,500),(900,450)],[(900,450),(850,250),(750,250),(screen_width/2,150)] , [(screen_width/2,600),(550,600),(470,500),(470,450)],[(470,450),(500,250),(600,200),(screen_width/2,150)]]
 
-MAX_TIME_WAITING_FOR_ARDUINO = 5 # seconds
-MAX_DRAWING_TIME_FOR_ARDUINO = 20 # seconds
-time_delay_arduino = 0.005 # seconds
+contour_heart = [[(screen_width/2, int(600 / const_height_screen * screen_height)),(int(1145 / const_width_screen * screen_width), int(345/ const_height_screen * screen_height)), (screen_width/2+(int(120/const_width_screen*screen_width)), int(80/const_height_screen*screen_height)),(screen_width/2, int(250/const_height_screen * screen_height))] ,[(screen_width/2,int(250/const_height_screen*screen_height)),(screen_width/2-int(120/const_width_screen*screen_width),int(80/const_height_screen*screen_height)),(int(225/const_width_screen*screen_width),int(345/const_height_screen*screen_height)),(screen_width/2,int(600/const_height_screen*screen_height))]]
+contour_square = [[[screen_width/2, int(600/const_height_screen*screen_height)], [screen_width/2+int(230/const_width_screen*screen_width), int(600/const_height_screen*screen_height)], [screen_width/2+int(230/const_width_screen*screen_width), int(600/const_height_screen*screen_height)], [screen_width/2+int(230/const_width_screen*screen_width), int(400/const_height_screen*screen_height)]] , [[screen_width/2+int(230/const_width_screen*screen_width), int(400/const_height_screen*screen_height)], [screen_width/2+int(230/const_width_screen*screen_width), int(170/const_height_screen*screen_height)], [screen_width/2+int(230/const_width_screen*screen_width), int(170/const_height_screen*screen_height)], [screen_width/2, int(170/const_height_screen*screen_height)]], [[screen_width/2, int(170/const_height_screen*screen_height)], [screen_width/2-int(230/const_width_screen*screen_width), int(170/const_height_screen*screen_height)], [screen_width/2-int(230/const_width_screen*screen_width), int(170/const_height_screen*screen_height)], [screen_width/2-int(230/const_width_screen*screen_width), int(400/const_height_screen*screen_height)]], [[screen_width/2-int(230/const_width_screen*screen_width), int(400/const_height_screen*screen_height)], [screen_width/2-int(230/const_width_screen*screen_width), int(600/const_height_screen*screen_height)], [screen_width/2-int(230/const_width_screen*screen_width), int(600/const_height_screen*screen_height)], [screen_width/2, int(600/const_height_screen*screen_height)]]]
+contour_drop = [[(screen_width/2,int(600/const_height_screen*screen_height)),(int(900/const_width_screen*screen_width),int(600/const_height_screen*screen_height)),(int(900/const_width_screen*screen_width),int(500/const_height_screen*screen_height)),(int(900/const_width_screen*screen_width),int(450/const_height_screen*screen_height))],[(int(900/const_width_screen*screen_width),int(450/const_height_screen*screen_height)),(int(850/const_width_screen*screen_width),int(250/const_height_screen*screen_height)),(int(750/const_width_screen*screen_width),int(250/const_height_screen*screen_height)),(screen_width/2,int(150/const_height_screen*screen_height))], [(screen_width/2,int(600/const_height_screen*screen_height)),(int(550/const_width_screen*screen_width),int(600/const_height_screen*screen_height)),(int(470/const_width_screen*screen_width),int(500/const_height_screen*screen_height)),(int(470/const_width_screen*screen_width),int(450/const_height_screen*screen_height))],[(int(470/const_width_screen*screen_width),int(450/const_height_screen*screen_height)),(int(500/const_width_screen*screen_width),int(250/const_height_screen*screen_height)),(int(600/const_width_screen*screen_width),int(200/const_height_screen*screen_height)),(screen_width/2,int(150/const_height_screen*screen_height))]]
+
+
+MAX_TIME_WAITING_FOR_ARDUINO = 5  # seconds
+MAX_DRAWING_TIME_FOR_ARDUINO = 20  # seconds
+time_delay_arduino = 0.005  # seconds
 starting_key = -2
 next_curve_key = -3
 end_key = -4
@@ -198,7 +214,7 @@ found_arduino = False
 send_to_arduino = False
 drawing_curve = False
 curve_index = 0
-waiting = [False,False] # two flags to indicate if we are waiting for the arduino to send us data: first is reading a curve, second is drawing one
-last_time = [0,0] # to limit the time we wait for the arduino to send us data
+waiting = [False, False]  # two flags to indicate if we are waiting for the arduino to send us data: first is reading a curve, second is drawing one
+last_time = [0, 0]  # to limit the time we wait for the arduino to send us data
 
 
