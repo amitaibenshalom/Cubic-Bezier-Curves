@@ -113,6 +113,8 @@ dialogBoxButtonBorderPressedColour = black
 dialogBoxButtonBorderInactiveColour = black
 '''
 
+print("idoda")
+
 
 # button values
 buttonInactiveColour = yellow
