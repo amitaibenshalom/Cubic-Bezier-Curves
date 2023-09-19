@@ -113,7 +113,6 @@ dialogBoxButtonBorderPressedColour = black
 dialogBoxButtonBorderInactiveColour = black
 '''
 
-print("ttt")
 # button values
 buttonInactiveColour = yellow
 buttonHoverColour = red
