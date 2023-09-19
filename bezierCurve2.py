@@ -174,6 +174,7 @@ def check_arduino():
     global curve_index
     global send_to_arduino
     global ButtonPrint
+    global contour
 
     if waiting[1]:
         if arduino.in_waiting > 0:
@@ -231,6 +232,7 @@ def send_to_laser():
     global send_to_arduino
     global ButtonPrint
     global found_arduino
+    global contour
     # print the values of the points in the curves
     # for curve in curves:
     #     print(curve.vertices)
@@ -244,6 +246,9 @@ def send_to_laser():
     if send_to_arduino:
         return False
     curves_to_send = curves.copy()
+    # add all the curves in the contour to curves_to_send
+    for curve in contour:
+        curves_to_send.append(curve)
     if not send_one_number(starting_key):  # fist, send a key that will tell the arduino to start reading
         return False
     print("sent starting key to laser")
@@ -360,6 +365,24 @@ def draw_all():
 def show_popup():
     global show_picture
     show_picture = True
+
+'''
+def draw_dialog_box():
+    global yes_button, no_button
+    pygame.draw.rect(screen, gray, (50, 50, dialog_width - 100, HEIGHT - 100))
+    pygame.draw.rect(screen, WHITE, (50, 50, WIDTH - 100, HEIGHT - 100), 2)
+
+    text = FONT.render("Are you sure?", True, WHITE)
+    screen.blit(text, (WIDTH // 2 - text.get_width() // 2, 80))
+
+    yes_button = pygame.draw.rect(screen, (0, 255, 0), (100, 120, 100, 50))
+    no_button = pygame.draw.rect(screen, (255, 0, 0), (200, 120, 100, 50))
+
+    yes_text = FONT.render("Yes", True, WHITE)
+    no_text = FONT.render("No", True, WHITE)
+    screen.blit(yes_text, (yes_button.centerx - yes_text.get_width() // 2, yes_button.centery - yes_text.get_height() // 2))
+    screen.blit(no_text, (no_button.centerx - no_text.get_width() // 2, no_button.centery - no_text.get_height() // 2))
+'''
 
 #define all the buttons and make an array of them
 ButtonAdd = Button(buttonAddPosition, buttonAddSize, buttonInactiveColour, buttonPressedColour, pic_buttonAdd, pic_buttonPressedAdd, add_curve0)

@@ -73,7 +73,35 @@ maxCurves = 15
 contourColor = black
 contourWidth = 8
 contour0radius = 100
-# contour0 = [(screen_width/2+contour0radius, screen_height/2)]
+
+'''
+# dialog box values
+dialogBoxColor = lightgray
+dialogBoxWidth = 400
+dialogBoxHeight = 200
+dialogBoxX = screen_width/2 - dialogBoxWidth/2
+dialogBoxY = screen_height/2 - dialogBoxHeight/2
+dialogBoxTextX = dialogBoxX + 20
+dialogBoxTextY = dialogBoxY + 20
+dialogBoxTextWidth = dialogBoxWidth - 40
+dialogBoxTextHeight = dialogBoxHeight - 40
+dialogBoxTextSize = 30
+dialogBoxTextColour = black
+dialogBoxButtonWidth = 100
+dialogBoxButtonHeight = 50
+dialogBoxButtonX = dialogBoxX + dialogBoxWidth/2 - dialogBoxButtonWidth/2
+dialogBoxButtonY = dialogBoxY + dialogBoxHeight - dialogBoxButtonHeight - 20
+dialogBoxButtonColour = gray
+dialogBoxButtonHoverColour = lightgray
+dialogBoxButtonPressedColour = verylightgray
+dialogBoxButtonInactiveColour = gray
+dialogBoxButtonBorderWidth = 5
+dialogBoxButtonBorderColour = black
+dialogBoxButtonBorderHoverColour = black
+dialogBoxButtonBorderPressedColour = black
+dialogBoxButtonBorderInactiveColour = black
+'''
+
 
 # button values
 buttonInactiveColour=yellow
@@ -155,9 +183,9 @@ pic_buttonPressedDrop = pygame.transform.scale(pic_buttonPressedDrop, buttonDrop
 pic_buttonCircle = pygame.transform.scale(pic_buttonCircle, buttonCircleSize)
 pic_buttonPressedCircle = pygame.transform.scale(pic_buttonPressedCircle, buttonCircleSize)
 
-contour_heart = [[(screen_width/2, 600),(1145,345),(screen_width/2+120,80),(screen_width/2, 250)],[(screen_width/2,600),(225,345),(screen_width/2-120,80),(screen_width/2,250)]]
-contour_square = [[[screen_width/2+230, 400], [screen_width/2+230, 170], [screen_width/2+230, 170], [screen_width/2, 170]],[[screen_width/2, 600], [screen_width/2+230, 600], [screen_width/2+230, 600], [screen_width/2+230, 400]],[[screen_width/2, 600], [screen_width/2-230, 600], [screen_width/2-230, 600], [screen_width/2-230, 400]],[[screen_width/2-230, 400], [screen_width/2-230, 170], [screen_width/2-230, 170], [screen_width/2, 170]]]
-contour_drop = [[(screen_width/2,600),(900,600),(900,500),(900,450)],[(900,450),(850,250),(750,250),(screen_width/2,150)],[(screen_width/2,600),(550,600),(470,500),(470,450)],[(470,450),(500,250),(600,200),(screen_width/2,150)]]
+contour_heart = [[(screen_width/2, 600),(1145,345),(screen_width/2+120,80),(screen_width/2, 250)] , [(screen_width/2,250),(screen_width/2-120,80),(225,345),(screen_width/2,600)]]
+contour_square = [[[screen_width/2, 600], [screen_width/2+230, 600], [screen_width/2+230, 600], [screen_width/2+230, 400]] , [[screen_width/2+230, 400], [screen_width/2+230, 170], [screen_width/2+230, 170], [screen_width/2, 170]], [[screen_width/2, 170], [screen_width/2-230, 170], [screen_width/2-230, 170], [screen_width/2-230, 400]], [[screen_width/2-230, 400], [screen_width/2-230, 600], [screen_width/2-230, 600], [screen_width/2, 600]]]
+contour_drop = [[(screen_width/2,600),(900,600),(900,500),(900,450)],[(900,450),(850,250),(750,250),(screen_width/2,150)] , [(screen_width/2,600),(550,600),(470,500),(470,450)],[(470,450),(500,250),(600,200),(screen_width/2,150)]]
 
 MAX_TIME_WAITING_FOR_ARDUINO = 5 # seconds
 MAX_DRAWING_TIME_FOR_ARDUINO = 20 # seconds
