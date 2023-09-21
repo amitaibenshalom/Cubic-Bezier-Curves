@@ -1,15 +1,18 @@
 from consts import *
+import serial
 
 pygame.init()
 
-port = 'COM5'
+port = '/dev/ttyUSB0'
 baudrate = 115200
 arduino = None
 try:
     arduino = serial.Serial(port, baudrate)
     found_arduino = True
-except:
+except Exception as e:
+    print(f"Serial port error: {e}")
     print('ARDUINO NOT CONNECTED')
+
 
 
 # fonts for text
@@ -214,7 +217,7 @@ def check_arduino():
         curve = curves_to_send[curve_index]
         for point in curve.vertices:
             send_one_number(point[1])
-            send_one_number(screen_width - point[0])
+            send_one_number(point[0])
         drawing_curve = True
         waiting[0] = True # waiting for arduino to send key that will tell us it finished reading the curve
         waiting[1] = False # NOT waiting for arduino to send key that will tell us it finished drawing the curve
@@ -233,6 +236,7 @@ def send_to_laser():
     global ButtonPrint
     global found_arduino
     global contour
+
     # print the values of the points in the curves
     # for curve in curves:
     #     print(curve.vertices)
@@ -271,8 +275,22 @@ def send_one_number(value):
         arduino.write(byte_value)
         arduino.flush()
     except Exception:
+        print(str(value) + "not sent")
         return False
     print("sent " + str(value))
+    return True
+
+
+def take_control():
+    global arduino
+    print("taking control over Arduino...")
+    pytxt = "PY\n"
+    try:
+        arduino.write(pytxt.encode())
+    except:
+        print("Error: python failed taking control over arduino - use another serial monitor or change py_flag to True on arduino")
+        return False
+    print("success!")
     return True
 
 
@@ -404,9 +422,13 @@ def main():
     global show_control_lines
     global show_picture
     global send_to_arduino
+    global found_arduino
+    global arduino
 
     clock = pygame.time.Clock()
     sqaure()
+    
+    sent_border = False
     running = True
     while running:
 
@@ -426,7 +448,7 @@ def main():
             elif event.type == MOUSEBUTTONDOWN and event.button == 1:
                 for curve in curves:
                     for p in curve.vertices:
-                        if abs(p[0] - event.pos[X]) < 10 and abs(p[1] - event.pos[Y]) < 10:
+                        if abs(p[0] - event.pos[X]) < toleranceTouch and abs(p[1] - event.pos[Y]) < toleranceTouch:
                             selected_curve = curve
                             selected_curve.color = selectedCurveColor
                             selected = p
@@ -447,9 +469,9 @@ def main():
         draw_all()
         if selected is not None:
             if pygame.mouse.get_pos()[1] > borderLineHeight + circleRadius1 and pygame.mouse.get_pos()[1] < borderLine2Height - circleRadius1 and pygame.mouse.get_pos()[0] > circleRadius1 and pygame.mouse.get_pos()[0] < screen_width - circleRadius1:
-                pygame.draw.circle(screen, green, (selected[0], selected[1]), 10)
+                pygame.draw.circle(screen, green, (selected[0], selected[1]), circleRadiusClicked)
                 # if clicked on the purple point, which moves the whole curve
-                if selected_curve.vertices.index(selected) == 0:
+                if selected_curve.vertices.index(selected) == 9: # TODO: CHANGED 9 TO 0 TEMPOREAELY
                     # check if all points are in the screen
                     inScreen = True
                     for i in range(1, 4):
@@ -470,7 +492,6 @@ def main():
             popup_x = (screen_width - infoHebSize[0]) // 2
             popup_y = (screen_height - infoHebSize[1]) // 2
             screen.blit(pic_infoHeb, (popup_x, popup_y))
-        # pygame_widgets.update(events)
         check_buttons()
         pygame.display.update()
         # Flip screen
@@ -485,11 +506,31 @@ def main():
             else:
                 try:
                     if arduino.in_waiting > 0:
-                        received_data = arduino.readline().decode('utf-8').rstrip()
+                        received_data = arduino.readline().decode().rstrip()
                         print("Received from Arduino:", received_data)
+
+                        if not sent_border:
+                            take_control()
+                            time.sleep(0.5)
+                            sent_border = True
+                            # send the border (grey box)
+                            print(send_one_number((screen_width-(borderLine2Height-borderLineHeight))/2))
+                            print(send_one_number(borderLineHeight))
+                            print(send_one_number(screen_width/2+(borderLine2Height-borderLineHeight)))
+                            print(send_one_number(borderLine2Height))
+                            print(send_one_number(LASER_POWER))
+                            print(send_one_number(CONTOUR_POWER))
+                            print(send_one_number(LASER_OFF_RATE))
+                            print(send_one_number(LASER_ON_RATE))
+                            print(send_one_number(CONTOUR_RATE))
+                            time.sleep(time_delay_arduino)
+                        
+                    else:
+                        pass
                 finally:
                     pass
 
+            
 
         clock.tick(100)
         # print clock.get_fps()

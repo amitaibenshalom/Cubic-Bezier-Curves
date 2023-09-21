@@ -37,7 +37,7 @@ cuttingAreaColor = verylightgray
 
 borderLineHeight = int(142 / const_height_screen * screen_height)
 borderLine2Height = int((const_height_screen-142) / const_height_screen * screen_height)
-tolerance = 3
+toleranceTouch = 20
 
 delta0X = int(30 / const_width_screen * screen_width)
 delta0Y = int(0 / const_height_screen * screen_height)
@@ -51,6 +51,7 @@ circleColor2 = yellow
 circleRadius0 = int(8 / const_width_screen * screen_width)
 circleRadius1 = int(8 / const_width_screen * screen_width)
 circleRadius2 = int(8 / const_width_screen * screen_width)
+circleRadiusClicked = int(10 / const_width_screen * screen_width)
 
 x0 = int(800 / const_width_screen * screen_width)
 y0 = int(450 / const_height_screen * screen_height)
@@ -60,14 +61,6 @@ x2 = int(750 / const_width_screen * screen_width)
 y2 = int(350 / const_height_screen * screen_height)
 x3 = int(800 / const_width_screen * screen_width)
 y3 = int(250 / const_height_screen * screen_height)
-# x0 = 800
-# y0 = 450
-# x1 = 850
-# y1 = 350
-# x2 = 750
-# y2 = 350
-# x3 = 800
-# y3 = 250
 
 # mm_per_pixel_x = 295/1366
 # mm_per_pixel_y = 165/768
@@ -202,9 +195,16 @@ contour_square = [[[screen_width/2, int(600/const_height_screen*screen_height)],
 contour_drop = [[(screen_width/2,int(600/const_height_screen*screen_height)),(int(900/const_width_screen*screen_width),int(600/const_height_screen*screen_height)),(int(900/const_width_screen*screen_width),int(500/const_height_screen*screen_height)),(int(900/const_width_screen*screen_width),int(450/const_height_screen*screen_height))],[(int(900/const_width_screen*screen_width),int(450/const_height_screen*screen_height)),(int(850/const_width_screen*screen_width),int(250/const_height_screen*screen_height)),(int(750/const_width_screen*screen_width),int(250/const_height_screen*screen_height)),(screen_width/2,int(150/const_height_screen*screen_height))], [(screen_width/2,int(600/const_height_screen*screen_height)),(int(550/const_width_screen*screen_width),int(600/const_height_screen*screen_height)),(int(470/const_width_screen*screen_width),int(500/const_height_screen*screen_height)),(int(470/const_width_screen*screen_width),int(450/const_height_screen*screen_height))],[(int(470/const_width_screen*screen_width),int(450/const_height_screen*screen_height)),(int(500/const_width_screen*screen_width),int(250/const_height_screen*screen_height)),(int(600/const_width_screen*screen_width),int(200/const_height_screen*screen_height)),(screen_width/2,int(150/const_height_screen*screen_height))]]
 
 
+# arduino
 MAX_TIME_WAITING_FOR_ARDUINO = 5  # seconds
-MAX_DRAWING_TIME_FOR_ARDUINO = 20  # seconds
+MAX_DRAWING_TIME_FOR_ARDUINO = 50  # seconds
 time_delay_arduino = 0.005  # seconds
+LASER_POWER = 255  # (0 <= x <= 255)
+CONTOUR_POWER = 255  # (0 <= x <= 255)
+LASER_OFF_RATE = 6
+LASER_ON_RATE = 100
+CONTOUR_RATE = 100
+
 starting_key = -2
 next_curve_key = -3
 end_key = -4
