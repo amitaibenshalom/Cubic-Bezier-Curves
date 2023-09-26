@@ -259,7 +259,9 @@ def send_to_laser():
     # then, send the number of curves
     if not send_one_number(-len(curves_to_send)):
         return False
-    print("sent number of curves")
+    if not send_one_number(-len(contour)):
+        return False
+    print("sent number of curves and contour")
     drawing_curve = False
     curve_index = 0
     send_to_arduino = True
