@@ -529,9 +529,9 @@ def main():
                             time.sleep(0.5)
                             sent_border = True
                             # send the border (grey box)
-                            print(send_one_number((screen_width-(borderLine2Height-borderLineHeight))/2))
+                            print(send_one_number(screen_width-(borderLine2Height-borderLineHeight))/2)
                             print(send_one_number(borderLineHeight))
-                            print(send_one_number(screen_width/2+(borderLine2Height-borderLineHeight)))
+                            print(send_one_number(screen_width/2+(borderLine2Height-borderLineHeight))/2)
                             print(send_one_number(borderLine2Height))
                             print(send_one_number(LASER_POWER))
                             print(send_one_number(CONTOUR_POWER))
