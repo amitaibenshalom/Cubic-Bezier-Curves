@@ -484,7 +484,7 @@ def main():
             if pygame.mouse.get_pos()[1] > borderLineHeight + circleRadius1 and pygame.mouse.get_pos()[1] < borderLine2Height - circleRadius1 and pygame.mouse.get_pos()[0] > circleRadius1 and pygame.mouse.get_pos()[0] < screen_width - circleRadius1:
                 pygame.draw.circle(screen, green, (selected[0], selected[1]), circleRadiusClicked)
                 # if clicked on the purple point, which moves the whole curve
-                if selected_curve.vertices.index(selected) == 9: # TODO: CHANGED 9 TO 0 TEMPOREAELY
+                if IS_MOVING_ALL_CURVE and selected_curve.vertices.index(selected) == 0:
                     # check if all points are in the screen
                     inScreen = True
                     for i in range(1, 4):
