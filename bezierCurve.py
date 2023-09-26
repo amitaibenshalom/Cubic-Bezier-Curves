@@ -336,15 +336,28 @@ def msgNumCurves(num):
 #     text_rect = value.get_rect(center=(screen_width / 2, 50))
 #     screen.blit(value, text_rect)
 
+# clear only deletes last generated curve
 def clear():
     global curves
     global selected_curve
     global selected
     global delta
-    curves.clear()
+    if len(curves) == 0:
+        return
+    curves.pop()
     selected_curve = None
     selected = None
-    delta = [0,0,0]
+    if len(curves) == 0:  # just in case something doesnt work
+        delta = [0,0,0]
+        return
+    if delta[0] == 0:
+        if delta[2] > 0:
+            delta[2] -= 1
+        delta[1] =delta[2]*delta0Z
+        delta[0] = delta0X*MAX_LINES_PER_ROW
+        return
+    delta[0] -= delta0X
+    delta[1] -= delta0Y
 
 
 def add_curve():

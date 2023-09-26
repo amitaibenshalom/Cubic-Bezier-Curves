@@ -197,13 +197,13 @@ contour_drop = [[(screen_width/2,int(600/const_height_screen*screen_height)),(in
 
 # arduino
 MAX_TIME_WAITING_FOR_ARDUINO = 5  # seconds
-MAX_DRAWING_TIME_FOR_ARDUINO = 50  # seconds
+MAX_DRAWING_TIME_FOR_ARDUINO = 150  # seconds
 time_delay_arduino = 0.005  # seconds
 LASER_POWER = 255  # (0 <= x <= 255)
 CONTOUR_POWER = 255  # (0 <= x <= 255)
 LASER_OFF_RATE = 6
-LASER_ON_RATE = 100
-CONTOUR_RATE = 100
+LASER_ON_RATE = 150
+CONTOUR_RATE = 200
 
 starting_key = -2
 next_curve_key = -3
