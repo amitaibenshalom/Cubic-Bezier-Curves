@@ -201,11 +201,12 @@ IS_MOVING_ALL_CURVE = True
 MAX_TIME_WAITING_FOR_ARDUINO = 5  # seconds
 MAX_DRAWING_TIME_FOR_ARDUINO = 150  # seconds
 time_delay_arduino = 0.005  # seconds
-LASER_POWER = 255  # (0 <= x <= 255)
+
+LASER_POWER = 120  # (0 <= x <= 255)
 CONTOUR_POWER = 255  # (0 <= x <= 255)
 LASER_OFF_RATE = 6
-LASER_ON_RATE = 150
-CONTOUR_RATE = 200
+LASER_ON_RATE = 30
+CONTOUR_RATE = 10
 
 starting_key = -2
 next_curve_key = -3
