@@ -3,7 +3,7 @@ import serial
 
 pygame.init()
 
-port = '/dev/ttyUSB0'
+port = 'COM5'
 baudrate = 115200
 arduino = None
 try:
@@ -177,7 +177,6 @@ def check_arduino():
     global curve_index
     global send_to_arduino
     global ButtonPrint
-    global contour
 
     if waiting[1]:
         if arduino.in_waiting > 0:
@@ -529,9 +528,9 @@ def main():
                             time.sleep(0.5)
                             sent_border = True
                             # send the border (grey box)
-                            print(send_one_number(screen_width-(borderLine2Height-borderLineHeight))/2)
+                            print(send_one_number(screen_width/2-(borderLine2Height-borderLineHeight)/2))
                             print(send_one_number(borderLineHeight))
-                            print(send_one_number(screen_width/2+(borderLine2Height-borderLineHeight))/2)
+                            print(send_one_number(screen_width/2+(borderLine2Height-borderLineHeight)/2))
                             print(send_one_number(borderLine2Height))
                             print(send_one_number(LASER_POWER))
                             print(send_one_number(CONTOUR_POWER))
@@ -544,8 +543,6 @@ def main():
                         pass
                 finally:
                     pass
-
-            
 
         clock.tick(100)
         # print clock.get_fps()
