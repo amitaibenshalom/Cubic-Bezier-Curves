@@ -360,6 +360,15 @@ def clear():
     delta[0] -= delta0X
     delta[1] -= delta0Y
 
+def clear_all():
+    global curves
+    global selected_curve
+    global selected
+    global delta
+    selected_curve = None
+    selected = None
+    curves.clear()
+    delta = [0,0,0]
 
 def add_curve():
     global curves
@@ -439,6 +448,7 @@ def main():
     global found_arduino
     global arduino
 
+    idle_clock = time.time()
     clock = pygame.time.Clock()
     sqaure()
 
@@ -462,6 +472,7 @@ def main():
                 else:
                     running = False
             elif event.type == MOUSEBUTTONDOWN and event.button == 1:
+                idle_clock = time.time()
                 for curve in curves:
                     for p in curve.vertices:
                         if abs(p[0] - event.pos[X]) < toleranceTouch and abs(p[1] - event.pos[Y]) < toleranceTouch:
@@ -472,6 +483,7 @@ def main():
                     if selected is not None:
                         break
             elif event.type == MOUSEBUTTONUP and event.button == 1:
+                idle_clock = time.time()
                 selected = None
                 if selected_curve is not None:
                     selected_curve.color = curveColor
@@ -512,6 +524,12 @@ def main():
         pygame.display.update()
         # Flip screen
         pygame.display.flip()
+
+        if (time.time() - idle_clock > IDLE_TIME):
+            sqaure()  
+            clear_all()
+            add_curve0()
+            idle_clock = time.time()
 
         # check if sending to arduino
         if found_arduino:
