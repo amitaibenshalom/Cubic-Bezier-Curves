@@ -301,24 +301,39 @@ def take_control():
 
 def heart():
     global contour
+    global ButtonCircle
+    global ButtonHeart
+    global ButtonDrop
+    ButtonCircle.img = pic_buttonCircle
+    ButtonHeart.img = pic_buttonPressedHeart
+    ButtonDrop.img = pic_buttonDrop
     contour = []
     for i in range(len(contour_heart)):
         add_contour(contour_heart[i][0], contour_heart[i][1], contour_heart[i][2], contour_heart[i][3])
 
-
 def sqaure():
     global contour
+    global ButtonCircle
+    global ButtonHeart
+    global ButtonDrop
+    ButtonCircle.img = pic_buttonPressedCircle
+    ButtonHeart.img = pic_buttonHeart
+    ButtonDrop.img = pic_buttonDrop
     contour = []
     for i in range(len(contour_square)):
         add_contour(contour_square[i][0], contour_square[i][1], contour_square[i][2], contour_square[i][3])
 
-
 def drop():
     global contour
+    global ButtonCircle
+    global ButtonHeart
+    global ButtonDrop
+    ButtonCircle.img = pic_buttonCircle
+    ButtonHeart.img = pic_buttonHeart
+    ButtonDrop.img = pic_buttonPressedDrop
     contour = []
     for i in range(len(contour_drop)):
         add_contour(contour_drop[i][0], contour_drop[i][1], contour_drop[i][2], contour_drop[i][3])
-
 
 def preview():
     global show_control_lines
