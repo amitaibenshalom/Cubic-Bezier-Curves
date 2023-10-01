@@ -125,9 +125,10 @@ buttonHeartSize = buttonInfoSize
 buttonDropSize = buttonInfoSize
 buttonCircleSize = buttonInfoSize
 
-infoHebSize = (int(11.7/29.5 * screen_width), int(9/16.5 * screen_height))
-infoEngSize = (int(11.7/29.5 * screen_width), int(9/16.5 * screen_height))
-infoArabSize = (int(11.7/29.5 * screen_width), int(9/16.5 * screen_height))
+# infoHebSize = (int(11.7/29.5 * screen_width), int(9/16.5 * screen_height))
+infoHebSize = (int(15/29.5 * screen_width), int(11/16.5 * screen_height))
+infoEngSize = infoHebSize
+infoArabSize = infoHebSize
 
 # positions of the buttons
 buttonAddPosition = (int(15.3/29.5 * screen_width), int(14.2/16.5 * screen_height))
