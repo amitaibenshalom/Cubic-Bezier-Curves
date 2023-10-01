@@ -54,6 +54,11 @@ class Button(object):
             pygame.draw.rect(screen, self.coloron, rect)
             screen.blit(self.imgon, self.imgon.get_rect(center=rect.center))
 
+    def draw_static(self):
+        rect = pygame.Rect(self.pos[0], self.pos[1], self.size[0], self.size[1])
+        pygame.draw.rect(screen, self.color, rect)
+        screen.blit(self.img, self.img.get_rect(center=rect.center))
+
 
 # object of a curve, defined by 4 points
 class BezierCurve(object):
@@ -169,8 +174,13 @@ screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
 def check_buttons():
     global buttons
-    for button in buttons:
-        button.check()
+    global buttons_enabled
+    if buttons_enabled:
+        for button in buttons:
+            button.check()
+    else:
+        for button in buttons:
+            button.draw_static()
 
 
 def check_arduino():
@@ -351,7 +361,7 @@ def msgNumCurves(num):
         value = font_style2.render("ורתונ םיווק " + str(num), True, black)
     else:
         value = font_style2.render("תומוקע ורתונ אל", True, red)
-    text_rect = value.get_rect(center=(screen_width / 2 - 30, 50 + 35))
+    text_rect = value.get_rect(center=((borderLine2X+screen_width)/2, 50 + 35))
     screen.blit(value, text_rect)
 
 
@@ -489,6 +499,7 @@ def main():
     global show_picture
     global send_to_arduino
     global found_arduino
+    global buttons_enabled
     global arduino
 
     idle_clock = time.time()
@@ -508,8 +519,8 @@ def main():
                     clear()
                 elif event.key == pygame.K_a:
                     add_curve0()
-                # elif event.key == pygame.K_SPACE:
-                #     show_popup()
+                elif event.key == pygame.K_ESCAPE:
+                    running = False
                 else:
                     running = False
             elif event.type == MOUSEBUTTONDOWN and event.button == 1:
@@ -521,14 +532,17 @@ def main():
                                 selected_curve = curve
                                 selected_curve.color = selectedCurveColor
                                 selected = p
+                                buttons_enabled = False
                             elif math.dist(p, event.pos) < math.dist(selected, event.pos):
                                 selected_curve.color = curveColor
                                 selected_curve = curve
                                 selected_curve.color = selectedCurveColor
                                 selected = p
+                                buttons_enabled = False
             elif event.type == MOUSEBUTTONUP and event.button == 1:
                 idle_clock = time.time()
                 selected = None
+                buttons_enabled = True
                 if selected_curve is not None:
                     selected_curve.color = curveColor
                     selected_curve = None
@@ -536,25 +550,29 @@ def main():
                 show_picture = False
 
         # Draw stuff
-        screen.blit(pic_bg0, [0, 0])
+        # screen.blit(pic_bg0, [0, 0])
+        screen.fill(bgColor)
+        # draw the border rectangles
+        pygame.draw.rect(screen, colorOutSideBorder, (0,0, borderLineX, screen_height))
+        pygame.draw.rect(screen, colorOutSideBorder, (borderLine2X, 0, screen_width - borderLine2X, screen_height))
+        pygame.draw.rect(screen, colorOutSideBorder, (0, 0, screen_width, borderLineHeight))
+        pygame.draw.rect(screen, colorOutSideBorder, (0, borderLine2Height, screen_width, screen_height - borderLine2Height))
+        # draw the text above
+        screen.blit(pic_textAbove, textAbovePosition)
         # draw a rectangle in the middle of the screen to show the laser cutting area
-        pygame.draw.rect(screen, cuttingAreaColor, ((screen_width - (borderLine2Height - borderLineHeight)) / 2,
-                                                    (screen_height - (borderLine2Height - borderLineHeight)) / 2,
-                                                    borderLine2Height - borderLineHeight,
-                                                    borderLine2Height - borderLineHeight))
+        pygame.draw.rect(screen, cuttingAreaColor, (cuttingAreaPos[0], cuttingAreaPos[1], cuttingAreaSize[0], cuttingAreaSize[1]))
         draw_all()
         if selected is not None:
-            if pygame.mouse.get_pos()[1] > borderLineHeight + circleRadius1 and pygame.mouse.get_pos()[
-                1] < borderLine2Height - circleRadius1 and circleRadius1 < pygame.mouse.get_pos()[
-                0] < screen_width - circleRadius1:
+            if borderLineHeight + circleRadius1 < pygame.mouse.get_pos()[1] < borderLine2Height - circleRadius1\
+                    and borderLineX + circleRadius1 < pygame.mouse.get_pos()[0] < borderLine2X - circleRadius1:
                 pygame.draw.circle(screen, green, (selected[0], selected[1]), circleRadiusClicked)
                 # if clicked on the purple point, which moves the whole curve
                 if IS_MOVING_ALL_CURVE and selected_curve.vertices.index(selected) == 0:
                     # check if all points are in the screen
                     inScreen = True
                     for i in range(1, 4):
-                        if selected_curve.vertices[i][0] <= circleRadius1 or selected_curve.vertices[i][
-                            0] >= screen_width - circleRadius1 or selected_curve.vertices[i][1] <= borderLineHeight or \
+                        if selected_curve.vertices[i][0] <= borderLineX + circleRadius1 or selected_curve.vertices[i][
+                            0] >= borderLine2X - circleRadius1 or selected_curve.vertices[i][1] <= borderLineHeight or \
                                 selected_curve.vertices[i][1] >= borderLine2Height:
                             inScreen = False
                     # if so, move the curve
@@ -571,9 +589,10 @@ def main():
 
         msgNumCurves(maxCurves - len(curves))
         if show_picture:
-            popup_x = (screen_width - infoHebSize[0]) // 2
-            popup_y = (screen_height - infoHebSize[1]) // 2
+            popup_x = centerInsideBorders[0] - infoHebSize[0]/2
+            popup_y = centerInsideBorders[1] - infoHebSize[1]/2
             screen.blit(pic_infoHeb, (popup_x, popup_y))
+
         check_buttons()
         pygame.display.update()
         # Flip screen
