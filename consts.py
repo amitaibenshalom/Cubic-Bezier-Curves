@@ -19,7 +19,6 @@ white = (255, 255, 255)
 black = (0, 0, 0)
 brown = (139, 69, 19)
 orange = (255, 165, 0)
-X, Y, Z = 0, 1, 2
 
 
 # screen_width = 1000

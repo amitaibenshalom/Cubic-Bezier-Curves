@@ -1,3 +1,5 @@
+import math
+
 from consts import *
 import serial
 
@@ -12,8 +14,6 @@ try:
 except Exception as e:
     print(f"Serial port error: {e}")
     print('ARDUINO NOT CONNECTED')
-
-
 
 # fonts for text
 font_style2 = pygame.font.SysFont("calibri", 45)
@@ -54,6 +54,7 @@ class Button(object):
             pygame.draw.rect(screen, self.coloron, rect)
             screen.blit(self.imgon, self.imgon.get_rect(center=rect.center))
 
+
 # object of a curve, defined by 4 points
 class BezierCurve(object):
     def __init__(self, p0, p1, p2, p3, moveable, color, width):
@@ -84,7 +85,7 @@ class BezierCurve(object):
         ay = (-b0y + 3 * b1y + -3 * b2y + b3y)
 
         bx = (3 * b0x + -6 * b1x + 3 * b2x)
-        by =  (3 * b0y + -6 * b1y + 3 * b2y)
+        by = (3 * b0y + -6 * b1y + 3 * b2y)
 
         cx = (-3 * b0x + 3 * b1x)
         cy = (-3 * b0y + 3 * b1y)
@@ -101,13 +102,13 @@ class BezierCurve(object):
         pointY = dy
 
         firstFDX = (ax * (h * h * h) + bx * (h * h) + cx * h)
-        firstFDY =(ay * (h * h * h) + by * (h * h) + cy * h)
+        firstFDY = (ay * (h * h * h) + by * (h * h) + cy * h)
 
         secondFDX = (6 * ax * (h * h * h) + 2 * bx * (h * h))
-        secondFDY =(6 * ay * (h * h * h) + 2 * by * (h * h))
+        secondFDY = (6 * ay * (h * h * h) + 2 * by * (h * h))
 
         thirdFDX = (6 * ax * (h * h * h))
-        thirdFDY =(6 * ay * (h * h * h))
+        thirdFDY = (6 * ay * (h * h * h))
 
         # Compute points at each step
         result.append((int(pointX), int(pointY)))
@@ -152,15 +153,17 @@ class BezierCurve(object):
         pygame.draw.lines(screen, self.color, False, b_points, self.width)
 
 
-curves = [] # list of all curves
+curves = []  # list of all curves
 curves_to_send = []
 contour = []
 selected_curve = None
-selected = None # The currently selected point
+selected = None  # The currently selected point
 show_control_lines = True
 show_picture = False
-delta = [0,0,0]
+delta = [0, 0, 0]
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+
+
 # screen = pygame.display.set_mode((screen_width, screen_height))
 
 def check_buttons():
@@ -218,11 +221,10 @@ def check_arduino():
             send_one_number(point[1])
             send_one_number(point[0])
         drawing_curve = True
-        waiting[0] = True # waiting for arduino to send key that will tell us it finished reading the curve
-        waiting[1] = False # NOT waiting for arduino to send key that will tell us it finished drawing the curve
+        waiting[0] = True  # waiting for arduino to send key that will tell us it finished reading the curve
+        waiting[1] = False  # NOT waiting for arduino to send key that will tell us it finished drawing the curve
         last_time[0] = time.time()
     return True
-
 
 
 # send the points as ratio between place and screen size
@@ -289,7 +291,8 @@ def take_control():
     try:
         arduino.write(pytxt.encode())
     except:
-        print("Error: python failed taking control over arduino - use another serial monitor or change py_flag to True on arduino")
+        print(
+            "Error: python failed taking control over arduino - use another serial monitor or change py_flag to True on arduino")
         return False
     print("success!")
     return True
@@ -299,23 +302,27 @@ def heart():
     global contour
     contour = []
     for i in range(len(contour_heart)):
-        add_contour(contour_heart[i][0],contour_heart[i][1],contour_heart[i][2],contour_heart[i][3])
+        add_contour(contour_heart[i][0], contour_heart[i][1], contour_heart[i][2], contour_heart[i][3])
+
 
 def sqaure():
     global contour
     contour = []
     for i in range(len(contour_square)):
-        add_contour(contour_square[i][0],contour_square[i][1],contour_square[i][2],contour_square[i][3])
+        add_contour(contour_square[i][0], contour_square[i][1], contour_square[i][2], contour_square[i][3])
+
 
 def drop():
     global contour
     contour = []
     for i in range(len(contour_drop)):
-        add_contour(contour_drop[i][0],contour_drop[i][1],contour_drop[i][2],contour_drop[i][3])
+        add_contour(contour_drop[i][0], contour_drop[i][1], contour_drop[i][2], contour_drop[i][3])
+
 
 def preview():
     global show_control_lines
     show_control_lines = False
+
 
 def add_curve0():
     global curves
@@ -328,8 +335,9 @@ def msgNumCurves(num):
         value = font_style2.render("ורתונ םיווק " + str(num), True, black)
     else:
         value = font_style2.render("תומוקע ורתונ אל", True, red)
-    text_rect = value.get_rect(center=(screen_width / 2 - 30, 50+35))
+    text_rect = value.get_rect(center=(screen_width / 2 - 30, 50 + 35))
     screen.blit(value, text_rect)
+
 
 # def msg():
 #     global screen
@@ -338,6 +346,11 @@ def msgNumCurves(num):
 #     screen.blit(value, text_rect)
 
 # clear only deletes last generated curve
+
+def distance(point1, point2):
+    return math.sqrt((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2)
+
+
 def clear():
     global curves
     global selected_curve
@@ -349,16 +362,17 @@ def clear():
     selected_curve = None
     selected = None
     if len(curves) == 0:  # just in case something doesnt work
-        delta = [0,0,0]
+        delta = [0, 0, 0]
         return
     if delta[0] == 0:
         if delta[2] > 0:
             delta[2] -= 1
-        delta[1] =delta[2]*delta0Z
-        delta[0] = delta0X*MAX_LINES_PER_ROW
+        delta[1] = delta[2] * delta0Z
+        delta[0] = delta0X * MAX_LINES_PER_ROW
         return
     delta[0] -= delta0X
     delta[1] -= delta0Y
+
 
 def clear_all():
     global curves
@@ -368,16 +382,18 @@ def clear_all():
     selected_curve = None
     selected = None
     curves.clear()
-    delta = [0,0,0]
+    delta = [0, 0, 0]
+
 
 def add_curve():
     global curves
     global selected_curve
     global selected
     global delta
-    deltaX= delta[0]
-    deltaY= delta[1]
-    new_curve = BezierCurve([x0-deltaX, y0-deltaY], [x1-deltaX, y1-deltaY], [x2-deltaX, y2-deltaY], [x3-deltaX, y3-deltaY],True, curveColor, curveWidth)
+    deltaX = delta[0]
+    deltaY = delta[1]
+    new_curve = BezierCurve([x0 - deltaX, y0 - deltaY], [x1 - deltaX, y1 - deltaY], [x2 - deltaX, y2 - deltaY],
+                            [x3 - deltaX, y3 - deltaY], True, curveColor, curveWidth)
     # selected_curve = new_curve
     selected = None
     curves.append(new_curve)
@@ -385,16 +401,17 @@ def add_curve():
     delta[0] += delta0X
     delta[1] += delta0Y
     # if deltaX > screen_width-200 or deltaY > screen_height-200:
-    if delta[0] > delta0X*MAX_LINES_PER_ROW:
+    if delta[0] > delta0X * MAX_LINES_PER_ROW:
         delta[2] += 1
         delta[0] = 0
-        delta[1] = delta[2]*delta0Z
+        delta[1] = delta[2] * delta0Z
 
 
-def add_contour(p0,p1,p2,p3):
+def add_contour(p0, p1, p2, p3):
     global contour
     new_contour = BezierCurve(p0, p1, p2, p3, False, contourColor, contourWidth)
     contour.append(new_contour)
+
 
 def draw_all():
     global curves
@@ -403,9 +420,11 @@ def draw_all():
     for curve in contour:
         curve.draw()
 
+
 def show_popup():
     global show_picture
     show_picture = True
+
 
 '''
 def draw_dialog_box():
@@ -425,17 +444,25 @@ def draw_dialog_box():
     screen.blit(no_text, (no_button.centerx - no_text.get_width() // 2, no_button.centery - no_text.get_height() // 2))
 '''
 
-#define all the buttons and make an array of them
-ButtonAdd = Button(buttonAddPosition, buttonAddSize, buttonInactiveColour, buttonPressedColour, pic_buttonAdd, pic_buttonPressedAdd, add_curve0)
-ButtonDelete = Button(buttonDeletePosition, buttonDeleteSize, buttonInactiveColour, buttonPressedColour, pic_buttonDelete, pic_buttonPressedDelete, clear)
-ButtonInfo = Button(buttonInfoPosition, buttonInfoSize, buttonInactiveColour, buttonPressedColour, pic_buttonInfo, pic_buttonPressedInfo, show_popup)
-ButtonPreview = Button(buttonPreviewPosition, buttonPreviewSize, buttonInactiveColour, buttonPressedColour, pic_buttonPreview, pic_buttonPressedPreview, preview)
-ButtonPrint = Button(buttonPrintPosition, buttonPrintSize, buttonInactiveColour, buttonPressedColour, pic_buttonPrint, pic_buttonPressedPrint, send_to_laser)
-ButtonHeart = Button(buttonHeartPosition, buttonHeartSize, buttonInactiveColour, buttonPressedColour, pic_buttonHeart, pic_buttonPressedHeart, heart)
-ButtonDrop = Button(buttonDropPosition, buttonDropSize, buttonInactiveColour, buttonPressedColour, pic_buttonDrop, pic_buttonPressedDrop, drop)
-ButtonCircle = Button(buttonCirclePosition, buttonCircleSize, buttonInactiveColour, buttonPressedColour, pic_buttonCircle, pic_buttonPressedCircle, sqaure)
+# define all the buttons and make an array of them
+ButtonAdd = Button(buttonAddPosition, buttonAddSize, buttonInactiveColour, buttonPressedColour, pic_buttonAdd,
+                   pic_buttonPressedAdd, add_curve0)
+ButtonDelete = Button(buttonDeletePosition, buttonDeleteSize, buttonInactiveColour, buttonPressedColour,
+                      pic_buttonDelete, pic_buttonPressedDelete, clear)
+ButtonInfo = Button(buttonInfoPosition, buttonInfoSize, buttonInactiveColour, buttonPressedColour, pic_buttonInfo,
+                    pic_buttonPressedInfo, show_popup)
+ButtonPreview = Button(buttonPreviewPosition, buttonPreviewSize, buttonInactiveColour, buttonPressedColour,
+                       pic_buttonPreview, pic_buttonPressedPreview, preview)
+ButtonPrint = Button(buttonPrintPosition, buttonPrintSize, buttonInactiveColour, buttonPressedColour, pic_buttonPrint,
+                     pic_buttonPressedPrint, send_to_laser)
+ButtonHeart = Button(buttonHeartPosition, buttonHeartSize, buttonInactiveColour, buttonPressedColour, pic_buttonHeart,
+                     pic_buttonPressedHeart, heart)
+ButtonDrop = Button(buttonDropPosition, buttonDropSize, buttonInactiveColour, buttonPressedColour, pic_buttonDrop,
+                    pic_buttonPressedDrop, drop)
+ButtonCircle = Button(buttonCirclePosition, buttonCircleSize, buttonInactiveColour, buttonPressedColour,
+                      pic_buttonCircle, pic_buttonPressedCircle, sqaure)
 
-buttons = [ButtonAdd,ButtonDelete,ButtonInfo,ButtonPreview,ButtonPrint,ButtonHeart,ButtonDrop,ButtonCircle]
+buttons = [ButtonAdd, ButtonDelete, ButtonInfo, ButtonPreview, ButtonPrint, ButtonHeart, ButtonDrop, ButtonCircle]
 
 
 def main():
@@ -453,7 +480,7 @@ def main():
     sqaure()
 
     add_curve0()
-    
+
     sent_border = False
     running = True
     while running:
@@ -475,41 +502,54 @@ def main():
                 idle_clock = time.time()
                 for curve in curves:
                     for p in curve.vertices:
-                        if abs(p[0] - event.pos[X]) < toleranceTouch and abs(p[1] - event.pos[Y]) < toleranceTouch:
-                            selected_curve = curve
-                            selected_curve.color = selectedCurveColor
-                            selected = p
-                            break
-                    if selected is not None:
-                        break
+                        if math.dist(p, event.pos) < toleranceTouch:
+                            if selected is None:
+                                selected_curve = curve
+                                selected_curve.color = selectedCurveColor
+                                selected = p
+                            elif math.dist(p, event.pos) < math.dist(selected, event.pos):
+                                selected_curve.color = curveColor
+                                selected_curve = curve
+                                selected_curve.color = selectedCurveColor
+                                selected = p
             elif event.type == MOUSEBUTTONUP and event.button == 1:
                 idle_clock = time.time()
                 selected = None
                 if selected_curve is not None:
                     selected_curve.color = curveColor
+                    selected_curve = None
                 show_control_lines = True
                 show_picture = False
 
         # Draw stuff
         screen.blit(pic_bg0, [0, 0])
         # draw a rectangle in the middle of the screen to show the laser cutting area
-        pygame.draw.rect(screen, cuttingAreaColor, ((screen_width-(borderLine2Height-borderLineHeight))/2,(screen_height-(borderLine2Height-borderLineHeight))/2,borderLine2Height-borderLineHeight,borderLine2Height-borderLineHeight))
+        pygame.draw.rect(screen, cuttingAreaColor, ((screen_width - (borderLine2Height - borderLineHeight)) / 2,
+                                                    (screen_height - (borderLine2Height - borderLineHeight)) / 2,
+                                                    borderLine2Height - borderLineHeight,
+                                                    borderLine2Height - borderLineHeight))
         draw_all()
         if selected is not None:
-            if pygame.mouse.get_pos()[1] > borderLineHeight + circleRadius1 and pygame.mouse.get_pos()[1] < borderLine2Height - circleRadius1 and pygame.mouse.get_pos()[0] > circleRadius1 and pygame.mouse.get_pos()[0] < screen_width - circleRadius1:
+            if pygame.mouse.get_pos()[1] > borderLineHeight + circleRadius1 and pygame.mouse.get_pos()[
+                1] < borderLine2Height - circleRadius1 and circleRadius1 < pygame.mouse.get_pos()[
+                0] < screen_width - circleRadius1:
                 pygame.draw.circle(screen, green, (selected[0], selected[1]), circleRadiusClicked)
                 # if clicked on the purple point, which moves the whole curve
                 if IS_MOVING_ALL_CURVE and selected_curve.vertices.index(selected) == 0:
                     # check if all points are in the screen
                     inScreen = True
                     for i in range(1, 4):
-                        if selected_curve.vertices[i][0] <= circleRadius1 or selected_curve.vertices[i][0] >= screen_width - circleRadius1 or selected_curve.vertices[i][1] <= borderLineHeight or selected_curve.vertices[i][1] >= borderLine2Height:
+                        if selected_curve.vertices[i][0] <= circleRadius1 or selected_curve.vertices[i][
+                            0] >= screen_width - circleRadius1 or selected_curve.vertices[i][1] <= borderLineHeight or \
+                                selected_curve.vertices[i][1] >= borderLine2Height:
                             inScreen = False
                     # if so, move the curve
                     if inScreen:
                         for i in range(1, 4):
-                            selected_curve.vertices[i][0] = selected_curve.vertices[i][0]+(pygame.mouse.get_pos()[0] - selected[0])
-                            selected_curve.vertices[i][1] = selected_curve.vertices[i][1] + (pygame.mouse.get_pos()[1] - selected[1])
+                            selected_curve.vertices[i][0] = selected_curve.vertices[i][0] + (
+                                        pygame.mouse.get_pos()[0] - selected[0])
+                            selected_curve.vertices[i][1] = selected_curve.vertices[i][1] + (
+                                        pygame.mouse.get_pos()[1] - selected[1])
                         selected[0], selected[1] = pygame.mouse.get_pos()
                 else:
                     # move the selected point
@@ -526,7 +566,7 @@ def main():
         pygame.display.flip()
 
         if (time.time() - idle_clock > IDLE_TIME):
-            sqaure()  
+            sqaure()
             clear_all()
             add_curve0()
             idle_clock = time.time()
@@ -548,9 +588,9 @@ def main():
                             time.sleep(0.5)
                             sent_border = True
                             # send the border (grey box)
-                            print(send_one_number(screen_width/2-(borderLine2Height-borderLineHeight)/2))
+                            print(send_one_number(screen_width / 2 - (borderLine2Height - borderLineHeight) / 2))
                             print(send_one_number(borderLineHeight))
-                            print(send_one_number(screen_width/2+(borderLine2Height-borderLineHeight)/2))
+                            print(send_one_number(screen_width / 2 + (borderLine2Height - borderLineHeight) / 2))
                             print(send_one_number(borderLine2Height))
                             print(send_one_number(LASER_POWER))
                             print(send_one_number(CONTOUR_POWER))
@@ -558,7 +598,7 @@ def main():
                             print(send_one_number(LASER_ON_RATE))
                             print(send_one_number(CONTOUR_RATE))
                             time.sleep(time_delay_arduino)
-                        
+
                     else:
                         pass
                 finally:
