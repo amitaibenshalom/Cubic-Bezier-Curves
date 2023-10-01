@@ -145,6 +145,7 @@ class BezierCurve(object):
                     # pygame.draw.circle(screen, circleColor2, (int(p[0]), int(p[1])), circleRadius2)
                     # draw the picture if the double arrow
                     screen.blit(pic_doubleArrow, (int(p[0]) - doubleArrowSize[0]/2, int(p[1]) - doubleArrowSize[1]/2))
+                    pygame.draw.circle(screen, circleColor2, (int(p[0]), int(p[1])), circleRadius2)
                 elif control_points.index(p) == 0:
                     pygame.draw.circle(screen, circleColor0, (int(p[0]), int(p[1])), circleRadius0)
                 else:
@@ -478,13 +479,11 @@ def main():
     idle_clock = time.time()
     clock = pygame.time.Clock()
     sqaure()
-
     add_curve0()
 
     sent_border = False
     running = True
     while running:
-
         events = pygame.event.get()
         for event in events:
             if event.type == QUIT:
