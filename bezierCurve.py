@@ -145,6 +145,7 @@ class BezierCurve(object):
                     # pygame.draw.circle(screen, circleColor2, (int(p[0]), int(p[1])), circleRadius2)
                     # draw the picture if the double arrow
                     screen.blit(pic_doubleArrow, (int(p[0]) - doubleArrowSize[0]/2, int(p[1]) - doubleArrowSize[1]/2))
+                    pygame.draw.circle(screen, circleColor2, (int(p[0]), int(p[1])), circleRadius2)
                 elif control_points.index(p) == 0:
                     pygame.draw.circle(screen, circleColor0, (int(p[0]), int(p[1])), circleRadius0)
                 else:
@@ -300,24 +301,39 @@ def take_control():
 
 def heart():
     global contour
+    global ButtonCircle
+    global ButtonHeart
+    global ButtonDrop
+    ButtonCircle.img = pic_buttonCircle
+    ButtonHeart.img = pic_buttonPressedHeart
+    ButtonDrop.img = pic_buttonDrop
     contour = []
     for i in range(len(contour_heart)):
         add_contour(contour_heart[i][0], contour_heart[i][1], contour_heart[i][2], contour_heart[i][3])
 
-
 def sqaure():
     global contour
+    global ButtonCircle
+    global ButtonHeart
+    global ButtonDrop
+    ButtonCircle.img = pic_buttonPressedCircle
+    ButtonHeart.img = pic_buttonHeart
+    ButtonDrop.img = pic_buttonDrop
     contour = []
     for i in range(len(contour_square)):
         add_contour(contour_square[i][0], contour_square[i][1], contour_square[i][2], contour_square[i][3])
 
-
 def drop():
     global contour
+    global ButtonCircle
+    global ButtonHeart
+    global ButtonDrop
+    ButtonCircle.img = pic_buttonCircle
+    ButtonHeart.img = pic_buttonHeart
+    ButtonDrop.img = pic_buttonPressedDrop
     contour = []
     for i in range(len(contour_drop)):
         add_contour(contour_drop[i][0], contour_drop[i][1], contour_drop[i][2], contour_drop[i][3])
-
 
 def preview():
     global show_control_lines
@@ -478,13 +494,11 @@ def main():
     idle_clock = time.time()
     clock = pygame.time.Clock()
     sqaure()
-
     add_curve0()
 
     sent_border = False
     running = True
     while running:
-
         events = pygame.event.get()
         for event in events:
             if event.type == QUIT:

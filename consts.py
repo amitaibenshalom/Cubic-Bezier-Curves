@@ -38,10 +38,10 @@ borderLineHeight = int(142 / const_height_screen * screen_height)
 borderLine2Height = int((const_height_screen-142) / const_height_screen * screen_height)
 toleranceTouch = 20
 
-delta0X = int(30 / const_width_screen * screen_width)
+delta0X = int(40 / const_width_screen * screen_width)
 delta0Y = int(0 / const_height_screen * screen_height)
 delta0Z = int(-50 / const_height_screen * screen_height)
-MAX_LINES_PER_ROW = 8
+MAX_LINES_PER_ROW = 7
 
 # control points values
 circleColor0 = purple
@@ -49,17 +49,17 @@ circleColor1 = blue
 circleColor2 = yellow
 circleRadius0 = int(8 / const_width_screen * screen_width)
 circleRadius1 = int(8 / const_width_screen * screen_width)
-circleRadius2 = int(8 / const_width_screen * screen_width)
+circleRadius2 = int(5 / const_width_screen * screen_width)
 circleRadiusClicked = int(10 / const_width_screen * screen_width)
 doubleArrowSize = (int(40 / const_width_screen * screen_width), int(40 / const_height_screen * screen_height))
 
-x0 = int(800 / const_width_screen * screen_width)
+x0 = int(830 / const_width_screen * screen_width)
 y0 = int(450 / const_height_screen * screen_height)
-x1 = int(850 / const_width_screen * screen_width)
+x1 = int(880 / const_width_screen * screen_width)
 y1 = int(350 / const_height_screen * screen_height)
-x2 = int(750 / const_width_screen * screen_width)
+x2 = int(780 / const_width_screen * screen_width)
 y2 = int(350 / const_height_screen * screen_height)
-x3 = int(800 / const_width_screen * screen_width)
+x3 = int(830 / const_width_screen * screen_width)
 y3 = int(250 / const_height_screen * screen_height)
 
 # mm_per_pixel_x = 295/1366
