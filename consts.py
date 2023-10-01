@@ -51,6 +51,7 @@ circleRadius0 = int(8 / const_width_screen * screen_width)
 circleRadius1 = int(8 / const_width_screen * screen_width)
 circleRadius2 = int(8 / const_width_screen * screen_width)
 circleRadiusClicked = int(10 / const_width_screen * screen_width)
+doubleArrowSize = (int(40 / const_width_screen * screen_width), int(40 / const_height_screen * screen_height))
 
 x0 = int(800 / const_width_screen * screen_width)
 y0 = int(450 / const_height_screen * screen_height)
@@ -70,6 +71,7 @@ curveColor = red
 selectedCurveColor = green
 control_lines_color = lightgray
 curveWidth = int(6 / const_width_screen * screen_width)
+controlLineWidth = int(3 / const_width_screen * screen_width)
 maxCurves = 15
 
 # contour values
@@ -160,6 +162,7 @@ pic_buttonDrop = pygame.image.load("pictures/buttonDrop.jpg")
 pic_buttonPressedDrop = pygame.image.load("pictures/buttonPressedDrop.jpg")
 pic_buttonCircle = pygame.image.load("pictures/buttonCircle.jpg")
 pic_buttonPressedCircle = pygame.image.load("pictures/buttonPressedCircle.jpg")
+pic_doubleArrow = pygame.image.load("pictures/double_arrow.png")
 
 # resize the images
 pic_buttonDelete = pygame.transform.scale(pic_buttonDelete, buttonDeleteSize)
@@ -184,6 +187,7 @@ pic_buttonDrop = pygame.transform.scale(pic_buttonDrop, buttonDropSize)
 pic_buttonPressedDrop = pygame.transform.scale(pic_buttonPressedDrop, buttonDropSize)
 pic_buttonCircle = pygame.transform.scale(pic_buttonCircle, buttonCircleSize)
 pic_buttonPressedCircle = pygame.transform.scale(pic_buttonPressedCircle, buttonCircleSize)
+pic_doubleArrow = pygame.transform.scale(pic_doubleArrow, doubleArrowSize)
 
 # contour_heart = [[(screen_width/2, 600),(1145,345),(screen_width/2+120,80),(screen_width/2, 250)] , [(screen_width/2,250),(screen_width/2-120,80),(225,345),(screen_width/2,600)]]
 # contour_square = [[[screen_width/2, 600], [screen_width/2+230, 600], [screen_width/2+230, 600], [screen_width/2+230, 400]] , [[screen_width/2+230, 400], [screen_width/2+230, 170], [screen_width/2+230, 170], [screen_width/2, 170]], [[screen_width/2, 170], [screen_width/2-230, 170], [screen_width/2-230, 170], [screen_width/2-230, 400]], [[screen_width/2-230, 400], [screen_width/2-230, 600], [screen_width/2-230, 600], [screen_width/2, 600]]]
