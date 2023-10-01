@@ -132,26 +132,26 @@ class BezierCurve(object):
         # Draw control points
         control_points = self.vertices
         if show_control_lines and self.moveable:
+            # Draw control "lines"
+            # pygame.draw.lines(screen, lightgray, False, [(x[0], x[1]) for x in control_points])
+            pygame.draw.lines(screen, control_lines_color, False,
+                              [(x[0], x[1]) for x in control_points[:2]], controlLineWidth)
+            pygame.draw.lines(screen, control_lines_color, False,
+                              [(x[0], x[1]) for x in control_points[2:]], controlLineWidth)
+
             for p in control_points:
                 # draw start and end points of the curve in circleColor1 and slope points in circleColor2
                 if control_points.index(p) == 1 or control_points.index(p) == 2:
-                    pygame.draw.circle(screen, circleColor2, (int(p[0]), int(p[1])), circleRadius2)
+                    # pygame.draw.circle(screen, circleColor2, (int(p[0]), int(p[1])), circleRadius2)
+                    # draw the picture if the double arrow
+                    screen.blit(pic_doubleArrow, (int(p[0]) - doubleArrowSize[0]/2, int(p[1]) - doubleArrowSize[1]/2))
                 elif control_points.index(p) == 0:
                     pygame.draw.circle(screen, circleColor0, (int(p[0]), int(p[1])), circleRadius0)
                 else:
                     pygame.draw.circle(screen, circleColor1, (int(p[0]), int(p[1])), circleRadius1)
-
-            # Draw control "lines"
-            # pygame.draw.lines(screen, lightgray, False, [(x[0], x[1]) for x in control_points])
-            pygame.draw.lines(screen, control_lines_color, False,
-                              [(x[0], x[1]) for x in control_points[:2]])
-            pygame.draw.lines(screen, control_lines_color, False,
-                              [(x[0], x[1]) for x in control_points[2:]])
-
         # Draw bezier curve
         b_points = self.compute_bezier_points()
         pygame.draw.lines(screen, self.color, False, b_points, self.width)
-
 
 curves = []  # list of all curves
 curves_to_send = []
