@@ -320,7 +320,7 @@ for k in range(len(contours)):
 
 buttons_enabled = True
 IS_MOVING_ALL_CURVE = True
-IDLE_TIME = 60
+IDLE_TIME = 300 # seconds
 
 # arduino
 MAX_TIME_WAITING_FOR_ARDUINO = 5  # seconds
@@ -332,8 +332,9 @@ CONTOUR_POWER = 255  # (0 <= x <= 255)
 LASER_OFF_RATE = 6
 #LASER_ON_RATE = 90
 #CONTOUR_RATE = 100
+# LASER_ON_RATE = 10
 LASER_ON_RATE = 10
-CONTOUR_RATE = 10
+CONTOUR_RATE = 50
 
 starting_key = -2
 next_curve_key = -3
@@ -343,6 +344,5 @@ found_arduino = False
 send_to_arduino = False
 drawing_curve = False
 curve_index = 0
-waiting = [False,
-           False]  # two flags to indicate if we are waiting for the arduino to send us data: first is reading a curve, second is drawing one
+waiting = [False,False]  # two flags to indicate if we are waiting for the arduino to send us data: first is reading a curve, second is drawing one
 last_time = [0, 0]  # to limit the time we wait for the arduino to send us data

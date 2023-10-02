@@ -5,7 +5,7 @@ import serial
 
 pygame.init()
 
-port = '/dev/ttyUSB0'
+port = 'COM5'
 baudrate = 115200
 arduino = None
 try:
@@ -250,9 +250,9 @@ def send_to_laser():
     global contour
 
     # print the values of the points in the curves
-    for curve in curves:
-        print(curve.vertices)
-    return
+    # for curve in curves:
+    #     print(curve.vertices)
+    # return
 
     if not found_arduino:
         print("ERROR: No Laser Connected")
@@ -264,15 +264,17 @@ def send_to_laser():
         return False
     curves_to_send = curves.copy()
     # add all the curves in the contour to curves_to_send
-    for curve in contour:
-        curves_to_send.append(curve)
+    times = 1
+    for i in range(times):
+        for curve in contour:
+            curves_to_send.append(curve)
     if not send_one_number(starting_key):  # fist, send a key that will tell the arduino to start reading
         return False
     print("sent starting key to laser")
     # then, send the number of curves
     if not send_one_number(-len(curves_to_send)):
         return False
-    if not send_one_number(-len(contour)):
+    if not send_one_number(-times*len(contour)):
         return False
     print("sent number of curves and contour")
     drawing_curve = False
