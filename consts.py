@@ -33,8 +33,6 @@ print(infoObject)
 screen_width = infoObject.current_w
 screen_height = infoObject.current_h
 screenColor = gray
-# cuttingAreaColor = verylightgray
-cuttingAreaColor = white
 
 # borderLineHeight = int(142 / const_height_screen * screen_height)
 borderLineHeight = int(142 / const_height_screen * screen_height)
@@ -45,6 +43,8 @@ borderLine2X = int((const_width_screen - 330) / const_width_screen * screen_widt
 centerInsideBorders = (int((borderLineX + borderLine2X) / 2), int((borderLineHeight + borderLine2Height) / 2))
 center = (int(screen_width / 2), int(screen_height / 2))
 
+cuttingAreaColor = verylightgray
+#cuttingAreaColor = white
 cuttingAreaWidth = int((const_height_screen - 142) / const_height_screen * screen_height) - int(142 / const_height_screen * screen_height)
 cuttingAreaHeight = cuttingAreaWidth
 cuttingAreaPos = (centerInsideBorders[0] - cuttingAreaWidth / 2, centerInsideBorders[1] - cuttingAreaHeight / 2)
@@ -302,8 +302,10 @@ time_delay_arduino = 0.005  # seconds
 LASER_POWER = 255  # (0 <= x <= 255)
 CONTOUR_POWER = 255  # (0 <= x <= 255)
 LASER_OFF_RATE = 6
-LASER_ON_RATE = 90
-CONTOUR_RATE = 100
+#LASER_ON_RATE = 90
+#CONTOUR_RATE = 100
+LASER_ON_RATE = 10
+CONTOUR_RATE = 10
 
 starting_key = -2
 next_curve_key = -3

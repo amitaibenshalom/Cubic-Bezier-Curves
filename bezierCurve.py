@@ -361,7 +361,7 @@ def msgNumCurves(num):
         value = font_style2.render("ורתונ םיווק " + str(num), True, black)
     else:
         value = font_style2.render("תומוקע ורתונ אל", True, red)
-    text_rect = value.get_rect(center=((borderLine2X+screen_width)/2, 50 + 35))
+    text_rect = value.get_rect(center=((borderLine2X+screen_width)/2,borderLineHeight/2))
     screen.blit(value, text_rect)
 
 
@@ -620,11 +620,11 @@ def main():
                             take_control()
                             time.sleep(0.5)
                             sent_border = True
-                            # send the border (grey box)
-                            print(send_one_number(screen_width / 2 - (borderLine2Height - borderLineHeight) / 2))
-                            print(send_one_number(borderLineHeight))
-                            print(send_one_number(screen_width / 2 + (borderLine2Height - borderLineHeight) / 2))
-                            print(send_one_number(borderLine2Height))
+                            # send the cutting area size
+                            print(send_one_number(centerInsideBorders[0] - cuttingAreaWidth / 2))
+                            print(send_one_number(centerInsideBorders[1] - cuttingAreaHeight / 2))
+                            print(send_one_number(centerInsideBorders[0] + cuttingAreaWidth / 2))
+                            print(send_one_number(centerInsideBorders[1] + cuttingAreaHeight / 2))
                             print(send_one_number(LASER_POWER))
                             print(send_one_number(CONTOUR_POWER))
                             print(send_one_number(LASER_OFF_RATE))
