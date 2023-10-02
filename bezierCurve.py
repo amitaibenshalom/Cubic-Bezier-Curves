@@ -250,9 +250,10 @@ def send_to_laser():
     global contour
 
     # print the values of the points in the curves
-    # for curve in curves:
-    #     print(curve.vertices)
-    # return
+    for curve in curves:
+        print(curve.vertices)
+    return
+
     if not found_arduino:
         print("ERROR: No Laser Connected")
         return False
@@ -506,6 +507,11 @@ def main():
     clock = pygame.time.Clock()
     sqaure()
     add_curve0()
+
+    print("\n\n")
+    print("center Inside borders:")
+    print(centerInsideBorders)
+    print("\n\n")
 
     sent_border = False
     running = True
