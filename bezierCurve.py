@@ -256,6 +256,8 @@ def send_to_laser():
 
     if not found_arduino:
         print("ERROR: No Laser Connected")
+        for curve in curves:
+            print(curve.vertices)
         return False
     if len(curves) == 0:
         print("No curves to send")
