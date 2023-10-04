@@ -20,6 +20,7 @@ black = (0, 0, 0)
 brown = (139, 69, 19)
 orange = (255, 165, 0)
 colorOutSideBorder = (226, 233, 241)
+cuttingAreaColor = white
 bgColor = white
 
 # screen_width = 1000
@@ -43,7 +44,6 @@ borderLine2X = int((const_width_screen - 330) / const_width_screen * screen_widt
 centerInsideBorders = (int((borderLineX + borderLine2X) / 2), int((borderLineHeight + borderLine2Height) / 2))
 center = (int(screen_width / 2), int(screen_height / 2))
 
-cuttingAreaColor = verylightgray
 #cuttingAreaColor = white
 cuttingAreaWidth = int((const_height_screen - 142) / const_height_screen * screen_height) - int(142 / const_height_screen * screen_height)
 cuttingAreaHeight = cuttingAreaWidth
