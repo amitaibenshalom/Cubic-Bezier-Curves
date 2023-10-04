@@ -315,8 +315,8 @@ for k in range(len(contours)):
     for i in range(len(contours[k])):
         for j in range(len(contours[k][i])):
             contours[k][i][j] = (
-            contours[k][i][j][0] + int((centerInsideBorders[0] - center[0]) / const_width_screen * screen_width),
-            contours[k][i][j][1] + int((centerInsideBorders[1] - center[1]) / const_height_screen * screen_height))
+            contours[k][i][j][0] + int(centerInsideBorders[0] - center[0]),
+            contours[k][i][j][1] + int(centerInsideBorders[1] - center[1]))
 
 buttons_enabled = True
 IS_MOVING_ALL_CURVE = True
