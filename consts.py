@@ -127,17 +127,6 @@ buttonHoverColour = red
 buttonPressedColour = green
 buttonOfflineColour = gray
 
-# button_height0 = 1.6
-# button_height = int(button_height0/16.5 * screen_height)
-# # sizes of buttons and images
-# buttonAddSize = (int(8.1/29.5 * screen_width),button_height)
-# buttonDeleteSize = (int(4.7/29.5 * screen_width), button_height)
-# buttonInfoSize = (button_height, button_height)
-# buttonPreviewSize = (int(8.9/29.5 * screen_width), button_height)
-# buttonPrintSize = (int(4.7/29.5 * screen_width), button_height)
-# buttonHeartSize = buttonInfoSize
-# buttonDropSize = buttonInfoSize
-# buttonCircleSize = buttonInfoSize
 button_height0 = 1.2
 button_contour_height0 = 1.8
 button_height = int(button_height0 / 16.5 * screen_height)
@@ -151,7 +140,6 @@ buttonHeartSize = buttonInfoSize
 buttonDropSize = buttonInfoSize
 buttonCircleSize = buttonInfoSize
 
-# infoHebSize = (int(11.7/29.5 * screen_width), int(9/16.5 * screen_height))
 infoHebSize = (int(15 / 29.5 * screen_width), int(11 / 16.5 * screen_height))
 infoEngSize = infoHebSize
 infoArabSize = infoHebSize
