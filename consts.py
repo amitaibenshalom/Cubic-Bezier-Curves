@@ -138,7 +138,7 @@ buttonPreviewSize = (int(6 / 29.5 * screen_width), button_height)
 buttonPrintSize = (int(6 / 29.5 * screen_width), button_height)
 buttonHeartSize = buttonInfoSize
 buttonDropSize = buttonInfoSize
-buttonCircleSize = buttonInfoSize
+buttonSquareSize = buttonInfoSize
 
 infoHebSize = (int(15 / 29.5 * screen_width), int(11 / 16.5 * screen_height))
 infoEngSize = infoHebSize
@@ -150,14 +150,15 @@ button_operation_x = int(29 / 29.5 * screen_width)
 
 # positions of the buttons
 buttonAddPosition = (button_operation_x - buttonAddSize[0], int(4 / 16.5 * screen_height))
-buttonDeletePosition = (button_operation_x - buttonDeleteSize[0], int((4 + button_height0 + 1) / 16.5 * screen_height))
-buttonInfoPosition = (button_contour_x, borderLineHeight)
-buttonPreviewPosition = (button_operation_x - buttonPreviewSize[0], int((4 + 2 * (button_height0 + 1)) / 16.5 * screen_height))
+buttonPreviewPosition = (button_operation_x - buttonPreviewSize[0], int((4 + button_height0 + 1) / 16.5 * screen_height))
+buttonDeletePosition = (button_operation_x - buttonDeleteSize[0], int((4 + 2 * (button_height0 + 1)) / 16.5 * screen_height))
+buttonInfoPosition = (button_contour_x, borderLineHeight+int(0.5/16.5 * screen_height))
 buttonPrintPosition = (button_operation_x - buttonPrintSize[0], int((4 + 3 * (button_height0 + 1)) / 16.5 * screen_height))
-buttonHeartPosition = (button_contour_x, int((4 + button_contour_height0 + 0.5) / 16.5 * screen_height))
-buttonDropPosition = (button_contour_x, int((4 + 2 * (button_contour_height0 + 0.5)) / 16.5 * screen_height))
-buttonCirclePosition = (button_contour_x, int((4 + 3 * (button_contour_height0 + 0.5)) / 16.5 * screen_height))
+buttonHeartPosition = (button_contour_x, int((6 + button_contour_height0 + 0.5) / 16.5 * screen_height))
+buttonDropPosition = (button_contour_x, int((6 + 2 * (button_contour_height0 + 0.5)) / 16.5 * screen_height))
+buttonSquarePosition = (button_contour_x, int((6 + 3 * (button_contour_height0 + 0.5)) / 16.5 * screen_height))
 textAbovePosition = (centerInsideBorders[0]-textAboveSize[0]/2, borderLineHeight-textAboveSize[1])
+# textFramePosition = buttonHeartPosition
 
 # get the image from the directory "pictures"
 pic_buttonDelete = pygame.image.load("pictures/buttonDelete.jpg")
@@ -180,10 +181,10 @@ pic_buttonHeart = pygame.image.load("pictures/buttonHeart.jpg")
 pic_buttonPressedHeart = pygame.image.load("pictures/buttonPressedHeart.jpg")
 pic_buttonDrop = pygame.image.load("pictures/buttonDrop.jpg")
 pic_buttonPressedDrop = pygame.image.load("pictures/buttonPressedDrop.jpg")
-pic_buttonCircle = pygame.image.load("pictures/buttonCircle.jpg")
-pic_buttonPressedCircle = pygame.image.load("pictures/buttonPressedCircle.jpg")
+pic_buttonSquare = pygame.image.load("pictures/buttonSquare.jpg")
+pic_buttonPressedSquare = pygame.image.load("pictures/buttonPressedSquare.jpg")
 pic_doubleArrow = pygame.image.load("pictures/double_arrow.png")
-pic_textAbove = pygame.image.load("pictures/text_above_blue.jpg")
+pic_textAbove = pygame.image.load("pictures/textAbove2.jpg")
 
 # resize the images
 pic_buttonDelete = pygame.transform.scale(pic_buttonDelete, buttonDeleteSize)
@@ -206,14 +207,10 @@ pic_buttonHeart = pygame.transform.scale(pic_buttonHeart, buttonHeartSize)
 pic_buttonPressedHeart = pygame.transform.scale(pic_buttonPressedHeart, buttonHeartSize)
 pic_buttonDrop = pygame.transform.scale(pic_buttonDrop, buttonDropSize)
 pic_buttonPressedDrop = pygame.transform.scale(pic_buttonPressedDrop, buttonDropSize)
-pic_buttonCircle = pygame.transform.scale(pic_buttonCircle, buttonCircleSize)
-pic_buttonPressedCircle = pygame.transform.scale(pic_buttonPressedCircle, buttonCircleSize)
+pic_buttonSquare = pygame.transform.scale(pic_buttonSquare, buttonSquareSize)
+pic_buttonPressedSquare = pygame.transform.scale(pic_buttonPressedSquare, buttonSquareSize)
 pic_doubleArrow = pygame.transform.scale(pic_doubleArrow, doubleArrowSize)
 pic_textAbove = pygame.transform.scale(pic_textAbove, textAboveSize)
-
-# contour_heart = [[(screen_width/2, 600),(1145,345),(screen_width/2+120,80),(screen_width/2, 250)] , [(screen_width/2,250),(screen_width/2-120,80),(225,345),(screen_width/2,600)]]
-# contour_square = [[[screen_width/2, 600], [screen_width/2+230, 600], [screen_width/2+230, 600], [screen_width/2+230, 400]] , [[screen_width/2+230, 400], [screen_width/2+230, 170], [screen_width/2+230, 170], [screen_width/2, 170]], [[screen_width/2, 170], [screen_width/2-230, 170], [screen_width/2-230, 170], [screen_width/2-230, 400]], [[screen_width/2-230, 400], [screen_width/2-230, 600], [screen_width/2-230, 600], [screen_width/2, 600]]]
-# contour_drop = [[(screen_width/2,600),(900,600),(900,500),(900,450)],[(900,450),(850,250),(750,250),(screen_width/2,150)] , [(screen_width/2,600),(550,600),(470,500),(470,450)],[(470,450),(500,250),(600,200),(screen_width/2,150)]]
 
 contour_heart = [[(screen_width / 2, int(600 / const_height_screen * screen_height)),
                   (int(1145 / const_width_screen * screen_width), int(345 / const_height_screen * screen_height)), (
@@ -225,34 +222,6 @@ contour_heart = [[(screen_width / 2, int(600 / const_height_screen * screen_heig
                  int(80 / const_height_screen * screen_height)),
                   (int(225 / const_width_screen * screen_width), int(345 / const_height_screen * screen_height)),
                   (screen_width / 2, int(600 / const_height_screen * screen_height))]]
-# contour_square = [[[screen_width / 2, int(600 / const_height_screen * screen_height)],
-#                    [screen_width / 2 + int(230 / const_width_screen * screen_width),
-#                     int(600 / const_height_screen * screen_height)],
-#                    [screen_width / 2 + int(230 / const_width_screen * screen_width),
-#                     int(600 / const_height_screen * screen_height)],
-#                    [screen_width / 2 + int(230 / const_width_screen * screen_width),
-#                     int(400 / const_height_screen * screen_height)]], [
-#                       [screen_width / 2 + int(230 / const_width_screen * screen_width),
-#                        int(400 / const_height_screen * screen_height)],
-#                       [screen_width / 2 + int(230 / const_width_screen * screen_width),
-#                        int(170 / const_height_screen * screen_height)],
-#                       [screen_width / 2 + int(230 / const_width_screen * screen_width),
-#                        int(170 / const_height_screen * screen_height)],
-#                       [screen_width / 2, int(170 / const_height_screen * screen_height)]],
-#                   [[screen_width / 2, int(170 / const_height_screen * screen_height)],
-#                    [screen_width / 2 - int(230 / const_width_screen * screen_width),
-#                     int(170 / const_height_screen * screen_height)],
-#                    [screen_width / 2 - int(230 / const_width_screen * screen_width),
-#                     int(170 / const_height_screen * screen_height)],
-#                    [screen_width / 2 - int(230 / const_width_screen * screen_width),
-#                     int(400 / const_height_screen * screen_height)]], [
-#                       [screen_width / 2 - int(230 / const_width_screen * screen_width),
-#                        int(400 / const_height_screen * screen_height)],
-#                       [screen_width / 2 - int(230 / const_width_screen * screen_width),
-#                        int(600 / const_height_screen * screen_height)],
-#                       [screen_width / 2 - int(230 / const_width_screen * screen_width),
-#                        int(600 / const_height_screen * screen_height)],
-#                       [screen_width / 2, int(600 / const_height_screen * screen_height)]]]
 contour_square = [[[screen_width / 2, int(600 / const_height_screen * screen_height)],
                    [screen_width / 2 + int(230 / const_width_screen * screen_width),
                     int(600 / const_height_screen * screen_height)],

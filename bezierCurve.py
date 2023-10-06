@@ -316,10 +316,10 @@ def take_control():
 
 def heart():
     global contour
-    global ButtonCircle
+    global ButtonSquare
     global ButtonHeart
     global ButtonDrop
-    ButtonCircle.img = pic_buttonCircle
+    ButtonSquare.img = pic_buttonSquare
     ButtonHeart.img = pic_buttonPressedHeart
     ButtonDrop.img = pic_buttonDrop
     contour = []
@@ -328,10 +328,10 @@ def heart():
 
 def sqaure():
     global contour
-    global ButtonCircle
+    global ButtonSquare
     global ButtonHeart
     global ButtonDrop
-    ButtonCircle.img = pic_buttonPressedCircle
+    ButtonSquare.img = pic_buttonPressedSquare
     ButtonHeart.img = pic_buttonHeart
     ButtonDrop.img = pic_buttonDrop
     contour = []
@@ -340,10 +340,10 @@ def sqaure():
 
 def drop():
     global contour
-    global ButtonCircle
+    global ButtonSquare
     global ButtonHeart
     global ButtonDrop
-    ButtonCircle.img = pic_buttonCircle
+    ButtonSquare.img = pic_buttonSquare
     ButtonHeart.img = pic_buttonHeart
     ButtonDrop.img = pic_buttonPressedDrop
     contour = []
@@ -490,10 +490,10 @@ ButtonHeart = Button(buttonHeartPosition, buttonHeartSize, buttonInactiveColour,
                      pic_buttonPressedHeart, heart)
 ButtonDrop = Button(buttonDropPosition, buttonDropSize, buttonInactiveColour, buttonPressedColour, pic_buttonDrop,
                     pic_buttonPressedDrop, drop)
-ButtonCircle = Button(buttonCirclePosition, buttonCircleSize, buttonInactiveColour, buttonPressedColour,
-                      pic_buttonCircle, pic_buttonPressedCircle, sqaure)
+ButtonSquare = Button(buttonSquarePosition, buttonSquareSize, buttonInactiveColour, buttonPressedColour,
+                      pic_buttonSquare, pic_buttonPressedSquare, sqaure)
 
-buttons = [ButtonAdd, ButtonDelete, ButtonInfo, ButtonPreview, ButtonPrint, ButtonHeart, ButtonDrop, ButtonCircle]
+buttons = [ButtonAdd, ButtonDelete, ButtonInfo, ButtonPreview, ButtonPrint, ButtonHeart, ButtonDrop, ButtonSquare]
 
 
 def main():
