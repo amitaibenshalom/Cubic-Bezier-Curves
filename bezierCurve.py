@@ -569,6 +569,8 @@ def main():
         pygame.draw.rect(screen, colorOutSideBorder, (0, borderLine2Height, screen_width, screen_height - borderLine2Height))
         # draw the text above
         screen.blit(pic_textAbove, textAbovePosition)
+        # draw the "frame:" text
+        screen.blit(pic_textFrame, textFramePosition)
         # draw a rectangle in the middle of the screen to show the laser cutting area
         pygame.draw.rect(screen, cuttingAreaColor, (cuttingAreaPos[0], cuttingAreaPos[1], cuttingAreaSize[0], cuttingAreaSize[1]))
         draw_all()

@@ -40,7 +40,8 @@ borderLineHeight = int(142 / const_height_screen * screen_height)
 # borderLine2Height = int((const_height_screen - 142) / const_height_screen * screen_height)
 borderLine2Height = screen_height-int(60/const_height_screen*screen_height)
 borderLineX = int(130 / const_width_screen * screen_width)
-borderLine2X = int((const_width_screen - 330) / const_width_screen * screen_width)
+# borderLine2X = int((const_width_screen - 330) / const_width_screen * screen_width)
+borderLine2X = int((const_width_screen - 385) / const_width_screen * screen_width)
 centerInsideBorders = (int((borderLineX + borderLine2X) / 2), int((borderLineHeight + borderLine2Height) / 2))
 center = (int(screen_width / 2), int(screen_height / 2))
 
@@ -127,15 +128,15 @@ buttonHoverColour = red
 buttonPressedColour = green
 buttonOfflineColour = gray
 
-button_height0 = 1.2
-button_contour_height0 = 1.8
+button_height0 = 1.3
+button_contour_height0 = 1.7
 button_height = int(button_height0 / 16.5 * screen_height)
 # sizes of buttons and images
-buttonAddSize = (int(6 / 29.5 * screen_width), button_height)
-buttonDeleteSize = (int(6 / 29.5 * screen_width), button_height)
+buttonAddSize = (int(7.2 / 29.5 * screen_width), button_height)
+buttonDeleteSize = (int(4.5 / 29.5 * screen_width), button_height)
 buttonInfoSize = (int(button_contour_height0 / 16.5 * screen_height), int(button_contour_height0 / 16.5 * screen_height))
-buttonPreviewSize = (int(6 / 29.5 * screen_width), button_height)
-buttonPrintSize = (int(6 / 29.5 * screen_width), button_height)
+buttonPreviewSize = (int(7.2 / 29.5 * screen_width), button_height)
+buttonPrintSize = (int(4.5 / 29.5 * screen_width), button_height)
 buttonHeartSize = buttonInfoSize
 buttonDropSize = buttonInfoSize
 buttonSquareSize = buttonInfoSize
@@ -143,22 +144,23 @@ buttonSquareSize = buttonInfoSize
 infoHebSize = (int(15 / 29.5 * screen_width), int(11 / 16.5 * screen_height))
 infoEngSize = infoHebSize
 infoArabSize = infoHebSize
-textAboveSize = (int(10 / 29.5 * screen_width), int(2.5 / 16.5 * screen_height))
+textAboveSize = (int(14 / 29.5 * screen_width), int(3 / 16.5 * screen_height))
+textFrameSize = buttonHeartSize
 
 button_contour_x = int(0.5 / 29.5 * screen_width)
 button_operation_x = int(29 / 29.5 * screen_width)
-
+button_operation_x0 = 5
 # positions of the buttons
-buttonAddPosition = (button_operation_x - buttonAddSize[0], int(4 / 16.5 * screen_height))
-buttonPreviewPosition = (button_operation_x - buttonPreviewSize[0], int((4 + button_height0 + 1) / 16.5 * screen_height))
-buttonDeletePosition = (button_operation_x - buttonDeleteSize[0], int((4 + 2 * (button_height0 + 1)) / 16.5 * screen_height))
+buttonAddPosition = (button_operation_x - buttonAddSize[0], int(button_operation_x0 / 16.5 * screen_height))
+buttonPreviewPosition = (button_operation_x - buttonPreviewSize[0], int((button_operation_x0 + button_height0 + 1) / 16.5 * screen_height))
+buttonDeletePosition = (button_operation_x - 1.3*buttonDeleteSize[0], int((button_operation_x0 + 2 * (button_height0 + 1)) / 16.5 * screen_height))
 buttonInfoPosition = (button_contour_x, borderLineHeight+int(0.5/16.5 * screen_height))
-buttonPrintPosition = (button_operation_x - buttonPrintSize[0], int((4 + 3 * (button_height0 + 1)) / 16.5 * screen_height))
+buttonPrintPosition = (button_operation_x - 1.3*buttonPrintSize[0], int((button_operation_x0 + 3 * (button_height0 + 1)) / 16.5 * screen_height))
 buttonHeartPosition = (button_contour_x, int((6 + button_contour_height0 + 0.5) / 16.5 * screen_height))
 buttonDropPosition = (button_contour_x, int((6 + 2 * (button_contour_height0 + 0.5)) / 16.5 * screen_height))
 buttonSquarePosition = (button_contour_x, int((6 + 3 * (button_contour_height0 + 0.5)) / 16.5 * screen_height))
 textAbovePosition = (centerInsideBorders[0]-textAboveSize[0]/2, borderLineHeight-textAboveSize[1])
-# textFramePosition = buttonHeartPosition
+textFramePosition = (buttonHeartPosition[0], buttonHeartPosition[1]-textFrameSize[0])
 
 # get the image from the directory "pictures"
 pic_buttonDelete = pygame.image.load("pictures/buttonDelete.jpg")
@@ -185,6 +187,7 @@ pic_buttonSquare = pygame.image.load("pictures/buttonSquare.jpg")
 pic_buttonPressedSquare = pygame.image.load("pictures/buttonPressedSquare.jpg")
 pic_doubleArrow = pygame.image.load("pictures/double_arrow.png")
 pic_textAbove = pygame.image.load("pictures/textAbove2.jpg")
+pic_textFrame = pygame.image.load("pictures/frame.jpg")
 
 # resize the images
 pic_buttonDelete = pygame.transform.scale(pic_buttonDelete, buttonDeleteSize)
@@ -211,6 +214,7 @@ pic_buttonSquare = pygame.transform.scale(pic_buttonSquare, buttonSquareSize)
 pic_buttonPressedSquare = pygame.transform.scale(pic_buttonPressedSquare, buttonSquareSize)
 pic_doubleArrow = pygame.transform.scale(pic_doubleArrow, doubleArrowSize)
 pic_textAbove = pygame.transform.scale(pic_textAbove, textAboveSize)
+pic_textFrame = pygame.transform.scale(pic_textFrame, textFrameSize)
 
 contour_heart = [[(screen_width / 2, int(600 / const_height_screen * screen_height)),
                   (int(1145 / const_width_screen * screen_width), int(345 / const_height_screen * screen_height)), (
