@@ -420,12 +420,12 @@ def msgEstimatedTime(time):
 #     text_rect = value.get_rect(center=(screen_width / 2, 50))
 #     screen.blit(value, text_rect)
 
-# clear only deletes last generated curve
-
+# distance is NOT sqrt of sum of squares because laser is going in zigzag and not in straight line
 def distance(point1, point2):
-    return math.sqrt((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2)
+    # return math.sqrt((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2)
+    return max(abs(point1[0] - point2[0]), abs(point1[1] - point2[1]))
 
-
+# clear the last curve
 def clear():
     global curves
     global selected_curve
