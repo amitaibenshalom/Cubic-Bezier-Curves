@@ -409,8 +409,8 @@ def msgNumCurves(num):
     screen.blit(value, text_rect)
 
 def msgEstimatedTime(time):
-    value = font_style.render(f"{time:.0f} תוינש" + " :ךרעומ ןמז ", True, black)
-    value = font_style.render(f" תוינש {time:.0f} :ךרעומ ןמז ", True, black)
+    value = font_style.render(f"{time:.1f} תוינש" + " :ךרעומ ןמז ", True, black)
+    value = font_style.render(f" תוינש {time:.1f} :ךרעומ ןמז ", True, black)
     text_rect = value.get_rect(center=((borderLine2X+screen_width)/2,buttonPrintPosition[1]+1.5*buttonPrintSize[1]))
     screen.blit(value, text_rect)
 
