@@ -19,6 +19,7 @@ except Exception as e:
 # fonts for text
 font_style2 = pygame.font.SysFont("calibri", 45)
 font_style2.bold = True
+font_style = pygame.font.SysFont("calibri", 20)
 
 
 class Button(object):
@@ -176,6 +177,8 @@ selected_curve = None
 selected = None  # The currently selected point
 show_control_lines = True
 show_picture = False
+show_estimated_time = False
+estimated_time = 0
 delta = [0, 0, 0]
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
@@ -200,6 +203,8 @@ def check_arduino():
     global drawing_curve
     global curve_index
     global send_to_arduino
+    global estimated_time
+    global show_estimated_time
     global ButtonPrint
 
     if waiting[1]:
@@ -216,6 +221,8 @@ def check_arduino():
                 print("sent all curves")
                 send_one_number(end_key)
                 print("sent end key")
+                estimated_time = 0
+                show_estimated_time = False
                 return True
             else:
                 drawing_curve = False
@@ -258,19 +265,21 @@ def send_to_laser():
     global ButtonPrint
     global found_arduino
     global contour
+    global estimated_time
+    global show_estimated_time
 
     # print the values of the points in the curves
     # for curve in curves:
     #     print(curve.vertices)
     # return
 
-    estimated_time = 0 # estimated time to finish drawing in seconds
+    estimated = 0 # estimated time to finish drawing in seconds
 
     if not found_arduino:
         print("ERROR: No Laser Connected")
         for curve in curves:
             print(curve.vertices)
-        # return False
+        return False
     if len(curves) == 0:
         print("No curves to send")
         return True
@@ -279,17 +288,18 @@ def send_to_laser():
     curves_to_send = curves.copy()
     # calculate the estimated time to finish drawing
     for curve in curves_to_send:
-        estimated_time += curve.get_length() * pulse_per_pixel[0] * LASER_ON_RATE / 1000 + 0.5
-    print(f"estimated time to finish drawing (WITHOUT contour): {estimated_time:.2f} seconds")
+        estimated += curve.get_length() * pulse_per_pixel[0] * LASER_ON_RATE / 1000 + 0.5
+    print(f"estimated time to finish drawing (WITHOUT contour): {estimated:.2f} seconds")
     # add all the curves in the contour to curves_to_send
     times = 1 # number of times to draw the contour
     for i in range(times):
         for curve in contour:
             curves_to_send.append(curve)
-            estimated_time += curve.get_length() * pulse_per_pixel[0] * CONTOUR_RATE / 1000
-    print(f"estimated time to finish drawing (with contour): {estimated_time:.2f} seconds")
-    if not found_arduino:
-        return False
+            estimated += curve.get_length() * pulse_per_pixel[0] * CONTOUR_RATE / 1000
+    print(f"estimated time to finish drawing (with contour): {estimated:.2f} seconds")
+    estimated_time = estimated
+    show_estimated_time = True
+    msgEstimatedTime(estimated_time)
     if not send_one_number(starting_key):  # first, send a key that will tell the arduino to start reading
         return False
     print("sent starting key to laser")
@@ -389,6 +399,10 @@ def msgNumCurves(num):
     text_rect = value.get_rect(center=((borderLine2X+screen_width)/2,borderLineHeight/2))
     screen.blit(value, text_rect)
 
+def msgEstimatedTime(time):
+    value = font_style.render(f"{time:.2f} seconds" + " :ךרעומ ןמז ", True, black)
+    text_rect = value.get_rect(center=((borderLine2X+screen_width)/2,buttonPrintPosition[1]+1.5*buttonPrintSize[1]))
+    screen.blit(value, text_rect)
 
 # def msg():
 #     global screen
@@ -522,6 +536,7 @@ def main():
     global selected
     global show_control_lines
     global show_picture
+    global show_estimated_time
     global send_to_arduino
     global found_arduino
     global buttons_enabled
@@ -619,6 +634,8 @@ def main():
             popup_x = centerInsideBorders[0] - infoHebSize[0]/2
             popup_y = centerInsideBorders[1] - infoHebSize[1]/2
             screen.blit(pic_infoHeb, (popup_x, popup_y))
+        if show_estimated_time:
+            msgEstimatedTime(estimated_time)
 
         check_buttons()
         pygame.display.update()
@@ -637,12 +654,12 @@ def main():
                 if not check_arduino():
                     print("--- SOMETHING WENT WRONG WITH THE ARDUINO !!! ---")
                     send_to_arduino = False
+                    show_estimated_time = False
             else:
                 try:
                     if arduino.in_waiting > 0:
                         received_data = arduino.readline().decode().rstrip()
                         print("Received from Arduino:", received_data)
-
                         if not sent_border:
                             take_control()
                             time.sleep(0.5)
