@@ -280,15 +280,14 @@ def send_to_laser():
     # calculate the estimated time to finish drawing
     for curve in curves_to_send:
         estimated_time += curve.get_length() * pulse_per_pixel[0] * LASER_ON_RATE / 1000 + 0.5
-    print("estimated time to finish drawing (without contour): " + str(estimated_time) + " seconds")
+    print(f"estimated time to finish drawing (WITHOUT contour): {estimated_time:.2f} seconds")
     # add all the curves in the contour to curves_to_send
     times = 1 # number of times to draw the contour
     for i in range(times):
         for curve in contour:
             curves_to_send.append(curve)
             estimated_time += curve.get_length() * pulse_per_pixel[0] * CONTOUR_RATE / 1000
-    print("total estimated time to finish drawing (with contour): " + str(estimated_time) + " seconds")
-
+    print(f"estimated time to finish drawing (with contour): {estimated_time:.2f} seconds")
     if not found_arduino:
         return False
     if not send_one_number(starting_key):  # first, send a key that will tell the arduino to start reading
