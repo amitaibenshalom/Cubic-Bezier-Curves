@@ -180,6 +180,7 @@ show_control_lines = True
 show_picture = False
 show_estimated_time = False
 estimated_time = 0
+last_send_time = 0
 delta = [0, 0, 0]
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
@@ -268,13 +269,12 @@ def send_to_laser():
     global contour
     global estimated_time
     global show_estimated_time
+    global last_send_time
 
     # print the values of the points in the curves
     # for curve in curves:
     #     print(curve.vertices)
     # return
-
-    estimated = 0 # estimated time to finish drawing in seconds
 
     if not found_arduino:
         print("ERROR: No Laser Connected")
@@ -287,6 +287,8 @@ def send_to_laser():
     if send_to_arduino:
         return False
 
+    estimated = 0 # estimated time to finish drawing in seconds
+    last_send_time = time.time()
     curves_to_send = curves.copy()
     # calculate the estimated time to finish drawing
     last_point = [centerInsideBorders[0]-cuttingAreaWidth/2, centerInsideBorders[1]-cuttingAreaHeight/2]
@@ -545,6 +547,7 @@ def main():
     global show_control_lines
     global show_picture
     global show_estimated_time
+    global last_send_time
     global send_to_arduino
     global found_arduino
     global buttons_enabled
@@ -643,7 +646,7 @@ def main():
             popup_y = centerInsideBorders[1] - infoHebSize[1]/2
             screen.blit(pic_infoHeb, (popup_x, popup_y))
         if show_estimated_time:
-            msgEstimatedTime(estimated_time)
+            msgEstimatedTime(estimated_time-time.time()+last_send_time)
 
         check_buttons()
         pygame.display.update()
