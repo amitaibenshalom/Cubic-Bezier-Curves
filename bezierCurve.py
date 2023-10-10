@@ -19,7 +19,8 @@ except Exception as e:
 # fonts for text
 font_style2 = pygame.font.SysFont("calibri", 45)
 font_style2.bold = True
-font_style = pygame.font.SysFont("calibri", 20)
+font_style = pygame.font.SysFont("calibri", 30)
+font_style.bold = True
 
 
 class Button(object):
@@ -400,7 +401,8 @@ def msgNumCurves(num):
     screen.blit(value, text_rect)
 
 def msgEstimatedTime(time):
-    value = font_style.render(f"{time:.2f} seconds" + " :ךרעומ ןמז ", True, black)
+    value = font_style.render(f"{time:.0f} תוינש" + " :ךרעומ ןמז ", True, black)
+    value = font_style.render(f" תוינש {time:.0f} :ךרעומ ןמז ", True, black)
     text_rect = value.get_rect(center=((borderLine2X+screen_width)/2,buttonPrintPosition[1]+1.5*buttonPrintSize[1]))
     screen.blit(value, text_rect)
 
