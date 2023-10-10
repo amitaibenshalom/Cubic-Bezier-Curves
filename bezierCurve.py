@@ -5,7 +5,7 @@ import serial
 
 pygame.init()
 
-port = 'COM5'
+port = '/dev/ttyUSB0'
 baudrate = 115200
 arduino = None
 try:

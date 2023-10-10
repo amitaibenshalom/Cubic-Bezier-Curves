@@ -291,11 +291,10 @@ time_delay_arduino = 0.005  # seconds
 LASER_POWER = 255  # (0 <= x <= 255)
 CONTOUR_POWER = 255  # (0 <= x <= 255)
 LASER_OFF_RATE = 6
-#LASER_ON_RATE = 90
-#CONTOUR_RATE = 100
-# LASER_ON_RATE = 10
-LASER_ON_RATE = 10
+LASER_ON_RATE = 50
 CONTOUR_RATE = 50
+#LASER_ON_RATE = 10
+#CONTOUR_RATE = 50
 
 starting_key = -2
 next_curve_key = -3
