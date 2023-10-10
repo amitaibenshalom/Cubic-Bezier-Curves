@@ -286,6 +286,7 @@ def send_to_laser():
         return True
     if send_to_arduino:
         return False
+
     curves_to_send = curves.copy()
     # calculate the estimated time to finish drawing
     last_point = [centerInsideBorders[0]-cuttingAreaWidth/2, centerInsideBorders[1]-cuttingAreaHeight/2]
