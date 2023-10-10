@@ -167,7 +167,7 @@ class BezierCurve(object):
         b_points = self.compute_bezier_points()
         length = 0
         for i in range(len(b_points)-1):
-            length += math.sqrt((b_points[i+1][0]-b_points[i][0])**2 + (b_points[i+1][1]-b_points[i][1])**2)
+            length += distance(b_points[i], b_points[i+1])
         return length
 
 
@@ -288,8 +288,11 @@ def send_to_laser():
         return False
     curves_to_send = curves.copy()
     # calculate the estimated time to finish drawing
+    last_point = [centerInsideBorders[0]-cuttingAreaWidth/2, centerInsideBorders[1]-cuttingAreaHeight/2]
     for curve in curves_to_send:
-        estimated += curve.get_length() * pulse_per_pixel[0] * LASER_ON_RATE / 1000 + 0.5
+        estimated += curve.get_length() * pulse_per_pixel[0] * LASER_ON_RATE / 1000
+        estimated += distance(curve.vertices[0], last_point) * pulse_per_pixel[0] * LASER_OFF_RATE / 1000
+        last_point = curve.vertices[-1]
     print(f"estimated time to finish drawing (WITHOUT contour): {estimated:.2f} seconds")
     # add all the curves in the contour to curves_to_send
     times = 1 # number of times to draw the contour
@@ -297,6 +300,8 @@ def send_to_laser():
         for curve in contour:
             curves_to_send.append(curve)
             estimated += curve.get_length() * pulse_per_pixel[0] * CONTOUR_RATE / 1000
+            estimated += distance(curve.vertices[0], last_point) * pulse_per_pixel[0] * LASER_OFF_RATE / 1000
+            last_point = curve.vertices[-1]
     print(f"estimated time to finish drawing (with contour): {estimated:.2f} seconds")
     estimated_time = estimated
     show_estimated_time = True
