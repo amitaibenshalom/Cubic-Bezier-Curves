@@ -11,6 +11,7 @@ arduino = None
 try:
     arduino = serial.Serial(port, baudrate)
     found_arduino = True
+    print("Found Arduino")
 except Exception as e:
     print(f"Serial port error: {e}")
     print('ARDUINO NOT CONNECTED')
@@ -511,11 +512,6 @@ def main():
     clock = pygame.time.Clock()
     sqaure()
     add_curve0()
-
-    print("\n\n")
-    print("center Inside borders:")
-    print(centerInsideBorders)
-    print("\n\n")
 
     sent_border = False
     running = True
