@@ -296,6 +296,11 @@ CONTOUR_RATE = 100
 #LASER_ON_RATE = 10
 #CONTOUR_RATE = 50
 
+mm_per_pulse = [2*80.0/800, 2*80.0/800]  # mm per pulse for each motor
+board_size = [83.0, 83.0]  # size of the board in mm
+screen_scale = [board_size[0]/cuttingAreaWidth, board_size[1]/cuttingAreaHeight]  # scale from the screen to the board on arduino in mm per pixel
+pulse_per_pixel = [screen_scale[0]/mm_per_pulse[0], screen_scale[1]/mm_per_pulse[1]]  # pulse per pixel for each motor
+
 starting_key = -2
 next_curve_key = -3
 end_key = -4
