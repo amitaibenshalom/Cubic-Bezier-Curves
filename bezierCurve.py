@@ -160,6 +160,15 @@ class BezierCurve(object):
         b_points = self.compute_bezier_points()
         pygame.draw.lines(screen, self.color, False, b_points, self.width)
 
+    def get_length(self):
+        # get the spatial length of the curve
+        b_points = self.compute_bezier_points()
+        length = 0
+        for i in range(len(b_points)-1):
+            length += math.sqrt((b_points[i+1][0]-b_points[i][0])**2 + (b_points[i+1][1]-b_points[i][1])**2)
+        return length
+
+
 curves = []  # list of all curves
 curves_to_send = []
 contour = []
