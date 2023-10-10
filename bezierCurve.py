@@ -646,7 +646,7 @@ def main():
             popup_y = centerInsideBorders[1] - infoHebSize[1]/2
             screen.blit(pic_infoHeb, (popup_x, popup_y))
         if show_estimated_time:
-            msgEstimatedTime(estimated_time-time.time()+last_send_time)
+            msgEstimatedTime(max(estimated_time-time.time()+last_send_time,0))
 
         check_buttons()
         pygame.display.update()
