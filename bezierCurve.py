@@ -420,10 +420,31 @@ def msgEstimatedTime(time):
 #     text_rect = value.get_rect(center=(screen_width / 2, 50))
 #     screen.blit(value, text_rect)
 
+
 # distance is NOT sqrt of sum of squares because laser is going in zigzag and not in straight line
 def distance(point1, point2):
     # return math.sqrt((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2)
     return max(abs(point1[0] - point2[0]), abs(point1[1] - point2[1]))
+
+
+# Function to rotate a point around a fixed point
+def rotate_point(point, angle, center_p):
+    x, y = point
+    cx, cy = center_p
+
+    # Translate the point and center to the origin
+    translated_x = x - cx
+    translated_y = y - cy
+
+    # Perform the rotation
+    new_x = translated_x * math.cos(angle) - translated_y * math.sin(angle)
+    new_y = translated_x * math.sin(angle) + translated_y * math.cos(angle)
+
+    # Translate the point back to its original position
+    rotated_x = new_x + cx
+    rotated_y = new_y + cy
+
+    return rotated_x, rotated_y
 
 # clear the last curve
 def clear():
@@ -538,6 +559,12 @@ ButtonSquare = Button(buttonSquarePosition, buttonSquareSize, buttonInactiveColo
                       pic_buttonSquare, pic_buttonPressedSquare, sqaure)
 
 buttons = [ButtonAdd, ButtonDelete, ButtonInfo, ButtonPreview, ButtonPrint, ButtonHeart, ButtonDrop, ButtonSquare]
+
+
+# rotate the square contour 45 degrees
+for i in range(len(contour_square)):
+    for j in range(len(contour_square[i])):
+        contour_square[i][j] = rotate_point(contour_square[i][j], math.radians(45), centerInsideBorders)
 
 
 def main():
