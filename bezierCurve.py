@@ -33,29 +33,31 @@ class Button(object):
         self.imgon = imgon
         self.function = function
         self.done = True
+        self.last_pos_mouse_up = [0,0]
 
     def check(self):
         mouse = pygame.mouse.get_pos()
         click = pygame.mouse.get_pressed()
         rect = pygame.Rect(self.pos[0], self.pos[1], self.size[0], self.size[1])
-        on_button = rect.collidepoint(mouse)
-        if not on_button:
+        # on_button = rect.collidepoint(mouse) # good for hovering image but this is a touch screen so not needed
+        on_button = rect.collidepoint(self.last_pos_mouse_up)
+        if click[0] == 0:
+            self.last_pos_mouse_up = mouse
             pygame.draw.rect(screen, self.color, rect)
             screen.blit(self.img, self.img.get_rect(center=rect.center))
             self.done = True
-        elif click[0] == 0:
-            pygame.draw.rect(screen, self.color, rect)
-            screen.blit(self.img, self.img.get_rect(center=rect.center))
-            self.done = True
-        elif click[0] == 1 and self.done:
+        elif on_button and self.done:
             pygame.draw.rect(screen, self.coloron, rect)
             screen.blit(self.imgon, self.imgon.get_rect(center=rect.center))
             self.done = False
             if self.function is not None:
                 self.function()
-        else:
+        elif on_button:
             pygame.draw.rect(screen, self.coloron, rect)
             screen.blit(self.imgon, self.imgon.get_rect(center=rect.center))
+        else:
+            pygame.draw.rect(screen, self.color, rect)
+            screen.blit(self.img, self.img.get_rect(center=rect.center))
 
     def draw_static(self):
         rect = pygame.Rect(self.pos[0], self.pos[1], self.size[0], self.size[1])
