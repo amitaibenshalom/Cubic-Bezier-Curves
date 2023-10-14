@@ -255,7 +255,23 @@ contour_square = [[[screen_width / 2, screen_height / 2 + square_side[1]],
                       [screen_width / 2 - square_side[0],
                        screen_height / 2 + square_side[1]],
                       [screen_width / 2, screen_height / 2 + square_side[1]]]]
-contour_drop = [[(screen_width / 2, int(600 / const_height_screen * screen_height)),
+#contour_drop = [[(screen_width / 2, int(600 / const_height_screen * screen_height)),
+#                 (int(900 / const_width_screen * screen_width), int(600 / const_height_screen * screen_height)),
+#                 (int(900 / const_width_screen * screen_width), int(500 / const_height_screen * screen_height)),
+#                 (int(900 / const_width_screen * screen_width), int(450 / const_height_screen * screen_height))],
+#                [(int(900 / const_width_screen * screen_width), int(450 / const_height_screen * screen_height)),
+#                 (int(850 / const_width_screen * screen_width), int(250 / const_height_screen * screen_height)),
+#                 (int(750 / const_width_screen * screen_width), int(250 / const_height_screen * screen_height)),
+#                 (screen_width / 2, int(150 / const_height_screen * screen_height))],
+#                [(screen_width / 2, int(600 / const_height_screen * screen_height)),
+#                 (int(550 / const_width_screen * screen_width), int(600 / const_height_screen * screen_height)),
+#                 (int(470 / const_width_screen * screen_width), int(500 / const_height_screen * screen_height)),
+#                 (int(470 / const_width_screen * screen_width), int(450 / const_height_screen * screen_height))],
+#                [(int(470 / const_width_screen * screen_width), int(450 / const_height_screen * screen_height)),
+#                 (int(500 / const_width_screen * screen_width), int(250 / const_height_screen * screen_height)),
+#                 (int(600 / const_width_screen * screen_width), int(200 / const_height_screen * screen_height)),
+#                 (screen_width / 2, int(150 / const_height_screen * screen_height))]]
+contour_drop = [[(screen_width / 2, int(600 / const_height_screen	 * screen_height)),
                  (int(900 / const_width_screen * screen_width), int(600 / const_height_screen * screen_height)),
                  (int(900 / const_width_screen * screen_width), int(500 / const_height_screen * screen_height)),
                  (int(900 / const_width_screen * screen_width), int(450 / const_height_screen * screen_height))],
@@ -271,6 +287,7 @@ contour_drop = [[(screen_width / 2, int(600 / const_height_screen * screen_heigh
                  (int(500 / const_width_screen * screen_width), int(250 / const_height_screen * screen_height)),
                  (int(600 / const_width_screen * screen_width), int(200 / const_height_screen * screen_height)),
                  (screen_width / 2, int(150 / const_height_screen * screen_height))]]
+
 contours = [contour_heart, contour_square, contour_drop]
 
 # move the conour heart to the center inside the borders
