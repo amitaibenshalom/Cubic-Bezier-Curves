@@ -460,7 +460,7 @@ def rotate_point(point, angle, center_p):
     rotated_x = new_x + cx
     rotated_y = new_y + cy
 
-    return rotated_x, rotated_y
+    return int(rotated_x), int(rotated_y)
 
 # clear the last curve
 def clear():

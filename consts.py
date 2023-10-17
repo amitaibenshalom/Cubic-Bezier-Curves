@@ -297,8 +297,8 @@ LASER_POWER = 255  # (0 <= x <= 255)
 CONTOUR_POWER = 255  # (0 <= x <= 255)
 LASER_OFF_RATE = 6
 LASER_ON_RATE = 10
-CONTOUR_RATE = 50
-#LASER_ON_RATE = 10
+CONTOUR_RATE = 50 # for purple paper
+#LASER_ON_RATE = 10  # for yellow paper
 #CONTOUR_RATE = 50
 MAX_DC_MOTOR_TIME = 2 #second
 
