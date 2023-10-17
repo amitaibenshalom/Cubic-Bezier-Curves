@@ -29,20 +29,22 @@ class Button(object):
         self.size = size
         self.color = color
         self.coloron = coloron
-        self.img = img
-        self.imgon = imgon
+        self.img = img  #image when not clicking
+        self.imgon = imgon  #image when clicking
+        self.tempimg = img  #also saves img but not changing (tempimg = temporary image)
         self.function = function
         self.done = True
-        self.last_pos_mouse_up = [0,0]
+#        self.last_pos_mouse_up = [0,0]
 
     def check(self):
+        global buttons_enabled
         mouse = pygame.mouse.get_pos()
         click = pygame.mouse.get_pressed()
         rect = pygame.Rect(self.pos[0], self.pos[1], self.size[0], self.size[1])
         # on_button = rect.collidepoint(mouse) # good for hovering image but this is a touch screen so not needed
-        on_button = rect.collidepoint(self.last_pos_mouse_up)
+        on_button = rect.collidepoint(mouse)
         if click[0] == 0:
-            self.last_pos_mouse_up = mouse
+            self.img = self.tempimg
             pygame.draw.rect(screen, self.color, rect)
             screen.blit(self.img, self.img.get_rect(center=rect.center))
             self.done = True
@@ -50,11 +52,13 @@ class Button(object):
             pygame.draw.rect(screen, self.coloron, rect)
             screen.blit(self.imgon, self.imgon.get_rect(center=rect.center))
             self.done = False
+            self.img = self.imgon
             if self.function is not None:
                 self.function()
-        elif on_button:
-            pygame.draw.rect(screen, self.coloron, rect)
-            screen.blit(self.imgon, self.imgon.get_rect(center=rect.center))
+            buttons_enabled = False
+#        elif on_button:
+#            pygame.draw.rect(screen, self.coloron, rect)
+#            screen.blit(self.imgon, self.imgon.get_rect(center=rect.center))
         else:
             pygame.draw.rect(screen, self.color, rect)
             screen.blit(self.img, self.img.get_rect(center=rect.center))
@@ -221,6 +225,7 @@ def check_arduino():
             curve_index += 1
             if curve_index >= len(curves_to_send):
                 send_to_arduino = False
+                ButtonPrint.tempimg = pic_buttonPrint
                 ButtonPrint.img = pic_buttonPrint
                 ButtonPrint.imgon = pic_buttonPressedPrint
                 # send a key that will tell the arduino to stop reading
@@ -328,6 +333,7 @@ def send_to_laser():
     # change the picture of the send to laser button
     ButtonPrint.img = pic_buttonOffPrint
     ButtonPrint.imgon = pic_buttonOffPrint
+    ButtonPrint.tempimg = pic_buttonOffPrint
     return True
 
 
@@ -362,8 +368,10 @@ def heart():
     global ButtonSquare
     global ButtonHeart
     global ButtonDrop
+    ButtonSquare.tempimg = pic_buttonSquare
     ButtonSquare.img = pic_buttonSquare
-    ButtonHeart.img = pic_buttonPressedHeart
+    ButtonHeart.tempimg = pic_buttonPressedHeart
+    ButtonDrop.tempimg = pic_buttonDrop
     ButtonDrop.img = pic_buttonDrop
     contour = []
     for i in range(len(contour_heart)):
@@ -374,8 +382,10 @@ def sqaure():
     global ButtonSquare
     global ButtonHeart
     global ButtonDrop
-    ButtonSquare.img = pic_buttonPressedSquare
+    ButtonSquare.tempimg = pic_buttonPressedSquare
+    ButtonHeart.tempimg = pic_buttonHeart
     ButtonHeart.img = pic_buttonHeart
+    ButtonDrop.tempimg = pic_buttonDrop
     ButtonDrop.img = pic_buttonDrop
     contour = []
     for i in range(len(contour_square)):
@@ -386,9 +396,11 @@ def drop():
     global ButtonSquare
     global ButtonHeart
     global ButtonDrop
+    ButtonSquare.tempimg = pic_buttonSquare
     ButtonSquare.img = pic_buttonSquare
+    ButtonHeart.tempimg = pic_buttonHeart
     ButtonHeart.img = pic_buttonHeart
-    ButtonDrop.img = pic_buttonPressedDrop
+    ButtonDrop.tempimg = pic_buttonPressedDrop
     contour = []
     for i in range(len(contour_drop)):
         add_contour(contour_drop[i][0], contour_drop[i][1], contour_drop[i][2], contour_drop[i][3])
