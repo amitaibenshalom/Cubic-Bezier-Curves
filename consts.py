@@ -302,6 +302,8 @@ buttons_enabled = True
 IS_MOVING_ALL_CURVE = True
 IDLE_TIME = 300 # seconds
 
+MAX_RUNS = 60
+
 # arduino
 MAX_TIME_WAITING_FOR_ARDUINO = 5  # seconds
 MAX_DRAWING_TIME_FOR_ARDUINO = 150  # seconds
@@ -314,6 +316,7 @@ LASER_ON_RATE = 10
 CONTOUR_RATE = 50
 #LASER_ON_RATE = 10
 #CONTOUR_RATE = 50
+MAX_DC_MOTOR_TIME = 2 #second
 
 mm_per_pulse = [2*80.0/800, 2*80.0/800]  # mm per pulse for each motor
 board_size = [83.0, 83.0]  # size of the board in mm
