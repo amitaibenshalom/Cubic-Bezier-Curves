@@ -184,6 +184,8 @@ show_estimated_time = False
 estimated_time = 0
 last_send_time = 0
 delta = [0, 0, 0]
+auto_run = False
+run_index = 0
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
 
@@ -581,6 +583,8 @@ def main():
     global found_arduino
     global buttons_enabled
     global arduino
+    global auto_run
+    global run_index
 
     idle_clock = time.time()
     clock = pygame.time.Clock()
@@ -595,16 +599,26 @@ def main():
             if event.type == QUIT:
                 running = False
             elif event.type == KEYDOWN:
-                if event.key == pygame.K_r or event.key == pygame.K_c:
-                    clear()
-                elif event.key == pygame.K_a:
-                    add_curve0()
-                elif event.key == pygame.K_ESCAPE:
-                    running = False
+                if event.key == pygame.K_p:  #if p is pressed then start running the laser automatically
+                    auto_run = True
+                    run_index = 0
                 else:
-                    running = False
+                    if auto_run:
+                        print("auto run stopped after: " + str(run_index) + " runs")
+                    auto_run = False
+                    if event.key == pygame.K_r or event.key == pygame.K_c:
+                        clear()
+                    elif event.key == pygame.K_a:
+                        add_curve0()
+                    elif event.key == pygame.K_ESCAPE:
+                        running = False
+                    else:
+                        running = False
             elif event.type == MOUSEBUTTONDOWN and event.button == 1:
                 idle_clock = time.time()
+                if auto_run:
+                    print("auto run stopped after: " + str(run_index) + " runs")                
+                auto_run = False
                 for curve in curves:
                     for p in curve.vertices:
                         if math.dist(p, event.pos) < toleranceTouch:
@@ -621,6 +635,9 @@ def main():
                                 buttons_enabled = False
             elif event.type == MOUSEBUTTONUP and event.button == 1:
                 idle_clock = time.time()
+                if auto_run:
+                    print("auto run stopped after: " + str(run_index) + " runs")
+                auto_run = False
                 selected = None
                 buttons_enabled = True
                 if selected_curve is not None:
@@ -682,7 +699,7 @@ def main():
         # Flip screen
         pygame.display.flip()
 
-        if (time.time() - idle_clock > IDLE_TIME):
+        if (time.time() - idle_clock > IDLE_TIME and not auto_run):
             sqaure()
             clear_all()
             add_curve0()
@@ -695,6 +712,9 @@ def main():
                     print("--- SOMETHING WENT WRONG WITH THE ARDUINO !!! ---")
                     send_to_arduino = False
                     show_estimated_time = False
+                    if auto_run:
+                        print("auto run stopped after: " + str(run_index) + " runs")
+                    auto_run = False
             else:
                 try:
                     if arduino.in_waiting > 0:
@@ -720,6 +740,13 @@ def main():
                         pass
                 finally:
                     pass
+                if auto_run:
+                    if run_index < MAX_RUNS:
+                        time.sleep(MAX_DC_MOTOR_TIME+2)
+                        send_to_laser()
+                        run_index += 1
+                    else:
+                        auto_run = False
 
         clock.tick(100)
         # print clock.get_fps()
