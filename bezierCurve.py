@@ -29,20 +29,22 @@ class Button(object):
         self.size = size
         self.color = color
         self.coloron = coloron
-        self.img = img
-        self.imgon = imgon
+        self.img = img  #image when not clicking
+        self.imgon = imgon  #image when clicking
+        self.tempimg = img  #also saves img but not changing (tempimg = temporary image)
         self.function = function
         self.done = True
-        self.last_pos_mouse_up = [0,0]
+#        self.last_pos_mouse_up = [0,0]
 
     def check(self):
+        global buttons_enabled
         mouse = pygame.mouse.get_pos()
         click = pygame.mouse.get_pressed()
         rect = pygame.Rect(self.pos[0], self.pos[1], self.size[0], self.size[1])
         # on_button = rect.collidepoint(mouse) # good for hovering image but this is a touch screen so not needed
-        on_button = rect.collidepoint(self.last_pos_mouse_up)
+        on_button = rect.collidepoint(mouse)
         if click[0] == 0:
-            self.last_pos_mouse_up = mouse
+            self.img = self.tempimg
             pygame.draw.rect(screen, self.color, rect)
             screen.blit(self.img, self.img.get_rect(center=rect.center))
             self.done = True
@@ -50,11 +52,13 @@ class Button(object):
             pygame.draw.rect(screen, self.coloron, rect)
             screen.blit(self.imgon, self.imgon.get_rect(center=rect.center))
             self.done = False
+            self.img = self.imgon
             if self.function is not None:
                 self.function()
-        elif on_button:
-            pygame.draw.rect(screen, self.coloron, rect)
-            screen.blit(self.imgon, self.imgon.get_rect(center=rect.center))
+            buttons_enabled = False
+#        elif on_button:
+#            pygame.draw.rect(screen, self.coloron, rect)
+#            screen.blit(self.imgon, self.imgon.get_rect(center=rect.center))
         else:
             pygame.draw.rect(screen, self.color, rect)
             screen.blit(self.img, self.img.get_rect(center=rect.center))
@@ -184,6 +188,8 @@ show_estimated_time = False
 estimated_time = 0
 last_send_time = 0
 delta = [0, 0, 0]
+auto_run = False
+run_index = 0
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
 
@@ -219,6 +225,7 @@ def check_arduino():
             curve_index += 1
             if curve_index >= len(curves_to_send):
                 send_to_arduino = False
+                ButtonPrint.tempimg = pic_buttonPrint
                 ButtonPrint.img = pic_buttonPrint
                 ButtonPrint.imgon = pic_buttonPressedPrint
                 # send a key that will tell the arduino to stop reading
@@ -326,6 +333,7 @@ def send_to_laser():
     # change the picture of the send to laser button
     ButtonPrint.img = pic_buttonOffPrint
     ButtonPrint.imgon = pic_buttonOffPrint
+    ButtonPrint.tempimg = pic_buttonOffPrint
     return True
 
 
@@ -360,8 +368,10 @@ def heart():
     global ButtonSquare
     global ButtonHeart
     global ButtonDrop
+    ButtonSquare.tempimg = pic_buttonSquare
     ButtonSquare.img = pic_buttonSquare
-    ButtonHeart.img = pic_buttonPressedHeart
+    ButtonHeart.tempimg = pic_buttonPressedHeart
+    ButtonDrop.tempimg = pic_buttonDrop
     ButtonDrop.img = pic_buttonDrop
     contour = []
     for i in range(len(contour_heart)):
@@ -372,8 +382,10 @@ def sqaure():
     global ButtonSquare
     global ButtonHeart
     global ButtonDrop
-    ButtonSquare.img = pic_buttonPressedSquare
+    ButtonSquare.tempimg = pic_buttonPressedSquare
+    ButtonHeart.tempimg = pic_buttonHeart
     ButtonHeart.img = pic_buttonHeart
+    ButtonDrop.tempimg = pic_buttonDrop
     ButtonDrop.img = pic_buttonDrop
     contour = []
     for i in range(len(contour_square)):
@@ -384,9 +396,11 @@ def drop():
     global ButtonSquare
     global ButtonHeart
     global ButtonDrop
+    ButtonSquare.tempimg = pic_buttonSquare
     ButtonSquare.img = pic_buttonSquare
+    ButtonHeart.tempimg = pic_buttonHeart
     ButtonHeart.img = pic_buttonHeart
-    ButtonDrop.img = pic_buttonPressedDrop
+    ButtonDrop.tempimg = pic_buttonPressedDrop
     contour = []
     for i in range(len(contour_drop)):
         add_contour(contour_drop[i][0], contour_drop[i][1], contour_drop[i][2], contour_drop[i][3])
@@ -581,6 +595,8 @@ def main():
     global found_arduino
     global buttons_enabled
     global arduino
+    global auto_run
+    global run_index
 
     idle_clock = time.time()
     clock = pygame.time.Clock()
@@ -595,16 +611,26 @@ def main():
             if event.type == QUIT:
                 running = False
             elif event.type == KEYDOWN:
-                if event.key == pygame.K_r or event.key == pygame.K_c:
-                    clear()
-                elif event.key == pygame.K_a:
-                    add_curve0()
-                elif event.key == pygame.K_ESCAPE:
-                    running = False
+                if event.key == pygame.K_p:  #if p is pressed then start running the laser automatically
+                    auto_run = True
+                    run_index = 0
                 else:
-                    running = False
+                    if auto_run:
+                        print("auto run stopped after: " + str(run_index) + " runs")
+                    auto_run = False
+                    if event.key == pygame.K_r or event.key == pygame.K_c:
+                        clear()
+                    elif event.key == pygame.K_a:
+                        add_curve0()
+                    elif event.key == pygame.K_ESCAPE:
+                        running = False
+                    else:
+                        running = False
             elif event.type == MOUSEBUTTONDOWN and event.button == 1:
                 idle_clock = time.time()
+                if auto_run:
+                    print("auto run stopped after: " + str(run_index) + " runs")                
+                auto_run = False
                 for curve in curves:
                     for p in curve.vertices:
                         if math.dist(p, event.pos) < toleranceTouch:
@@ -621,6 +647,9 @@ def main():
                                 buttons_enabled = False
             elif event.type == MOUSEBUTTONUP and event.button == 1:
                 idle_clock = time.time()
+                if auto_run:
+                    print("auto run stopped after: " + str(run_index) + " runs")
+                auto_run = False
                 selected = None
                 buttons_enabled = True
                 if selected_curve is not None:
@@ -682,7 +711,7 @@ def main():
         # Flip screen
         pygame.display.flip()
 
-        if (time.time() - idle_clock > IDLE_TIME):
+        if (time.time() - idle_clock > IDLE_TIME and not auto_run):
             sqaure()
             clear_all()
             add_curve0()
@@ -695,6 +724,9 @@ def main():
                     print("--- SOMETHING WENT WRONG WITH THE ARDUINO !!! ---")
                     send_to_arduino = False
                     show_estimated_time = False
+                    if auto_run:
+                        print("auto run stopped after: " + str(run_index) + " runs")
+                    auto_run = False
             else:
                 try:
                     if arduino.in_waiting > 0:
@@ -720,6 +752,13 @@ def main():
                         pass
                 finally:
                     pass
+                if auto_run:
+                    if run_index < MAX_RUNS:
+                        time.sleep(MAX_DC_MOTOR_TIME+2)
+                        send_to_laser()
+                        run_index += 1
+                    else:
+                        auto_run = False
 
         clock.tick(100)
         # print clock.get_fps()

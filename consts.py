@@ -255,22 +255,23 @@ contour_square = [[[screen_width / 2, screen_height / 2 + square_side[1]],
                       [screen_width / 2 - square_side[0],
                        screen_height / 2 + square_side[1]],
                       [screen_width / 2, screen_height / 2 + square_side[1]]]]
-contour_drop = [[(screen_width / 2, int(600 / const_height_screen * screen_height)),
-                 (int(900 / const_width_screen * screen_width), int(600 / const_height_screen * screen_height)),
-                 (int(900 / const_width_screen * screen_width), int(500 / const_height_screen * screen_height)),
-                 (int(900 / const_width_screen * screen_width), int(450 / const_height_screen * screen_height))],
-                [(int(900 / const_width_screen * screen_width), int(450 / const_height_screen * screen_height)),
-                 (int(850 / const_width_screen * screen_width), int(250 / const_height_screen * screen_height)),
-                 (int(750 / const_width_screen * screen_width), int(250 / const_height_screen * screen_height)),
-                 (screen_width / 2, int(150 / const_height_screen * screen_height))],
-                [(screen_width / 2, int(600 / const_height_screen * screen_height)),
-                 (int(550 / const_width_screen * screen_width), int(600 / const_height_screen * screen_height)),
-                 (int(470 / const_width_screen * screen_width), int(500 / const_height_screen * screen_height)),
-                 (int(470 / const_width_screen * screen_width), int(450 / const_height_screen * screen_height))],
-                [(int(470 / const_width_screen * screen_width), int(450 / const_height_screen * screen_height)),
-                 (int(500 / const_width_screen * screen_width), int(250 / const_height_screen * screen_height)),
-                 (int(600 / const_width_screen * screen_width), int(200 / const_height_screen * screen_height)),
-                 (screen_width / 2, int(150 / const_height_screen * screen_height))]]
+contour_drop = [[(screen_width/2, int(610 / const_height_screen * screen_height)),
+                 (screen_width/2 + int(62 / const_width_screen * screen_width), int(610 / const_height_screen * screen_height)),
+                 (screen_width/2 + int(184 / const_width_screen * screen_width), int(550 / const_height_screen * screen_height)),
+                 (screen_width/2 + int(184 / const_width_screen * screen_width), int(407 / const_height_screen * screen_height))],
+                [(screen_width/2 + int(184 / const_width_screen * screen_width), int(407 / const_height_screen * screen_height)),
+                 (screen_width/2 + int(184 / const_width_screen * screen_width), int(263 / const_height_screen * screen_height)),
+                 (screen_width/2 + int(43 / const_width_screen * screen_width), int(170 / const_height_screen * screen_height)),
+                 (screen_width/2, int(145 / const_height_screen * screen_height))],
+                [(screen_width/2, int(145 / const_height_screen * screen_height)),
+                 (screen_width/2 - int(43 / const_width_screen * screen_width), int(170 / const_height_screen * screen_height)),
+                 (screen_width/2 - int(184 / const_width_screen * screen_width), int(263 / const_height_screen * screen_height)),
+                 (screen_width/2 - int(184 / const_width_screen * screen_width), int(407 / const_height_screen * screen_height))],
+                [(screen_width/2 - int(184 / const_width_screen * screen_width), int(407 / const_height_screen * screen_height)),
+                 (screen_width/2 - int(184 / const_width_screen * screen_width), int(550 / const_height_screen * screen_height)),
+                 (screen_width/2 - int(62 / const_width_screen * screen_width), int(610 / const_height_screen * screen_height)),
+                 (screen_width/2, int(610 / const_height_screen * screen_height))]]
+
 contours = [contour_heart, contour_square, contour_drop]
 
 # move the conour heart to the center inside the borders
@@ -285,6 +286,8 @@ buttons_enabled = True
 IS_MOVING_ALL_CURVE = True
 IDLE_TIME = 300 # seconds
 
+MAX_RUNS = 60
+
 # arduino
 MAX_TIME_WAITING_FOR_ARDUINO = 5  # seconds
 MAX_DRAWING_TIME_FOR_ARDUINO = 150  # seconds
@@ -294,9 +297,10 @@ LASER_POWER = 255  # (0 <= x <= 255)
 CONTOUR_POWER = 255  # (0 <= x <= 255)
 LASER_OFF_RATE = 6
 LASER_ON_RATE = 10
-CONTOUR_RATE = 40
+CONTOUR_RATE = 50
 #LASER_ON_RATE = 10
 #CONTOUR_RATE = 50
+MAX_DC_MOTOR_TIME = 2 #second
 
 mm_per_pulse = [2*80.0/800, 2*80.0/800]  # mm per pulse for each motor
 board_size = [83.0, 83.0]  # size of the board in mm
