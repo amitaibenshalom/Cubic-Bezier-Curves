@@ -1,8 +1,6 @@
 import pygame
+import os
 from pygame.locals import *
-import serial
-import struct
-import time
 
 # consts
 gray = (100, 100, 100)
@@ -34,6 +32,12 @@ print(infoObject)
 screen_width = infoObject.current_w
 screen_height = infoObject.current_h
 screenColor = gray
+
+# logging values
+# get the current diractory the code sits in and create the log file there
+currentDir = os.path.dirname(os.path.realpath(__file__))
+LOG_FILE_PATH = currentDir + "\\log.log"
+
 
 # borderLineHeight = int(142 / const_height_screen * screen_height)
 borderLineHeight = int(142 / const_height_screen * screen_height)

@@ -1,20 +1,36 @@
 import math
-
-from consts import *
+import logging
 import serial
+import struct
+import time
+from consts import *
+from logging.handlers import RotatingFileHandler
 
 pygame.init()
 
 port = '/dev/ttyUSB0'
 baudrate = 115200
 arduino = None
+
+# logging setup
+logging.basicConfig(filename=LOG_FILE_PATH, filemode='a', level=logging.INFO)
+handler = RotatingFileHandler(LOG_FILE_PATH, maxBytes=37500, backupCount=100)
+logger = logging.getLogger("Rotating Log")
+formatter = logging.Formatter('%(asctime)s.%(msecs)03d %(message)s', '%Y-%m-%d %H:%M:%S')
+handler.setFormatter(formatter)
+logger.propagate = False
+logger.addHandler(handler)
+logger.info('--------------- PROGRAM START ---------------')
+
 try:
     arduino = serial.Serial(port, baudrate)
     found_arduino = True
     print("Found Arduino")
+    logger.info('Found Arduino')
 except Exception as e:
     print(f"Serial port error: {e}")
     print('ARDUINO NOT CONNECTED')
+    logger.error('Arduino not connected')
 
 # fonts for text
 font_style2 = pygame.font.SysFont("calibri", 45)
@@ -190,6 +206,8 @@ last_send_time = 0
 delta = [0, 0, 0]
 auto_run = False
 run_index = 0
+info_time_start = time.time()
+preview_time_start = time.time()
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
 
@@ -279,14 +297,13 @@ def send_to_laser():
     global estimated_time
     global show_estimated_time
     global last_send_time
+    global logger
 
-    # print the values of the points in the curves
-    # for curve in curves:
-    #     print(curve.vertices)
-    # return
+    logger.info("clicked on print button")
 
     if not found_arduino:
         print("ERROR: No Laser Connected")
+        logger.error("No Laser Connected")
         for curve in curves:
             print(curve.vertices)
         return False
@@ -356,8 +373,7 @@ def take_control():
     try:
         arduino.write(pytxt.encode())
     except:
-        print(
-            "Error: python failed taking control over arduino - use another serial monitor or change py_flag to True on arduino")
+        print("Error: python failed taking control over arduino - use another serial monitor")
         return False
     print("success!")
     return True
@@ -368,6 +384,7 @@ def heart():
     global ButtonSquare
     global ButtonHeart
     global ButtonDrop
+    global logger
     ButtonSquare.tempimg = pic_buttonSquare
     ButtonSquare.img = pic_buttonSquare
     ButtonHeart.tempimg = pic_buttonPressedHeart
@@ -376,12 +393,14 @@ def heart():
     contour = []
     for i in range(len(contour_heart)):
         add_contour(contour_heart[i][0], contour_heart[i][1], contour_heart[i][2], contour_heart[i][3])
+    logger.info("clicked on heart contour")
 
 def sqaure():
     global contour
     global ButtonSquare
     global ButtonHeart
     global ButtonDrop
+    global logger
     ButtonSquare.tempimg = pic_buttonPressedSquare
     ButtonHeart.tempimg = pic_buttonHeart
     ButtonHeart.img = pic_buttonHeart
@@ -390,12 +409,14 @@ def sqaure():
     contour = []
     for i in range(len(contour_square)):
         add_contour(contour_square[i][0], contour_square[i][1], contour_square[i][2], contour_square[i][3])
+    logger.info("clicked on square contour")
 
 def drop():
     global contour
     global ButtonSquare
     global ButtonHeart
     global ButtonDrop
+    global logger
     ButtonSquare.tempimg = pic_buttonSquare
     ButtonSquare.img = pic_buttonSquare
     ButtonHeart.tempimg = pic_buttonHeart
@@ -404,16 +425,24 @@ def drop():
     contour = []
     for i in range(len(contour_drop)):
         add_contour(contour_drop[i][0], contour_drop[i][1], contour_drop[i][2], contour_drop[i][3])
+    logger.info("clicked on drop contour")
 
 def preview():
     global show_control_lines
+    global logger
+    global preview_time_start
     show_control_lines = False
+    preview_time_start = time.time()
+    logger.info("clicked on preview")
 
 
 def add_curve0():
     global curves
     if len(curves) < maxCurves:
         add_curve()
+    else:
+        print("cannot add more curves")
+        logger.warning("clicked on add curve button when max curves reached")
 
 
 def msgNumCurves(num):
@@ -468,11 +497,14 @@ def clear():
     global selected_curve
     global selected
     global delta
+    global logger
     if len(curves) == 0:
+        logger.warning("clicked on delete button with no curves on screen")
         return
     curves.pop()
     selected_curve = None
     selected = None
+    logger.info("deleted curve: now " + str(len(curves)) + " curves")
     if len(curves) == 0:  # just in case something doesnt work
         delta = [0, 0, 0]
         return
@@ -502,6 +534,7 @@ def add_curve():
     global selected_curve
     global selected
     global delta
+    global logger
     deltaX = delta[0]
     deltaY = delta[1]
     new_curve = BezierCurve([x0 - deltaX, y0 - deltaY], [x1 - deltaX, y1 - deltaY], [x2 - deltaX, y2 - deltaY],
@@ -517,7 +550,7 @@ def add_curve():
         delta[2] += 1
         delta[0] = 0
         delta[1] = delta[2] * delta0Z
-
+    logger.info("added curve: now " + str(len(curves)) + " curves")
 
 def add_contour(p0, p1, p2, p3):
     global contour
@@ -535,9 +568,11 @@ def draw_all():
 
 def show_popup():
     global show_picture
+    global logger
+    global info_time_start
     show_picture = True
-
-
+    logger.info("clicked on info page")
+    info_time_start = time.time()
 '''
 def draw_dialog_box():
     global yes_button, no_button
@@ -597,6 +632,9 @@ def main():
     global arduino
     global auto_run
     global run_index
+    global logger
+    global preview_time_start
+    global info_time_start
 
     idle_clock = time.time()
     clock = pygame.time.Clock()
@@ -655,8 +693,12 @@ def main():
                 if selected_curve is not None:
                     selected_curve.color = curveColor
                     selected_curve = None
-                show_control_lines = True
-                show_picture = False
+                if show_picture:
+                    show_picture = False
+                    logger.info("closed info page after " + str(time.time() - info_time_start) + " seconds")
+                if not show_control_lines:
+                    show_control_lines = True
+                    logger.info("closed preview mode after " + str(time.time() - preview_time_start) + " seconds")
 
         # Draw stuff
         # screen.blit(pic_bg0, [0, 0])
@@ -716,12 +758,14 @@ def main():
             clear_all()
             add_curve0()
             idle_clock = time.time()
+            logger.info("idle mode triggered")
 
         # check if sending to arduino
         if found_arduino:
             if send_to_arduino:
                 if not check_arduino():
                     print("--- SOMETHING WENT WRONG WITH THE ARDUINO !!! ---")
+                    logger.error("--- SOMETHING WENT WRONG WITH THE ARDUINO !!! ---")
                     send_to_arduino = False
                     show_estimated_time = False
                     if auto_run:
@@ -746,6 +790,7 @@ def main():
                             print(send_one_number(LASER_OFF_RATE))
                             print(send_one_number(LASER_ON_RATE))
                             print(send_one_number(CONTOUR_RATE))
+                            logger.info("sent laser variables to arduino")
                             time.sleep(time_delay_arduino)
 
                     else:
