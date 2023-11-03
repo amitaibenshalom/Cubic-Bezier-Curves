@@ -695,10 +695,10 @@ def main():
                     selected_curve = None
                 if show_picture:
                     show_picture = False
-                    logger.info("closed info page after " + str(time.time() - info_time_start) + " seconds")
+                    logger.info("closed info page after " + str(int((time.time() - info_time_start)*10)/10.0) + " seconds")
                 if not show_control_lines:
                     show_control_lines = True
-                    logger.info("closed preview mode after " + str(time.time() - preview_time_start) + " seconds")
+                    logger.info("closed preview mode after " + str(int((time.time() - preview_time_start)*10)/10.0) + " seconds")
 
         # Draw stuff
         # screen.blit(pic_bg0, [0, 0])
