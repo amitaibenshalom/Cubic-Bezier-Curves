@@ -279,7 +279,17 @@ contour_square = [[[screen_width / 2 - square_side[0] + x_height, screen_height/
                       [screen_width / 2 - square_side[0],
                        screen_height / 2 + square_side[1]],
                       [screen_width / 2, screen_height / 2 + square_side[1]]]]
-contour_drop = [[(screen_width/2, int(610 / const_height_screen * screen_height)),
+x_height = 16
+x_length = 8
+contour_drop = [[(screen_width / 2 - int(x_length / const_width_screen * screen_width), int((145 + x_height) / const_height_screen * screen_height)),
+                  (screen_width/2 + int(x_length / const_width_screen * screen_width),int((145 + x_height + 2*x_length) / const_height_screen * screen_height)),
+                  (screen_width / 2 - int(x_length / const_width_screen * screen_width), int((145 + x_height) / const_height_screen * screen_height)),
+                  (screen_width/2 + int(x_length / const_width_screen * screen_width),int((145 + x_height + 2*x_length) / const_height_screen * screen_height))],
+                [(screen_width / 2 + int(x_length / const_width_screen * screen_width), int((145 + x_height) / const_height_screen * screen_height)),
+                  (screen_width/2 - int(x_length / const_width_screen * screen_width),int((145 + x_height + 2*x_length) / const_height_screen * screen_height)),
+                  (screen_width / 2 + int(x_length / const_width_screen * screen_width), int((145 + x_height) / const_height_screen * screen_height)),
+                  (screen_width/2 - int(x_length / const_width_screen * screen_width),int((145 + x_height + 2*x_length) / const_height_screen * screen_height))],
+                [(screen_width/2, int(610 / const_height_screen * screen_height)),
                  (screen_width/2 + int(62 / const_width_screen * screen_width), int(610 / const_height_screen * screen_height)),
                  (screen_width/2 + int(184 / const_width_screen * screen_width), int(550 / const_height_screen * screen_height)),
                  (screen_width/2 + int(184 / const_width_screen * screen_width), int(407 / const_height_screen * screen_height))],
