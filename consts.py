@@ -241,15 +241,15 @@ contour_heart = [[(screen_width / 2 - int(x_length / const_width_screen * screen
                   (int(225 / const_width_screen * screen_width), int(345 / const_height_screen * screen_height)),
                   (screen_width / 2, int(600 / const_height_screen * screen_height))]]
 square_side = [int(193 / const_width_screen * screen_width),int(193 / const_width_screen * screen_width)]
-x_height = int(35/const_width_screen * screen_width)
+x_height = int(40/const_width_screen * screen_width)
 x_length = int(16/const_width_screen * screen_width)
-contour_square = [[[screen_width / 2 - square_side[0] + x_height, screen_height/2-square_side[1] + x_height],
-                   [screen_width / 2 - square_side[0] + x_height + x_length, screen_height/2-square_side[1] + x_height + x_length],
-                   [screen_width / 2 - square_side[0] + x_height, screen_height/2-square_side[1] + x_height],
-                   [screen_width / 2 - square_side[0] + x_height + x_length, screen_height/2-square_side[1] + x_height + x_length]],
-                [[screen_width / 2 - square_side[0] + x_height + x_length, screen_height/2-square_side[1] + x_height],
-                   [screen_width / 2 - square_side[0] + x_height, screen_height/2-square_side[1] + x_height + x_length],
+contour_square = [[[screen_width / 2 - square_side[0] + x_height - x_length, screen_height/2-square_side[1] + x_height],
                    [screen_width / 2 - square_side[0] + x_height + x_length, screen_height/2-square_side[1] + x_height],
+                   [screen_width / 2 - square_side[0] + x_height - x_length, screen_height/2-square_side[1] + x_height],
+                   [screen_width / 2 - square_side[0] + x_height + x_length, screen_height/2-square_side[1] + x_height]],
+                [[screen_width / 2 - square_side[0] + x_height, screen_height/2-square_side[1] + x_height - x_length],
+                   [screen_width / 2 - square_side[0] + x_height, screen_height/2-square_side[1] + x_height + x_length],
+                   [screen_width / 2 - square_side[0] + x_height, screen_height/2-square_side[1] + x_height - x_length],
                    [screen_width / 2 - square_side[0] + x_height, screen_height/2-square_side[1] + x_height + x_length]],
                 [[screen_width / 2, screen_height / 2 + square_side[1]],
                    [screen_width / 2 + square_side[0],
