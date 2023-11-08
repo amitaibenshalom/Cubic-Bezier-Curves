@@ -20,6 +20,7 @@ formatter = logging.Formatter('%(asctime)s.%(msecs)03d %(message)s', '%Y-%m-%d %
 handler.setFormatter(formatter)
 logger.propagate = False
 logger.addHandler(handler)
+logger.info('')
 logger.info('--------------- PROGRAM START ---------------')
 
 try:
@@ -234,12 +235,14 @@ def check_arduino():
     global estimated_time
     global show_estimated_time
     global ButtonPrint
+    global logger
 
     if waiting[1]:
         if arduino.in_waiting > 0:
             received_data = arduino.readline().decode('utf-8').rstrip()
             waiting[1] = False
-            print("arduino finished drawing the curve")
+            print("arduino finished drawing curve " + str(curve_index))
+            logger.info("arduino finished drawing curve " + str(curve_index))
             curve_index += 1
             if curve_index >= len(curves_to_send):
                 send_to_arduino = False
@@ -248,8 +251,11 @@ def check_arduino():
                 ButtonPrint.imgon = pic_buttonPressedPrint
                 # send a key that will tell the arduino to stop reading
                 print("sent all curves")
+                logger.info("sent all curves")
+                logger.info("arduino finished drawing all curves successfully")
                 send_one_number(end_key)
-                print("sent end key")
+                print("sent end key for arduino")
+                logger.info("sent end key for arduino")
                 estimated_time = 0
                 show_estimated_time = False
                 return True
@@ -257,6 +263,7 @@ def check_arduino():
                 drawing_curve = False
         elif time.time() - last_time[1] > MAX_DRAWING_TIME_FOR_ARDUINO:
             print("ERROR: arduino didn't send drawing done key")
+            logger.error("ERROR: arduino didn't send drawing done key")
             return False
         return True
 
@@ -266,9 +273,11 @@ def check_arduino():
             waiting[0] = False
             waiting[1] = True
             last_time[1] = time.time()
-            print("arduino finished reading the curve")
+            print("arduino finished reading curve " + str(curve_index))
+            logger.info("arduino finished reading curve " + str(curve_index))
         elif time.time() - last_time[0] > MAX_TIME_WAITING_FOR_ARDUINO:
             print("ERROR: arduino didn't send reading done key")
+            logger.error("ERROR: arduino didn't send reading done key")
             return False
         return True
 
@@ -277,6 +286,7 @@ def check_arduino():
         for point in curve.vertices:
             send_one_number(point[1])
             send_one_number(point[0])
+        logger.info("sent curve " + str(curve_index))
         drawing_curve = True
         waiting[0] = True  # waiting for arduino to send key that will tell us it finished reading the curve
         waiting[1] = False  # NOT waiting for arduino to send key that will tell us it finished drawing the curve
@@ -299,20 +309,21 @@ def send_to_laser():
     global last_send_time
     global logger
 
+    if send_to_arduino:
+        return False
     logger.info("clicked on print button")
-
+    # print all curves
+    for curve in curves:
+        print(curve.vertices)
+        logger.info(curve.vertices)
     if not found_arduino:
         print("ERROR: No Laser Connected")
-        logger.error("No Laser Connected")
-        for curve in curves:
-            print(curve.vertices)
+        logger.error("ERROR: No Laser Connected")
         return False
     if len(curves) == 0:
         print("No curves to send")
+        logger.warning("Clicked on print button with no curves to send")
         return True
-    if send_to_arduino:
-        return False
-
     estimated = 0 # estimated time to finish drawing in seconds
     last_send_time = time.time()
     curves_to_send = curves.copy()
@@ -332,18 +343,21 @@ def send_to_laser():
             estimated += distance(curve.vertices[0], last_point) * pulse_per_pixel[0] * LASER_OFF_RATE / 1000
             last_point = curve.vertices[-1]
     print(f"estimated time to finish drawing (with contour): {estimated:.2f} seconds")
+    logger.info(f"estimated time to finish drawing (with contour): {estimated:.2f} seconds")
     estimated_time = estimated
     show_estimated_time = True
     msgEstimatedTime(estimated_time)
     if not send_one_number(starting_key):  # first, send a key that will tell the arduino to start reading
         return False
     print("sent starting key to laser")
+    logger.info("sent starting key to laser")
     # then, send the number of curves
     if not send_one_number(-len(curves_to_send)):
         return False
     if not send_one_number(-times*len(contour)):
         return False
     print("sent number of curves and contour")
+    logger.info("sent number of curves and contour")
     drawing_curve = False
     curve_index = 0
     send_to_arduino = True
@@ -361,6 +375,7 @@ def send_one_number(value):
         arduino.flush()
     except Exception:
         print(str(value) + "not sent")
+        logger.error(str(value) + "NOT SENT")
         return False
     print("sent " + str(value))
     return True
@@ -369,13 +384,16 @@ def send_one_number(value):
 def take_control():
     global arduino
     print("taking control over Arduino...")
+    logger.info("taking control over Arduino...")
     pytxt = "PY\n"
     try:
         arduino.write(pytxt.encode())
     except:
         print("Error: python failed taking control over arduino - use another serial monitor")
+        logger.error("Error: python failed taking control over arduino - use another serial monitor")
         return False
     print("success!")
+    logger.info("success!")
     return True
 
 
@@ -526,6 +544,7 @@ def clear_all():
     selected_curve = None
     selected = None
     curves.clear()
+    logger.info("deleted all curves")
     delta = [0, 0, 0]
 
 
@@ -648,6 +667,7 @@ def main():
         events = pygame.event.get()
         for event in events:
             if event.type == QUIT:
+                logger.info("PROGRAM ENDED BY USER")
                 running = False
             elif event.type == KEYDOWN:
                 if event.key == pygame.K_p:  #if p is pressed then start running the laser automatically
@@ -656,6 +676,7 @@ def main():
                 else:
                     if auto_run:
                         print("auto run stopped after: " + str(run_index) + " runs")
+                        logger.info("auto run stopped after: " + str(run_index) + " runs")
                     auto_run = False
                     if event.key == pygame.K_r or event.key == pygame.K_c:
                         clear()
@@ -663,12 +684,15 @@ def main():
                         add_curve0()
                     elif event.key == pygame.K_ESCAPE:
                         running = False
+                        logger.info("PROGRAM ENDED BY USER")
                     else:
                         running = False
+                        logger.info("PROGRAM ENDED BY USER")
             elif event.type == MOUSEBUTTONDOWN and event.button == 1:
                 idle_clock = time.time()
                 if auto_run:
-                    print("auto run stopped after: " + str(run_index) + " runs")                
+                    print("auto run stopped after: " + str(run_index) + " runs")
+                    logger.info("auto run stopped after: " + str(run_index) + " runs")
                 auto_run = False
                 for curve in curves:
                     for p in curve.vertices:
@@ -688,6 +712,7 @@ def main():
                 idle_clock = time.time()
                 if auto_run:
                     print("auto run stopped after: " + str(run_index) + " runs")
+                    logger.info("auto run stopped after: " + str(run_index) + " runs")
                 auto_run = False
                 selected = None
                 buttons_enabled = True
@@ -771,6 +796,7 @@ def main():
                     show_estimated_time = False
                     if auto_run:
                         print("auto run stopped after: " + str(run_index) + " runs")
+                        logger.info("auto run stopped after: " + str(run_index) + " runs")
                     auto_run = False
             else:
                 try:
