@@ -1,5 +1,6 @@
 import pygame
 import os
+import platform
 from pygame.locals import *
 
 # consts
@@ -36,7 +37,12 @@ screenColor = gray
 # logging values
 # get the current diractory the code sits in and create the log file there
 currentDir = os.path.dirname(os.path.realpath(__file__))
-LOG_FILE_PATH = currentDir + "\\log.log"
+LOG_FILE_PATH = ""
+os_name = platform.system()
+if os_name == 'Linux':
+    LOG_FILE_PATH = currentDir + "/log.log"
+else:
+    LOG_FILE_PATH = currentDir + "\\log.log"
 
 
 # borderLineHeight = int(142 / const_height_screen * screen_height)
