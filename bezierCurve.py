@@ -613,9 +613,10 @@ buttons = [ButtonAdd, ButtonDelete, ButtonInfo, ButtonPreview, ButtonPrint, Butt
 
 
 # rotate the square contour 45 degrees
+angle = math.radians(45)
 for i in range(len(contour_square)):
     for j in range(len(contour_square[i])):
-        contour_square[i][j] = rotate_point(contour_square[i][j], math.radians(45), centerInsideBorders)
+        contour_square[i][j] = rotate_point(contour_square[i][j], angle, centerInsideBorders)
 
 
 def main():

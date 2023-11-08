@@ -220,7 +220,17 @@ pic_doubleArrow = pygame.transform.scale(pic_doubleArrow, doubleArrowSize)
 pic_textAbove = pygame.transform.scale(pic_textAbove, textAboveSize)
 pic_textFrame = pygame.transform.scale(pic_textFrame, textFrameSize)
 
-contour_heart = [[(screen_width / 2, int(600 / const_height_screen * screen_height)),
+x_length = 8
+x_height = 5 # height from the top of the heart downwards
+contour_heart = [[(screen_width / 2 - int(x_length / const_width_screen * screen_width), int((250 + x_height) / const_height_screen * screen_height)),
+                  (screen_width/2 + int(x_length / const_width_screen * screen_width),int((250 + x_height + 2*x_length) / const_height_screen * screen_height)),
+                  (screen_width / 2 - int(x_length / const_width_screen * screen_width), int((250 + x_height) / const_height_screen * screen_height)),
+                  (screen_width/2 + int(x_length / const_width_screen * screen_width),int((250 + x_height + 2*x_length) / const_height_screen * screen_height))],
+                [(screen_width / 2 + int(x_length / const_width_screen * screen_width), int((250 + x_height) / const_height_screen * screen_height)),
+                  (screen_width/2 - int(x_length / const_width_screen * screen_width),int((250 + x_height + 2*x_length) / const_height_screen * screen_height)),
+                  (screen_width / 2 + int(x_length / const_width_screen * screen_width), int((250 + x_height) / const_height_screen * screen_height)),
+                  (screen_width/2 - int(x_length / const_width_screen * screen_width),int((250 + x_height + 2*x_length) / const_height_screen * screen_height))],
+                [(screen_width / 2, int(600 / const_height_screen * screen_height)),
                   (int(1145 / const_width_screen * screen_width), int(345 / const_height_screen * screen_height)), (
                   screen_width / 2 + (int(120 / const_width_screen * screen_width)),
                   int(80 / const_height_screen * screen_height)),
@@ -231,7 +241,17 @@ contour_heart = [[(screen_width / 2, int(600 / const_height_screen * screen_heig
                   (int(225 / const_width_screen * screen_width), int(345 / const_height_screen * screen_height)),
                   (screen_width / 2, int(600 / const_height_screen * screen_height))]]
 square_side = [int(193 / const_width_screen * screen_width),int(193 / const_width_screen * screen_width)]
-contour_square = [[[screen_width / 2, screen_height / 2 + square_side[1]],
+x_height = int(35/const_width_screen * screen_width)
+x_length = int(16/const_width_screen * screen_width)
+contour_square = [[[screen_width / 2 - square_side[0] + x_height, screen_height/2-square_side[1] + x_height],
+                   [screen_width / 2 - square_side[0] + x_height + x_length, screen_height/2-square_side[1] + x_height + x_length],
+                   [screen_width / 2 - square_side[0] + x_height, screen_height/2-square_side[1] + x_height],
+                   [screen_width / 2 - square_side[0] + x_height + x_length, screen_height/2-square_side[1] + x_height + x_length]],
+                [[screen_width / 2 - square_side[0] + x_height + x_length, screen_height/2-square_side[1] + x_height],
+                   [screen_width / 2 - square_side[0] + x_height, screen_height/2-square_side[1] + x_height + x_length],
+                   [screen_width / 2 - square_side[0] + x_height + x_length, screen_height/2-square_side[1] + x_height],
+                   [screen_width / 2 - square_side[0] + x_height, screen_height/2-square_side[1] + x_height + x_length]],
+                [[screen_width / 2, screen_height / 2 + square_side[1]],
                    [screen_width / 2 + square_side[0],
                     screen_height / 2 + square_side[1]],
                    [screen_width / 2 + square_side[0],
