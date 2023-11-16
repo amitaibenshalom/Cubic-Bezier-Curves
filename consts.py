@@ -247,7 +247,7 @@ contour_heart = [[(screen_width / 2 - int(x_length / const_width_screen * screen
                   (int(225 / const_width_screen * screen_width), int(345 / const_height_screen * screen_height)),
                   (screen_width / 2, int(600 / const_height_screen * screen_height))]]
 square_side = [int(193 / const_width_screen * screen_width),int(193 / const_width_screen * screen_width)]
-x_height = int(50/const_width_screen * screen_width)
+x_height = int(60/const_width_screen * screen_width)
 x_length = int(24/const_width_screen * screen_width)
 contour_square = [[[screen_width / 2 - square_side[0] + x_height - x_length, screen_height/2-square_side[1] + x_height],
                    [screen_width / 2 - square_side[0] + x_height + x_length, screen_height/2-square_side[1] + x_height],
@@ -285,7 +285,7 @@ contour_square = [[[screen_width / 2 - square_side[0] + x_height - x_length, scr
                       [screen_width / 2 - square_side[0],
                        screen_height / 2 + square_side[1]],
                       [screen_width / 2, screen_height / 2 + square_side[1]]]]
-x_height = 25
+x_height = 35
 x_length = 16
 contour_drop = [[(screen_width / 2 - int(x_length / const_width_screen * screen_width), int((145 + x_height) / const_height_screen * screen_height)),
                   (screen_width/2 + int(x_length / const_width_screen * screen_width),int((145 + x_height + 2*x_length) / const_height_screen * screen_height)),
@@ -324,7 +324,7 @@ for k in range(len(contours)):
 
 buttons_enabled = True
 IS_MOVING_ALL_CURVE = True
-IDLE_TIME = 300 # seconds
+IDLE_TIME = 180 # seconds
 
 MAX_RUNS = 60
 
