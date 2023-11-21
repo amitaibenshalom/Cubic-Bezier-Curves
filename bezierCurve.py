@@ -815,14 +815,14 @@ def main():
 
         if (time.time() - idle_clock > IDLE_TIME and not auto_run):
             logger.info("idle mode triggered")
-            # heart(log_flag=False)
+            heart(log_flag=False)
             clear_all(log_flag=False)
-            # add_curve0(log_flag=False)
-            insert_sample(sample_index)
-            sample_index+=1
-            if sample_index >= len(samples):
-                sample_index = 0
-            send_to_laser(log_flag=False)
+            add_curve0(log_flag=False)
+#            insert_sample(sample_index)
+#            sample_index+=1
+#            if sample_index >= len(samples):
+#                sample_index = 0
+#            send_to_laser(log_flag=False)
             idle_clock = time.time()
 
 
