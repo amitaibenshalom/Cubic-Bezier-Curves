@@ -37,13 +37,7 @@ screenColor = gray
 # logging values
 # get the current diractory the code sits in and create the log file there
 currentDir = os.path.dirname(os.path.realpath(__file__))
-LOG_FILE_PATH = ""
-os_name = platform.system()
-if os_name == 'Linux':
-    LOG_FILE_PATH = currentDir + "/log.log"
-else:
-    LOG_FILE_PATH = currentDir + "\\log.log"
-
+LOG_FILE_PATH = os.path.join(currentDir, "log.txt")
 
 # borderLineHeight = int(142 / const_height_screen * screen_height)
 borderLineHeight = int(142 / const_height_screen * screen_height)
@@ -322,9 +316,54 @@ for k in range(len(contours)):
             contours[k][i][j][0] + int(centerInsideBorders[0] - center[0]),
             contours[k][i][j][1] + int(centerInsideBorders[1] - center[1]))
 
+
+sample0 = [[[756, 359], [770, 481], [667, 537], [659, 384]],
+         [[671, 437], [705, 413], [722, 445], [714, 369]],
+         [[595, 490], [745, 283], [502, 478], [612, 317]],
+         [[559, 489], [559, 402], [567, 368], [550, 369]],
+         [[437, 366], [511, 373], [529, 351], [520, 491]],
+         [[519, 491], [438, 493], [437, 501], [448, 378]],
+         [[401, 451], [402, 378], [399, 400], [405, 341]],
+         [[396, 479], [416, 491], [409, 447], [396, 478]]]
+sample0 = [[(int(756/const_width_screen*screen_width)),(int(359/const_height_screen*screen_height)),
+                (int(770/const_width_screen*screen_width)),(int(481/const_height_screen*screen_height)),
+                (int(667/const_width_screen*screen_width)),(int(537/const_height_screen*screen_height)),
+                (int(659/const_width_screen*screen_width)),(int(384/const_height_screen*screen_height))],
+            [(int(671/const_width_screen*screen_width)),(int(437/const_height_screen*screen_height)),
+                (int(705/const_width_screen*screen_width)),(int(413/const_height_screen*screen_height)),
+                (int(722/const_width_screen*screen_width)),(int(445/const_height_screen*screen_height)),
+                (int(714/const_width_screen*screen_width)),(int(369/const_height_screen*screen_height))],
+            [(int(595/const_width_screen*screen_width)),(int(490/const_height_screen*screen_height)),
+                (int(745/const_width_screen*screen_width)),(int(283/const_height_screen*screen_height)),
+                (int(502/const_width_screen*screen_width)),(int(478/const_height_screen*screen_height)),
+                (int(612/const_width_screen*screen_width)),(int(317/const_height_screen*screen_height))],
+            [(int(559/const_width_screen*screen_width)),(int(489/const_height_screen*screen_height)),
+                (int(559/const_width_screen*screen_width)),(int(402/const_height_screen*screen_height)),
+                (int(567/const_width_screen*screen_width)),(int(368/const_height_screen*screen_height)),
+                (int(550/const_width_screen*screen_width)),(int(369/const_height_screen*screen_height))],
+            [(int(437/const_width_screen*screen_width)),(int(366/const_height_screen*screen_height)),
+                (int(511/const_width_screen*screen_width)),(int(373/const_height_screen*screen_height)),
+                (int(529/const_width_screen*screen_width)),(int(351/const_height_screen*screen_height)),
+                (int(520/const_width_screen*screen_width)),(int(491/const_height_screen*screen_height))],
+            [(int(519/const_width_screen*screen_width)),(int(491/const_height_screen*screen_height)),
+                (int(438/const_width_screen*screen_width)),(int(493/const_height_screen*screen_height)),
+                (int(437/const_width_screen*screen_width)),(int(501/const_height_screen*screen_height)),
+                (int(448/const_width_screen*screen_width)),(int(378/const_height_screen*screen_height))],
+            [(int(401/const_width_screen*screen_width)),(int(451/const_height_screen*screen_height)),
+                (int(402/const_width_screen*screen_width)),(int(378/const_height_screen*screen_height)),
+                (int(399/const_width_screen*screen_width)),(int(400/const_height_screen*screen_height)),
+                (int(405/const_width_screen*screen_width)),(int(341/const_height_screen*screen_height))],
+            [(int(396/const_width_screen*screen_width)),(int(479/const_height_screen*screen_height)),
+                (int(416/const_width_screen*screen_width)),(int(491/const_height_screen*screen_height)),
+                (int(409/const_width_screen*screen_width)),(int(447/const_height_screen*screen_height)),
+                (int(396/const_width_screen*screen_width)),(int(478/const_height_screen*screen_height))]]
+
+
+samples = [sample0]
+
 buttons_enabled = True
 IS_MOVING_ALL_CURVE = True
-IDLE_TIME = 180 # seconds
+IDLE_TIME = 30 # seconds
 
 MAX_RUNS = 60
 

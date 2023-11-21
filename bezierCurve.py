@@ -207,6 +207,7 @@ last_send_time = 0
 delta = [0, 0, 0]
 auto_run = False
 run_index = 0
+sample_index = 0
 info_time_start = time.time()
 preview_time_start = time.time()
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
@@ -225,7 +226,7 @@ def check_buttons():
             button.draw_static()
 
 
-def check_arduino():
+def check_arduino(log_flag=True):
     global curves_to_send
     global waiting
     global last_time
@@ -242,7 +243,8 @@ def check_arduino():
             received_data = arduino.readline().decode('utf-8').rstrip()
             waiting[1] = False
             print("arduino finished drawing curve " + str(curve_index))
-            logger.info("arduino finished drawing curve " + str(curve_index))
+            if log_flag:
+                logger.info("arduino finished drawing curve " + str(curve_index))
             curve_index += 1
             if curve_index >= len(curves_to_send):
                 send_to_arduino = False
@@ -251,11 +253,13 @@ def check_arduino():
                 ButtonPrint.imgon = pic_buttonPressedPrint
                 # send a key that will tell the arduino to stop reading
                 print("sent all curves")
-                logger.info("sent all curves")
-                logger.info("arduino finished drawing all curves successfully")
+                if log_flag:
+                    logger.info("sent all curves")
+                    logger.info("arduino finished drawing all curves successfully")
                 send_one_number(end_key)
                 print("sent end key for arduino")
-                logger.info("sent end key for arduino")
+                if log_flag:
+                    logger.info("sent end key for arduino")
                 estimated_time = 0
                 show_estimated_time = False
                 return True
@@ -274,7 +278,8 @@ def check_arduino():
             waiting[1] = True
             last_time[1] = time.time()
             print("arduino finished reading curve " + str(curve_index))
-            logger.info("arduino finished reading curve " + str(curve_index))
+            if log_flag:
+                logger.info("arduino finished reading curve " + str(curve_index))
         elif time.time() - last_time[0] > MAX_TIME_WAITING_FOR_ARDUINO:
             print("ERROR: arduino didn't send reading done key")
             logger.error("ERROR: arduino didn't send reading done key")
@@ -286,7 +291,8 @@ def check_arduino():
         for point in curve.vertices:
             send_one_number(point[1])
             send_one_number(point[0])
-        logger.info("sent curve " + str(curve_index))
+        if log_flag:
+            logger.info("sent curve " + str(curve_index))
         drawing_curve = True
         waiting[0] = True  # waiting for arduino to send key that will tell us it finished reading the curve
         waiting[1] = False  # NOT waiting for arduino to send key that will tell us it finished drawing the curve
@@ -295,7 +301,7 @@ def check_arduino():
 
 
 # send the points as ratio between place and screen size
-def send_to_laser():
+def send_to_laser(log_flag=True):
     global curves
     global curves_to_send
     global drawing_curve
@@ -311,18 +317,21 @@ def send_to_laser():
 
     if send_to_arduino:
         return False
-    logger.info("clicked on print button")
+    if log_flag:
+        logger.info("clicked on print button")
     # print all curves
     for curve in curves:
         print(curve.vertices)
-        logger.info(curve.vertices)
+        if log_flag:
+            logger.info(curve.vertices)
     if not found_arduino:
         print("ERROR: No Laser Connected")
         logger.error("ERROR: No Laser Connected")
         return False
     if len(curves) == 0:
         print("No curves to send")
-        logger.warning("Clicked on print button with no curves to send")
+        if log_flag:
+            logger.warning("Clicked on print button with no curves to send")
         return True
     estimated = 0 # estimated time to finish drawing in seconds
     last_send_time = time.time()
@@ -343,21 +352,24 @@ def send_to_laser():
             estimated += distance(curve.vertices[0], last_point) * pulse_per_pixel[0] * LASER_OFF_RATE / 1000
             last_point = curve.vertices[-1]
     print(f"estimated time to finish drawing (with contour): {estimated:.2f} seconds")
-    logger.info(f"estimated time to finish drawing (with contour): {estimated:.2f} seconds")
+    if log_flag:
+        logger.info(f"estimated time to finish drawing (with contour): {estimated:.2f} seconds")
     estimated_time = estimated
     show_estimated_time = True
     msgEstimatedTime(estimated_time)
     if not send_one_number(starting_key):  # first, send a key that will tell the arduino to start reading
         return False
     print("sent starting key to laser")
-    logger.info("sent starting key to laser")
+    if log_flag:
+        logger.info("sent starting key to laser")
     # then, send the number of curves
     if not send_one_number(-len(curves_to_send)):
         return False
     if not send_one_number(-times*len(contour)):
         return False
     print("sent number of curves and contour")
-    logger.info("sent number of curves and contour")
+    if log_flag:
+        logger.info("sent number of curves and contour")
     drawing_curve = False
     curve_index = 0
     send_to_arduino = True
@@ -397,7 +409,7 @@ def take_control():
     return True
 
 
-def heart():
+def heart(log_flag=True):
     global contour
     global ButtonSquare
     global ButtonHeart
@@ -411,9 +423,10 @@ def heart():
     contour = []
     for i in range(len(contour_heart)):
         add_contour(contour_heart[i][0], contour_heart[i][1], contour_heart[i][2], contour_heart[i][3])
-    logger.info("clicked on heart contour")
+    if log_flag:
+        logger.info("clicked on heart contour")
 
-def sqaure():
+def sqaure(log_flag=True):
     global contour
     global ButtonSquare
     global ButtonHeart
@@ -427,9 +440,10 @@ def sqaure():
     contour = []
     for i in range(len(contour_square)):
         add_contour(contour_square[i][0], contour_square[i][1], contour_square[i][2], contour_square[i][3])
-    logger.info("clicked on square contour")
+    if log_flag:
+        logger.info("clicked on square contour")
 
-def drop():
+def drop(log_flag=True):
     global contour
     global ButtonSquare
     global ButtonHeart
@@ -443,24 +457,27 @@ def drop():
     contour = []
     for i in range(len(contour_drop)):
         add_contour(contour_drop[i][0], contour_drop[i][1], contour_drop[i][2], contour_drop[i][3])
-    logger.info("clicked on drop contour")
+    if log_flag:
+        logger.info("clicked on drop contour")
 
-def preview():
+def preview(log_flag=True):
     global show_control_lines
     global logger
     global preview_time_start
     show_control_lines = False
     preview_time_start = time.time()
-    logger.info("clicked on preview")
+    if log_flag:
+        logger.info("clicked on preview")
 
 
-def add_curve0():
+def add_curve0(log_flag=True):
     global curves
     if len(curves) < maxCurves:
         add_curve()
     else:
         print("cannot add more curves")
-        logger.warning("clicked on add curve button when max curves reached")
+        if log_flag:
+            logger.warning("clicked on add curve button when max curves reached")
 
 
 def msgNumCurves(num):
@@ -472,7 +489,6 @@ def msgNumCurves(num):
     screen.blit(value, text_rect)
 
 def msgEstimatedTime(time):
-    value = font_style.render(f"{time:.1f} תוינש" + " :ךרעומ ןמז ", True, black)
     value = font_style.render(f" תוינש {time:.1f} :ךרעומ ןמז ", True, black)
     text_rect = value.get_rect(center=((borderLine2X+screen_width)/2,buttonPrintPosition[1]+1.5*buttonPrintSize[1]))
     screen.blit(value, text_rect)
@@ -510,19 +526,21 @@ def rotate_point(point, angle, center_p):
     return int(rotated_x), int(rotated_y)
 
 # clear the last curve
-def clear():
+def clear(log_flag=True):
     global curves
     global selected_curve
     global selected
     global delta
     global logger
     if len(curves) == 0:
-        logger.warning("clicked on delete button with no curves on screen")
+        if log_flag:
+            logger.warning("clicked on delete button with no curves on screen")
         return
     curves.pop()
     selected_curve = None
     selected = None
-    logger.info("deleted curve: now " + str(len(curves)) + " curves")
+    if log_flag:
+        logger.info("deleted curve: now " + str(len(curves)) + " curves")
     if len(curves) == 0:  # just in case something doesnt work
         delta = [0, 0, 0]
         return
@@ -536,7 +554,7 @@ def clear():
     delta[1] -= delta0Y
 
 
-def clear_all():
+def clear_all(log_flag=True):
     global curves
     global selected_curve
     global selected
@@ -544,11 +562,12 @@ def clear_all():
     selected_curve = None
     selected = None
     curves.clear()
-    logger.info("deleted all curves")
+    if log_flag:
+        logger.info("deleted all curves")
     delta = [0, 0, 0]
 
 
-def add_curve():
+def add_curve(log_flag=True):
     global curves
     global selected_curve
     global selected
@@ -569,13 +588,27 @@ def add_curve():
         delta[2] += 1
         delta[0] = 0
         delta[1] = delta[2] * delta0Z
-    logger.info("added curve: now " + str(len(curves)) + " curves")
+    if log_flag:
+        logger.info("added curve: now " + str(len(curves)) + " curves")
 
 def add_contour(p0, p1, p2, p3):
     global contour
     new_contour = BezierCurve(p0, p1, p2, p3, False, contourColor, contourWidth)
     contour.append(new_contour)
 
+def insert_sample(index_sample):
+    global curves
+    global samples
+    if index_sample == 0:
+        heart(log_flag=False)
+    elif index_sample == 1:
+        drop(log_flag=False)
+    elif index_sample == 2:
+        sqaure(log_flag=False)
+    for i in range(len(samples[index_sample])):
+        new_curve = BezierCurve(samples[index_sample][i][0], samples[index_sample][i][1],
+                                samples[index_sample][i][2], samples[index_sample][i][3], True, curveColor, curveWidth)
+        curves.append(new_curve)
 
 def draw_all():
     global curves
@@ -658,8 +691,8 @@ def main():
 
     idle_clock = time.time()
     clock = pygame.time.Clock()
-    heart()
-    add_curve0()
+    heart(log_flag=False)
+    add_curve0(log_flag=False)
 
     sent_border = False
     running = True
@@ -780,11 +813,17 @@ def main():
         pygame.display.flip()
 
         if (time.time() - idle_clock > IDLE_TIME and not auto_run):
-            heart()
-            clear_all()
-            add_curve0()
-            idle_clock = time.time()
             logger.info("idle mode triggered")
+            # heart(log_flag=False)
+            clear_all(log_flag=False)
+            # add_curve0(log_flag=False)
+            insert_sample(sample_index)
+            sample_index+=1
+            if sample_index >= len(samples):
+                sample_index = 0
+            send_to_laser(log_flag=False)
+            idle_clock = time.time()
+
 
         # check if sending to arduino
         if found_arduino:
