@@ -685,6 +685,7 @@ def main():
     global arduino
     global auto_run
     global run_index
+    global sample_index
     global logger
     global preview_time_start
     global info_time_start
