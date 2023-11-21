@@ -355,7 +355,7 @@ samples = [sample0]
 
 buttons_enabled = True
 IS_MOVING_ALL_CURVE = True
-IDLE_TIME = 30 # seconds
+IDLE_TIME = 100 # seconds
 
 MAX_RUNS = 60
 
