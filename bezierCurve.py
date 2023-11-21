@@ -658,7 +658,7 @@ def main():
 
     idle_clock = time.time()
     clock = pygame.time.Clock()
-    sqaure()
+    heart()
     add_curve0()
 
     sent_border = False
@@ -780,7 +780,7 @@ def main():
         pygame.display.flip()
 
         if (time.time() - idle_clock > IDLE_TIME and not auto_run):
-            sqaure()
+            heart()
             clear_all()
             add_curve0()
             idle_clock = time.time()
