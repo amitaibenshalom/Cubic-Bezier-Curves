@@ -356,7 +356,9 @@ samples = [sample0]
 buttons_enabled = True
 IS_MOVING_ALL_CURVE = True
 IDLE_TIME = 100 # seconds
-
+IDLE_TIME_DRAW = 120
+enable_idle_drawing = True
+idle_mode = False
 MAX_RUNS = 60
 
 # arduino
@@ -367,7 +369,7 @@ time_delay_arduino = 0.005  # seconds
 LASER_POWER = 255  # (0 <= x <= 255)
 CONTOUR_POWER = 255  # (0 <= x <= 255)
 LASER_OFF_RATE = 6
-LASER_ON_RATE = 10
+LASER_ON_RATE = 6
 CONTOUR_RATE = 50 # for purple paper
 #LASER_ON_RATE = 10  # for yellow paper
 #CONTOUR_RATE = 50

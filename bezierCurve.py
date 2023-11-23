@@ -210,6 +210,8 @@ run_index = 0
 sample_index = 0
 info_time_start = time.time()
 preview_time_start = time.time()
+idle_clock = time.time()
+idle_clock_draw = time.time()
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
 
@@ -237,6 +239,8 @@ def check_arduino(log_flag=True):
     global show_estimated_time
     global ButtonPrint
     global logger
+    global idle_clock_draw
+    global idle_mode
 
     if waiting[1]:
         if arduino.in_waiting > 0:
@@ -262,6 +266,11 @@ def check_arduino(log_flag=True):
                     logger.info("sent end key for arduino")
                 estimated_time = 0
                 show_estimated_time = False
+                if idle_mode:
+                    idle_clock_draw = time.time()
+                    clear_all(log_flag = False)
+                    heart(log_flag = False)
+                    add_curve0(log_flag = False)
                 return True
             else:
                 drawing_curve = False
@@ -314,6 +323,7 @@ def send_to_laser(log_flag=True):
     global show_estimated_time
     global last_send_time
     global logger
+    global idle_mode
 
     if send_to_arduino:
         return False
@@ -606,9 +616,43 @@ def insert_sample(index_sample):
     elif index_sample == 2:
         sqaure(log_flag=False)
     for i in range(len(samples[index_sample])):
-        new_curve = BezierCurve(samples[index_sample][i][0], samples[index_sample][i][1],
-                                samples[index_sample][i][2], samples[index_sample][i][3], True, curveColor, curveWidth)
+        new_curve = BezierCurve([samples[index_sample][i][0][0],samples[index_sample][i][0][1]], 
+                                [samples[index_sample][i][1][0],samples[index_sample][i][1][1]],
+                                [samples[index_sample][i][2][0],samples[index_sample][i][2][1]],
+                                [samples[index_sample][i][3][0],samples[index_sample][i][3][1]],
+                                True, curveColor, curveWidth)
         curves.append(new_curve)
+
+def check_idle():
+    global idle_mode
+    global idle_clock
+    global idle_clock_draw
+    global sample_index
+    global auto_run
+    global send_to_arduino
+    global logger
+    global enable_idle_drawing
+
+    if (not idle_mode and time.time() - idle_clock > IDLE_TIME and not auto_run and not send_to_arduino):
+        idle_mode = True
+        logger.info("idle mode triggered")
+        heart(log_flag=False)
+        clear_all(log_flag=False)
+        add_curve0(log_flag=False)
+#            idle_clock = time.time()
+        idle_clock_draw = time.time()
+
+    if (idle_mode and time.time() - idle_clock_draw > IDLE_TIME_DRAW and not auto_run and not send_to_arduino and enable_idle_drawing):
+        logger.info("drawing sample number " + str(sample_index))
+        clear_all(log_flag=False)
+        insert_sample(sample_index)
+        sample_index+=1
+        if sample_index >= len(samples):
+            sample_index = 0
+        send_to_laser(log_flag=False)
+        idle_clock_draw = time.time()
+        idle_clock = time.time()
+
 
 def draw_all():
     global curves
@@ -689,8 +733,8 @@ def main():
     global logger
     global preview_time_start
     global info_time_start
-
-    idle_clock = time.time()
+    global enable_idle_drawing
+    
     clock = pygame.time.Clock()
     heart(log_flag=False)
     add_curve0(log_flag=False)
@@ -716,6 +760,11 @@ def main():
                         clear()
                     elif event.key == pygame.K_a:
                         add_curve0()
+                    elif event.key == pygame.K_s:
+                        insert_sample(sample_index)
+                        sample_index+=1
+                        if sample_index >= len(samples):
+                            sample_index = 0
                     elif event.key == pygame.K_ESCAPE:
                         running = False
                         logger.info("PROGRAM ENDED BY USER")
@@ -724,6 +773,8 @@ def main():
                         logger.info("PROGRAM ENDED BY USER")
             elif event.type == MOUSEBUTTONDOWN and event.button == 1:
                 idle_clock = time.time()
+                idle_clock_draw = time.time()
+                idle_mode = False
                 if auto_run:
                     print("auto run stopped after: " + str(run_index) + " runs")
                     logger.info("auto run stopped after: " + str(run_index) + " runs")
@@ -744,6 +795,8 @@ def main():
                                 buttons_enabled = False
             elif event.type == MOUSEBUTTONUP and event.button == 1:
                 idle_clock = time.time()
+                idle_clock_draw = time.time()
+                idle_mode = False
                 if auto_run:
                     print("auto run stopped after: " + str(run_index) + " runs")
                     logger.info("auto run stopped after: " + str(run_index) + " runs")
@@ -809,22 +862,11 @@ def main():
             msgEstimatedTime(max(estimated_time-time.time()+last_send_time,0))
 
         check_buttons()
+#        check_idle()
+
         pygame.display.update()
         # Flip screen
         pygame.display.flip()
-
-        if (time.time() - idle_clock > IDLE_TIME and not auto_run):
-            logger.info("idle mode triggered")
-            heart(log_flag=False)
-            clear_all(log_flag=False)
-            add_curve0(log_flag=False)
-#            insert_sample(sample_index)
-#            sample_index+=1
-#            if sample_index >= len(samples):
-#                sample_index = 0
-#            send_to_laser(log_flag=False)
-            idle_clock = time.time()
-
 
         # check if sending to arduino
         if found_arduino:
