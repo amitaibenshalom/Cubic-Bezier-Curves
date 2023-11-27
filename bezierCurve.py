@@ -883,6 +883,7 @@ def main():
 
         check_buttons()
         check_idle()
+        check_dc_motor()
 
         pygame.display.update()
         # Flip screen
