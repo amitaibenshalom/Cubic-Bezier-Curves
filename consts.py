@@ -461,10 +461,8 @@ LASER_POWER = 255  # (0 <= x <= 255)
 CONTOUR_POWER = 255  # (0 <= x <= 255)
 LASER_OFF_RATE = 6
 LASER_ON_RATE = 6
-CONTOUR_RATE = 50 # for purple paper
-#LASER_ON_RATE = 10  # for yellow paper
-#CONTOUR_RATE = 50
-MAX_DC_MOTOR_TIME = 2 #second
+CONTOUR_RATE = 50 # for green/yellow paper
+MAX_DC_MOTOR_TIME = 1.5  # seconds
 
 mm_per_pulse = [2*80.0/800, 2*80.0/800]  # mm per pulse for each motor
 board_size = [83.0, 83.0]  # size of the board in mm
