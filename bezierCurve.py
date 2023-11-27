@@ -240,6 +240,7 @@ def check_arduino(log_flag=True):
     global ButtonPrint
     global logger
     global idle_clock_draw
+    global idle_clock
     global idle_mode
 
     if waiting[1]:
@@ -266,8 +267,9 @@ def check_arduino(log_flag=True):
                     logger.info("sent end key for arduino")
                 estimated_time = 0
                 show_estimated_time = False
+                idle_clock = time.time()
+                idle_clock_draw = time.time()
                 if idle_mode:
-                    idle_clock_draw = time.time()
                     clear_all(log_flag = False)
                     heart(log_flag = False)
                     add_curve0(log_flag = False)
@@ -633,7 +635,7 @@ def check_idle():
     global logger
     global enable_idle_drawing
 
-    if (not idle_mode and time.time() - idle_clock > IDLE_TIME and not auto_run and not send_to_arduino):
+    if not idle_mode and time.time() - idle_clock > IDLE_TIME and not auto_run and not send_to_arduino:
         idle_mode = True
         logger.info("idle mode triggered")
         heart(log_flag=False)
@@ -642,7 +644,7 @@ def check_idle():
 #            idle_clock = time.time()
         idle_clock_draw = time.time()
 
-    if (idle_mode and time.time() - idle_clock_draw > IDLE_TIME_DRAW and not auto_run and not send_to_arduino and enable_idle_drawing):
+    if idle_mode and time.time() - idle_clock_draw > IDLE_TIME_DRAW and not auto_run and not send_to_arduino and enable_idle_drawing:
         logger.info("drawing sample number " + str(sample_index))
         clear_all(log_flag=False)
         insert_sample(sample_index)
@@ -733,7 +735,9 @@ def main():
     global logger
     global preview_time_start
     global info_time_start
-    global enable_idle_drawing
+    global idle_clock
+    global idle_clock_draw
+    global idle_mode
     
     clock = pygame.time.Clock()
     heart(log_flag=False)
@@ -862,7 +866,7 @@ def main():
             msgEstimatedTime(max(estimated_time-time.time()+last_send_time,0))
 
         check_buttons()
-#        check_idle()
+        check_idle()
 
         pygame.display.update()
         # Flip screen
