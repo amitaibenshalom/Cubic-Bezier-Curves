@@ -212,6 +212,8 @@ info_time_start = time.time()
 preview_time_start = time.time()
 idle_clock = time.time()
 idle_clock_draw = time.time()
+last_time_dc_motor = time.time()
+dc_motor_on = False
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
 
@@ -228,6 +230,21 @@ def check_buttons():
             button.draw_static()
 
 
+
+def check_dc_motor():
+    global dc_motor_on
+    global last_time_dc_motor
+    global ButtonPrint
+    global send_to_arduino
+    if dc_motor_on:
+        if time.time() - last_time_dc_motor > MAX_DC_MOTOR_TIME:
+            dc_motor_on = False
+            send_to_arduino = False
+            ButtonPrint.tempimg = pic_buttonPrint
+            ButtonPrint.img = pic_buttonPrint
+            ButtonPrint.imgon = pic_buttonPressedPrint
+
+
 def check_arduino(log_flag=True):
     global curves_to_send
     global waiting
@@ -237,11 +254,12 @@ def check_arduino(log_flag=True):
     global send_to_arduino
     global estimated_time
     global show_estimated_time
-    global ButtonPrint
     global logger
     global idle_clock_draw
     global idle_clock
     global idle_mode
+    global dc_motor_on
+    global last_time_dc_motor
 
     if waiting[1]:
         if arduino.in_waiting > 0:
@@ -252,10 +270,8 @@ def check_arduino(log_flag=True):
                 logger.info("arduino finished drawing curve " + str(curve_index))
             curve_index += 1
             if curve_index >= len(curves_to_send):
-                send_to_arduino = False
-                ButtonPrint.tempimg = pic_buttonPrint
-                ButtonPrint.img = pic_buttonPrint
-                ButtonPrint.imgon = pic_buttonPressedPrint
+                dc_motor_on = True
+                last_time_dc_motor = time.time()
                 # send a key that will tell the arduino to stop reading
                 print("sent all curves")
                 if log_flag:
@@ -903,6 +919,7 @@ def main():
                             print(send_one_number(LASER_OFF_RATE))
                             print(send_one_number(LASER_ON_RATE))
                             print(send_one_number(CONTOUR_RATE))
+                            print(send_one_number(MAX_DC_MOTOR_TIME*1000))
                             logger.info("sent laser variables to arduino")
                             time.sleep(time_delay_arduino)
 
