@@ -215,6 +215,8 @@ idle_clock = time.time()
 idle_clock_draw = time.time()
 last_time_dc_motor = time.time()
 dc_motor_on = False
+red_border_on = False
+
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
 
@@ -794,6 +796,7 @@ def main():
     global idle_clock
     global idle_clock_draw
     global idle_mode
+    global red_border_on
     
     clock = pygame.time.Clock()
     heart(log_flag=False)
@@ -875,21 +878,7 @@ def main():
                     show_control_lines = True
                     logger.info("closed preview mode after " + str(int((time.time() - preview_time_start)*10)/10.0) + " seconds")
 
-        # Draw stuff
-        # screen.blit(pic_bg0, [0, 0])
-        screen.fill(bgColor)
-        # draw the border rectangles
-        pygame.draw.rect(screen, colorOutSideBorder, (0,0, borderLineX, screen_height))
-        pygame.draw.rect(screen, colorOutSideBorder, (borderLine2X, 0, screen_width - borderLine2X, screen_height))
-        pygame.draw.rect(screen, colorOutSideBorder, (0, 0, screen_width, borderLineHeight))
-        pygame.draw.rect(screen, colorOutSideBorder, (0, borderLine2Height, screen_width, screen_height - borderLine2Height))
-        # draw the text above
-        screen.blit(pic_textAbove, textAbovePosition)
-        # draw the "frame:" text
-        screen.blit(pic_textFrame, textFramePosition)
-        # draw a rectangle in the middle of the screen to show the laser cutting area
-        pygame.draw.rect(screen, cuttingAreaColor, (cuttingAreaPos[0], cuttingAreaPos[1], cuttingAreaSize[0], cuttingAreaSize[1]))
-        draw_all()
+
         if selected is not None:
             if borderLineHeight + circleRadius1 < pygame.mouse.get_pos()[1] < borderLine2Height - circleRadius1\
                     and borderLineX + circleRadius1 < pygame.mouse.get_pos()[0] < borderLine2X - circleRadius1:
@@ -897,7 +886,6 @@ def main():
                 # if clicked on the purple point, which moves the whole curve
                 if IS_MOVING_ALL_CURVE and selected_curve.vertices.index(selected) == 0:
                     # check if all points are in the screen
-
                     inScreen = True
                     for i in range(1, 4):
                         if selected_curve.vertices[i][0] + (
@@ -905,13 +893,14 @@ def main():
                                 selected_curve.vertices[i][0] + (
                                         pygame.mouse.get_pos()[0] - selected[0]) >= borderLine2X - circleRadius1 or \
                                 selected_curve.vertices[i][1] + (
-                                        pygame.mouse.get_pos()[1] - selected[1]) <= borderLineHeight or \
+                                        pygame.mouse.get_pos()[1] - selected[1]) <= borderLineHeight + circleRadius1 or \
                                 selected_curve.vertices[i][1] + (
-                                        pygame.mouse.get_pos()[1] - selected[1]) >= borderLine2Height:
+                                        pygame.mouse.get_pos()[1] - selected[1]) >= borderLine2Height - circleRadius1:
                             inScreen = False
-
+                            red_border_on = True
                     # if so, move the curve
                     if inScreen:
+                        red_border_on = False
                         for i in range(1, 4):
                             selected_curve.vertices[i][0] = selected_curve.vertices[i][0] + (
                                         pygame.mouse.get_pos()[0] - selected[0])
@@ -920,8 +909,36 @@ def main():
                         selected[0], selected[1] = pygame.mouse.get_pos()
                 else:
                     # move the selected point
+                    red_border_on = False
+                    # check if there are any points outside the screen
+                    for i in range(0, 4):
+                        if selected_curve.vertices[i][0] <= borderLineX + circleRadius1 or \
+                                selected_curve.vertices[i][0] >= borderLine2X - circleRadius1 or \
+                                selected_curve.vertices[i][1] <= borderLineHeight + circleRadius1 or \
+                                selected_curve.vertices[i][1] >= borderLine2Height - circleRadius1:
+                            red_border_on = True
                     selected[0], selected[1] = pygame.mouse.get_pos()
+            else:
+                red_border_on = True
 
+        # Draw everything
+        screen.fill(bgColor)
+        # draw the border rectangles
+        pygame.draw.rect(screen, colorOutSideBorder, (0,0, borderLineX, screen_height))
+        pygame.draw.rect(screen, colorOutSideBorder, (borderLine2X, 0, screen_width - borderLine2X, screen_height))
+        pygame.draw.rect(screen, colorOutSideBorder, (0, 0, screen_width, borderLineHeight))
+        pygame.draw.rect(screen, colorOutSideBorder, (0, borderLine2Height, screen_width, screen_height - borderLine2Height))
+        if SHOW_RED_BORDER and red_border_on:
+            pygame.draw.rect(screen, redBorderColor, (redBorderPos, redBorderSize), 0)
+            pygame.draw.rect(screen, drawingAreaColor, (drawingAreaPos, drawingAreaSize), 0)
+
+        # draw the text above
+        screen.blit(pic_textAbove, textAbovePosition)
+        # draw the "frame:" text
+        screen.blit(pic_textFrame, textFramePosition)
+        # draw a rectangle in the middle of the screen to show the laser cutting area
+        pygame.draw.rect(screen, cuttingAreaColor, (cuttingAreaPos[0], cuttingAreaPos[1], cuttingAreaSize[0], cuttingAreaSize[1]))
+        draw_all()
         msgNumCurves(maxCurves - len(curves))
         if show_picture:
             popup_x = centerInsideBorders[0] - infoHebSize[0]/2

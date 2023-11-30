@@ -55,6 +55,16 @@ cuttingAreaHeight = cuttingAreaWidth
 cuttingAreaPos = (centerInsideBorders[0] - cuttingAreaWidth / 2, centerInsideBorders[1] - cuttingAreaHeight / 2)
 cuttingAreaSize = (cuttingAreaWidth, cuttingAreaHeight)
 
+# red border values
+redBorderWidth = int(10 / const_width_screen * screen_width)
+redBorderPos = (borderLineX, borderLineHeight)
+redBorderSize = (borderLine2X - borderLineX, borderLine2Height - borderLineHeight)
+redBorderColor = red
+
+drawingAreaPos = (borderLineX + redBorderWidth, borderLineHeight + redBorderWidth)
+drawingAreaSize = (borderLine2X - borderLineX - 2* redBorderWidth, borderLine2Height - borderLineHeight - 2*redBorderWidth)
+drawingAreaColor = white
+
 delta0X = int(35 / const_width_screen * screen_width)
 delta0Y = int(0 / const_height_screen * screen_height)
 delta0Z = int(-50 / const_height_screen * screen_height)
@@ -466,6 +476,8 @@ IDLE_TIME_DRAW = 120 # seconds
 enable_idle_drawing = True
 idle_mode = False
 MAX_RUNS = 60
+
+SHOW_RED_BORDER = True
 
 # arduino
 MAX_TIME_WAITING_FOR_ARDUINO = 5  # seconds
