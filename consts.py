@@ -55,10 +55,15 @@ cuttingAreaHeight = cuttingAreaWidth
 cuttingAreaPos = (centerInsideBorders[0] - cuttingAreaWidth / 2, centerInsideBorders[1] - cuttingAreaHeight / 2)
 cuttingAreaSize = (cuttingAreaWidth, cuttingAreaHeight)
 
-delta0X = int(40 / const_width_screen * screen_width)
+delta0X = int(35 / const_width_screen * screen_width)
 delta0Y = int(0 / const_height_screen * screen_height)
 delta0Z = int(-50 / const_height_screen * screen_height)
+delta1X = int(30 / const_width_screen * screen_width)
+delta1Y = int(0 / const_height_screen * screen_height)
+delta1Z = int(-50 / const_height_screen * screen_height)
 MAX_LINES_PER_ROW = 7
+MAX_LINES_PER_ROW_OUTSIDE_CONTOUR = 4
+MAX_LINES_GENERATED_INSIDE_CONTOUR = 3
 
 toleranceTouch = 20
 
@@ -72,14 +77,25 @@ circleRadius2 = int(5 / const_width_screen * screen_width)
 circleRadiusClicked = int(10 / const_width_screen * screen_width)
 doubleArrowSize = (int(40 / const_width_screen * screen_width), int(40 / const_height_screen * screen_height))
 
-x0 = int(830 / const_width_screen * screen_width) + centerInsideBorders[0] - center[0]
-y0 = int(450 / const_height_screen * screen_height) + centerInsideBorders[1] - center[1]
-x1 = int(880 / const_width_screen * screen_width) + centerInsideBorders[0] - center[0]
-y1 = int(350 / const_height_screen * screen_height) + centerInsideBorders[1] - center[1]
-x2 = int(780 / const_width_screen * screen_width) + centerInsideBorders[0] - center[0]
-y2 = int(350 / const_height_screen * screen_height) + centerInsideBorders[1] - center[1]
-x3 = int(830 / const_width_screen * screen_width) + centerInsideBorders[0] - center[0]
-y3 = int(250 / const_height_screen * screen_height) + centerInsideBorders[1] - center[1]
+x0 = int(790 / const_width_screen * screen_width) + centerInsideBorders[0] - center[0]
+y0 = int(470 / const_height_screen * screen_height) + centerInsideBorders[1] - center[1]
+x1 = int(840 / const_width_screen * screen_width) + centerInsideBorders[0] - center[0]
+y1 = int(370 / const_height_screen * screen_height) + centerInsideBorders[1] - center[1]
+x2 = int(740 / const_width_screen * screen_width) + centerInsideBorders[0] - center[0]
+y2 = int(370 / const_height_screen * screen_height) + centerInsideBorders[1] - center[1]
+x3 = int(790 / const_width_screen * screen_width) + centerInsideBorders[0] - center[0]
+y3 = int(270 / const_height_screen * screen_height) + centerInsideBorders[1] - center[1]
+
+shiftX = int(270 / const_width_screen * screen_width)
+shiftY = int(-70 / const_height_screen * screen_height)
+x0_outside = x0 + shiftX
+y0_outside = y0 + shiftY
+x1_outside = x1 + shiftX
+y1_outside = y1 + shiftY
+x2_outside = x2 + shiftX
+y2_outside = y2 + shiftY
+x3_outside = x3 + shiftX
+y3_outside = y3 + shiftY
 
 # mm_per_pixel_x = 295/1366
 # mm_per_pixel_y = 165/768
@@ -96,7 +112,6 @@ maxCurves = 15
 # contour values
 contourColor = black
 contourWidth = int(8 / const_width_screen * screen_width)
-# contour0radius = 100
 
 '''
 # dialog box values

@@ -205,6 +205,7 @@ show_estimated_time = False
 estimated_time = 0
 last_send_time = 0
 delta = [0, 0, 0]
+delta_outside = [0, 0, 0]
 auto_run = False
 run_index = 0
 sample_index = 0
@@ -553,12 +554,13 @@ def rotate_point(point, angle, center_p):
 
     return int(rotated_x), int(rotated_y)
 
-# clear the last curve
+# clear the LAST curve
 def clear(log_flag=True):
     global curves
     global selected_curve
     global selected
     global delta
+    global delta_outside
     global logger
     if len(curves) == 0:
         if log_flag:
@@ -571,12 +573,27 @@ def clear(log_flag=True):
         logger.info("deleted curve: now " + str(len(curves)) + " curves")
     if len(curves) == 0:  # just in case something doesnt work
         delta = [0, 0, 0]
+        delta_outside = [0, 0, 0]
+        return
+    if len(curves) > MAX_LINES_GENERATED_INSIDE_CONTOUR:
+        if delta_outside[0] == 0:
+            if delta_outside[2] > 0:
+                delta_outside[2] -= 1
+            delta_outside[1] = delta_outside[2] * delta1Z
+            delta_outside[0] = delta1X * (MAX_LINES_PER_ROW_OUTSIDE_CONTOUR-1)
+        else:
+            delta_outside[0] -= delta1X
+            delta_outside[1] -= delta1Y
+        return
+    # if got to here, then len(curves) <= MAX_LINES_GENERATED_INSIDE_CONTOUR
+    delta_outside = [0, 0, 0] # reset delta_outside just in case
+    if len(curves) == MAX_LINES_GENERATED_INSIDE_CONTOUR:
         return
     if delta[0] == 0:
         if delta[2] > 0:
             delta[2] -= 1
         delta[1] = delta[2] * delta0Z
-        delta[0] = delta0X * MAX_LINES_PER_ROW
+        delta[0] = delta0X * (MAX_LINES_PER_ROW-1)
         return
     delta[0] -= delta0X
     delta[1] -= delta0Y
@@ -587,12 +604,14 @@ def clear_all(log_flag=True):
     global selected_curve
     global selected
     global delta
+    global delta_outside
     selected_curve = None
     selected = None
     curves.clear()
     if log_flag:
         logger.info("deleted all curves")
     delta = [0, 0, 0]
+    delta_outside = [0, 0, 0]
 
 
 def add_curve(log_flag=True):
@@ -600,22 +619,43 @@ def add_curve(log_flag=True):
     global selected_curve
     global selected
     global delta
+    global delta_outside
     global logger
-    deltaX = delta[0]
-    deltaY = delta[1]
-    new_curve = BezierCurve([x0 - deltaX, y0 - deltaY], [x1 - deltaX, y1 - deltaY], [x2 - deltaX, y2 - deltaY],
-                            [x3 - deltaX, y3 - deltaY], True, curveColor, curveWidth)
-    # selected_curve = new_curve
-    selected = None
-    curves.append(new_curve)
-    # move the curve by delta0X and delta0Y to the left and up
-    delta[0] += delta0X
-    delta[1] += delta0Y
-    # if deltaX > screen_width-200 or deltaY > screen_height-200:
-    if delta[0] > delta0X * MAX_LINES_PER_ROW:
-        delta[2] += 1
-        delta[0] = 0
-        delta[1] = delta[2] * delta0Z
+
+    if len(curves) < MAX_LINES_GENERATED_INSIDE_CONTOUR:
+        deltaX = delta[0]
+        deltaY = delta[1]
+        new_curve = BezierCurve([x0 - deltaX, y0 - deltaY], [x1 - deltaX, y1 - deltaY], [x2 - deltaX, y2 - deltaY],
+                                [x3 - deltaX, y3 - deltaY], True, curveColor, curveWidth)
+        selected = None
+        curves.append(new_curve)
+
+        delta[0] += delta0X
+        delta[1] += delta0Y
+
+        if delta[0] >= delta0X * MAX_LINES_PER_ROW:
+            delta[2] += 1
+            delta[0] = 0
+            delta[1] = delta[2] * delta0Z
+        if len(curves) == MAX_LINES_GENERATED_INSIDE_CONTOUR:
+            delta_outside = [0, 0, 0]
+    else:
+        deltaX = delta_outside[0]
+        deltaY = delta_outside[1]
+        new_curve = BezierCurve([x0_outside - deltaX, y0_outside - deltaY],
+                                [x1_outside - deltaX, y1_outside - deltaY],
+                                [x2_outside - deltaX, y2_outside - deltaY],
+                                [x3_outside - deltaX, y3_outside - deltaY], True, curveColor, curveWidth)
+        selected = None
+        curves.append(new_curve)
+        # move the curve by delta0X and delta0Y to the left and up
+        delta_outside[0] += delta1X
+        delta_outside[1] += delta1Y
+        if delta_outside[0] >= delta1X * MAX_LINES_PER_ROW_OUTSIDE_CONTOUR:
+            delta_outside[2] += 1
+            delta_outside[0] = 0
+            delta_outside[1] = delta_outside[2] * delta1Z
+
     if log_flag:
         logger.info("added curve: now " + str(len(curves)) + " curves")
 
@@ -776,8 +816,10 @@ def main():
                         print("auto run stopped after: " + str(run_index) + " runs")
                         logger.info("auto run stopped after: " + str(run_index) + " runs")
                     auto_run = False
-                    if event.key == pygame.K_r or event.key == pygame.K_c:
+                    if event.key == pygame.K_r:
                         clear()
+                    elif event.key == pygame.K_c:
+                        clear_all()
                     elif event.key == pygame.K_a:
                         add_curve0()
                     elif event.key == pygame.K_s:
