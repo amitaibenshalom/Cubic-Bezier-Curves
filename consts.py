@@ -473,7 +473,7 @@ buttons_enabled = True
 IS_MOVING_ALL_CURVE = True
 IDLE_TIME = 100 # seconds
 IDLE_TIME_DRAW = 120 # seconds
-enable_idle_drawing = True
+enable_idle_drawing = False
 idle_mode = False
 MAX_RUNS = 60
 
