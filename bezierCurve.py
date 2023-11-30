@@ -878,7 +878,6 @@ def main():
                     show_control_lines = True
                     logger.info("closed preview mode after " + str(int((time.time() - preview_time_start)*10)/10.0) + " seconds")
 
-
         if selected is not None:
             if borderLineHeight + circleRadius1 < pygame.mouse.get_pos()[1] < borderLine2Height - circleRadius1\
                     and borderLineX + circleRadius1 < pygame.mouse.get_pos()[0] < borderLine2X - circleRadius1:
@@ -897,10 +896,8 @@ def main():
                                 selected_curve.vertices[i][1] + (
                                         pygame.mouse.get_pos()[1] - selected[1]) >= borderLine2Height - circleRadius1:
                             inScreen = False
-                            red_border_on = True
                     # if so, move the curve
                     if inScreen:
-                        red_border_on = False
                         for i in range(1, 4):
                             selected_curve.vertices[i][0] = selected_curve.vertices[i][0] + (
                                         pygame.mouse.get_pos()[0] - selected[0])
@@ -909,17 +906,7 @@ def main():
                         selected[0], selected[1] = pygame.mouse.get_pos()
                 else:
                     # move the selected point
-                    red_border_on = False
-                    # check if there are any points outside the screen
-                    for i in range(0, 4):
-                        if selected_curve.vertices[i][0] <= borderLineX + circleRadius1 or \
-                                selected_curve.vertices[i][0] >= borderLine2X - circleRadius1 or \
-                                selected_curve.vertices[i][1] <= borderLineHeight + circleRadius1 or \
-                                selected_curve.vertices[i][1] >= borderLine2Height - circleRadius1:
-                            red_border_on = True
                     selected[0], selected[1] = pygame.mouse.get_pos()
-            else:
-                red_border_on = True
 
         # Draw everything
         screen.fill(bgColor)
@@ -928,9 +915,17 @@ def main():
         pygame.draw.rect(screen, colorOutSideBorder, (borderLine2X, 0, screen_width - borderLine2X, screen_height))
         pygame.draw.rect(screen, colorOutSideBorder, (0, 0, screen_width, borderLineHeight))
         pygame.draw.rect(screen, colorOutSideBorder, (0, borderLine2Height, screen_width, screen_height - borderLine2Height))
-        if SHOW_RED_BORDER and red_border_on:
-            pygame.draw.rect(screen, redBorderColor, (redBorderPos, redBorderSize), 0)
-            pygame.draw.rect(screen, drawingAreaColor, (drawingAreaPos, drawingAreaSize), 0)
+        if SHOW_RED_BORDER:
+            # for each curve, check if there are any points outside the border
+            for curve in curves:
+                for p in curve.vertices:
+                    if p[0] < borderLineX + circleRadius1 + redBorderWidth or\
+                            p[0] > borderLine2X - circleRadius1 - redBorderWidth or\
+                            p[1] < borderLineHeight + circleRadius1 + redBorderWidth or\
+                            p[1] > borderLine2Height - circleRadius1 - redBorderWidth:
+                        pygame.draw.rect(screen, redBorderColor, (redBorderPos, redBorderSize), 0)
+                        pygame.draw.rect(screen, drawingAreaColor, (drawingAreaPos, drawingAreaSize), 0)
+                        break
 
         # draw the text above
         screen.blit(pic_textAbove, textAbovePosition)

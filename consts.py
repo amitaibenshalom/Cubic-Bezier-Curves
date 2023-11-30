@@ -96,7 +96,7 @@ y2 = int(370 / const_height_screen * screen_height) + centerInsideBorders[1] - c
 x3 = int(790 / const_width_screen * screen_width) + centerInsideBorders[0] - center[0]
 y3 = int(270 / const_height_screen * screen_height) + centerInsideBorders[1] - center[1]
 
-shiftX = int(270 / const_width_screen * screen_width)
+shiftX = int(250 / const_width_screen * screen_width)
 shiftY = int(-70 / const_height_screen * screen_height)
 x0_outside = x0 + shiftX
 y0_outside = y0 + shiftY
