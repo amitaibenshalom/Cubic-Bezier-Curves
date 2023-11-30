@@ -798,7 +798,7 @@ def main():
                 if auto_run:
                     print("auto run stopped after: " + str(run_index) + " runs")
                     logger.info("auto run stopped after: " + str(run_index) + " runs")
-                auto_run = False
+                    auto_run = False
                 for curve in curves:
                     for p in curve.vertices:
                         if math.dist(p, event.pos) < toleranceTouch:
@@ -820,7 +820,7 @@ def main():
                 if auto_run:
                     print("auto run stopped after: " + str(run_index) + " runs")
                     logger.info("auto run stopped after: " + str(run_index) + " runs")
-                auto_run = False
+                    auto_run = False
                 selected = None
                 buttons_enabled = True
                 if selected_curve is not None:
@@ -855,12 +855,19 @@ def main():
                 # if clicked on the purple point, which moves the whole curve
                 if IS_MOVING_ALL_CURVE and selected_curve.vertices.index(selected) == 0:
                     # check if all points are in the screen
+
                     inScreen = True
                     for i in range(1, 4):
-                        if selected_curve.vertices[i][0] <= borderLineX + circleRadius1 or selected_curve.vertices[i][
-                            0] >= borderLine2X - circleRadius1 or selected_curve.vertices[i][1] <= borderLineHeight or \
-                                selected_curve.vertices[i][1] >= borderLine2Height:
+                        if selected_curve.vertices[i][0] + (
+                                pygame.mouse.get_pos()[0] - selected[0]) <= borderLineX + circleRadius1 or \
+                                selected_curve.vertices[i][0] + (
+                                        pygame.mouse.get_pos()[0] - selected[0]) >= borderLine2X - circleRadius1 or \
+                                selected_curve.vertices[i][1] + (
+                                        pygame.mouse.get_pos()[1] - selected[1]) <= borderLineHeight or \
+                                selected_curve.vertices[i][1] + (
+                                        pygame.mouse.get_pos()[1] - selected[1]) >= borderLine2Height:
                             inScreen = False
+
                     # if so, move the curve
                     if inScreen:
                         for i in range(1, 4):
