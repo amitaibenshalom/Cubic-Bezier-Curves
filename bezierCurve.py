@@ -205,6 +205,7 @@ show_estimated_time = False
 estimated_time = 0
 last_send_time = 0
 delta = [0, 0, 0]
+delta_outside = [0, 0, 0]
 auto_run = False
 run_index = 0
 sample_index = 0
@@ -214,6 +215,8 @@ idle_clock = time.time()
 idle_clock_draw = time.time()
 last_time_dc_motor = time.time()
 dc_motor_on = False
+red_border_on = False
+
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
 
@@ -553,12 +556,13 @@ def rotate_point(point, angle, center_p):
 
     return int(rotated_x), int(rotated_y)
 
-# clear the last curve
+# clear the LAST curve
 def clear(log_flag=True):
     global curves
     global selected_curve
     global selected
     global delta
+    global delta_outside
     global logger
     if len(curves) == 0:
         if log_flag:
@@ -571,12 +575,27 @@ def clear(log_flag=True):
         logger.info("deleted curve: now " + str(len(curves)) + " curves")
     if len(curves) == 0:  # just in case something doesnt work
         delta = [0, 0, 0]
+        delta_outside = [0, 0, 0]
+        return
+    if len(curves) > MAX_LINES_GENERATED_INSIDE_CONTOUR:
+        if delta_outside[0] == 0:
+            if delta_outside[2] > 0:
+                delta_outside[2] -= 1
+            delta_outside[1] = delta_outside[2] * delta1Z
+            delta_outside[0] = delta1X * (MAX_LINES_PER_ROW_OUTSIDE_CONTOUR-1)
+        else:
+            delta_outside[0] -= delta1X
+            delta_outside[1] -= delta1Y
+        return
+    # if got to here, then len(curves) <= MAX_LINES_GENERATED_INSIDE_CONTOUR
+    delta_outside = [0, 0, 0] # reset delta_outside just in case
+    if len(curves) == MAX_LINES_GENERATED_INSIDE_CONTOUR:
         return
     if delta[0] == 0:
         if delta[2] > 0:
             delta[2] -= 1
         delta[1] = delta[2] * delta0Z
-        delta[0] = delta0X * MAX_LINES_PER_ROW
+        delta[0] = delta0X * (MAX_LINES_PER_ROW-1)
         return
     delta[0] -= delta0X
     delta[1] -= delta0Y
@@ -587,12 +606,14 @@ def clear_all(log_flag=True):
     global selected_curve
     global selected
     global delta
+    global delta_outside
     selected_curve = None
     selected = None
     curves.clear()
     if log_flag:
         logger.info("deleted all curves")
     delta = [0, 0, 0]
+    delta_outside = [0, 0, 0]
 
 
 def add_curve(log_flag=True):
@@ -600,22 +621,43 @@ def add_curve(log_flag=True):
     global selected_curve
     global selected
     global delta
+    global delta_outside
     global logger
-    deltaX = delta[0]
-    deltaY = delta[1]
-    new_curve = BezierCurve([x0 - deltaX, y0 - deltaY], [x1 - deltaX, y1 - deltaY], [x2 - deltaX, y2 - deltaY],
-                            [x3 - deltaX, y3 - deltaY], True, curveColor, curveWidth)
-    # selected_curve = new_curve
-    selected = None
-    curves.append(new_curve)
-    # move the curve by delta0X and delta0Y to the left and up
-    delta[0] += delta0X
-    delta[1] += delta0Y
-    # if deltaX > screen_width-200 or deltaY > screen_height-200:
-    if delta[0] > delta0X * MAX_LINES_PER_ROW:
-        delta[2] += 1
-        delta[0] = 0
-        delta[1] = delta[2] * delta0Z
+
+    if len(curves) < MAX_LINES_GENERATED_INSIDE_CONTOUR:
+        deltaX = delta[0]
+        deltaY = delta[1]
+        new_curve = BezierCurve([x0 - deltaX, y0 - deltaY], [x1 - deltaX, y1 - deltaY], [x2 - deltaX, y2 - deltaY],
+                                [x3 - deltaX, y3 - deltaY], True, curveColor, curveWidth)
+        selected = None
+        curves.append(new_curve)
+
+        delta[0] += delta0X
+        delta[1] += delta0Y
+
+        if delta[0] >= delta0X * MAX_LINES_PER_ROW:
+            delta[2] += 1
+            delta[0] = 0
+            delta[1] = delta[2] * delta0Z
+        if len(curves) == MAX_LINES_GENERATED_INSIDE_CONTOUR:
+            delta_outside = [0, 0, 0]
+    else:
+        deltaX = delta_outside[0]
+        deltaY = delta_outside[1]
+        new_curve = BezierCurve([x0_outside - deltaX, y0_outside - deltaY],
+                                [x1_outside - deltaX, y1_outside - deltaY],
+                                [x2_outside - deltaX, y2_outside - deltaY],
+                                [x3_outside - deltaX, y3_outside - deltaY], True, curveColor, curveWidth)
+        selected = None
+        curves.append(new_curve)
+        # move the curve by delta0X and delta0Y to the left and up
+        delta_outside[0] += delta1X
+        delta_outside[1] += delta1Y
+        if delta_outside[0] >= delta1X * MAX_LINES_PER_ROW_OUTSIDE_CONTOUR:
+            delta_outside[2] += 1
+            delta_outside[0] = 0
+            delta_outside[1] = delta_outside[2] * delta1Z
+
     if log_flag:
         logger.info("added curve: now " + str(len(curves)) + " curves")
 
@@ -754,6 +796,7 @@ def main():
     global idle_clock
     global idle_clock_draw
     global idle_mode
+    global red_border_on
     
     clock = pygame.time.Clock()
     heart(log_flag=False)
@@ -776,8 +819,10 @@ def main():
                         print("auto run stopped after: " + str(run_index) + " runs")
                         logger.info("auto run stopped after: " + str(run_index) + " runs")
                     auto_run = False
-                    if event.key == pygame.K_r or event.key == pygame.K_c:
+                    if event.key == pygame.K_r:
                         clear()
+                    elif event.key == pygame.K_c:
+                        clear_all()
                     elif event.key == pygame.K_a:
                         add_curve0()
                     elif event.key == pygame.K_s:
@@ -798,7 +843,7 @@ def main():
                 if auto_run:
                     print("auto run stopped after: " + str(run_index) + " runs")
                     logger.info("auto run stopped after: " + str(run_index) + " runs")
-                auto_run = False
+                    auto_run = False
                 for curve in curves:
                     for p in curve.vertices:
                         if math.dist(p, event.pos) < toleranceTouch:
@@ -820,7 +865,7 @@ def main():
                 if auto_run:
                     print("auto run stopped after: " + str(run_index) + " runs")
                     logger.info("auto run stopped after: " + str(run_index) + " runs")
-                auto_run = False
+                    auto_run = False
                 selected = None
                 buttons_enabled = True
                 if selected_curve is not None:
@@ -833,21 +878,7 @@ def main():
                     show_control_lines = True
                     logger.info("closed preview mode after " + str(int((time.time() - preview_time_start)*10)/10.0) + " seconds")
 
-        # Draw stuff
-        # screen.blit(pic_bg0, [0, 0])
-        screen.fill(bgColor)
-        # draw the border rectangles
-        pygame.draw.rect(screen, colorOutSideBorder, (0,0, borderLineX, screen_height))
-        pygame.draw.rect(screen, colorOutSideBorder, (borderLine2X, 0, screen_width - borderLine2X, screen_height))
-        pygame.draw.rect(screen, colorOutSideBorder, (0, 0, screen_width, borderLineHeight))
-        pygame.draw.rect(screen, colorOutSideBorder, (0, borderLine2Height, screen_width, screen_height - borderLine2Height))
-        # draw the text above
-        screen.blit(pic_textAbove, textAbovePosition)
-        # draw the "frame:" text
-        screen.blit(pic_textFrame, textFramePosition)
-        # draw a rectangle in the middle of the screen to show the laser cutting area
-        pygame.draw.rect(screen, cuttingAreaColor, (cuttingAreaPos[0], cuttingAreaPos[1], cuttingAreaSize[0], cuttingAreaSize[1]))
-        draw_all()
+
         if selected is not None:
             if borderLineHeight + circleRadius1 < pygame.mouse.get_pos()[1] < borderLine2Height - circleRadius1\
                     and borderLineX + circleRadius1 < pygame.mouse.get_pos()[0] < borderLine2X - circleRadius1:
@@ -857,12 +888,19 @@ def main():
                     # check if all points are in the screen
                     inScreen = True
                     for i in range(1, 4):
-                        if selected_curve.vertices[i][0] <= borderLineX + circleRadius1 or selected_curve.vertices[i][
-                            0] >= borderLine2X - circleRadius1 or selected_curve.vertices[i][1] <= borderLineHeight or \
-                                selected_curve.vertices[i][1] >= borderLine2Height:
+                        if selected_curve.vertices[i][0] + (
+                                pygame.mouse.get_pos()[0] - selected[0]) <= borderLineX + circleRadius1 or \
+                                selected_curve.vertices[i][0] + (
+                                        pygame.mouse.get_pos()[0] - selected[0]) >= borderLine2X - circleRadius1 or \
+                                selected_curve.vertices[i][1] + (
+                                        pygame.mouse.get_pos()[1] - selected[1]) <= borderLineHeight + circleRadius1 or \
+                                selected_curve.vertices[i][1] + (
+                                        pygame.mouse.get_pos()[1] - selected[1]) >= borderLine2Height - circleRadius1:
                             inScreen = False
+                            red_border_on = True
                     # if so, move the curve
                     if inScreen:
+                        red_border_on = False
                         for i in range(1, 4):
                             selected_curve.vertices[i][0] = selected_curve.vertices[i][0] + (
                                         pygame.mouse.get_pos()[0] - selected[0])
@@ -871,8 +909,36 @@ def main():
                         selected[0], selected[1] = pygame.mouse.get_pos()
                 else:
                     # move the selected point
+                    red_border_on = False
+                    # check if there are any points outside the screen
+                    for i in range(0, 4):
+                        if selected_curve.vertices[i][0] <= borderLineX + circleRadius1 or \
+                                selected_curve.vertices[i][0] >= borderLine2X - circleRadius1 or \
+                                selected_curve.vertices[i][1] <= borderLineHeight + circleRadius1 or \
+                                selected_curve.vertices[i][1] >= borderLine2Height - circleRadius1:
+                            red_border_on = True
                     selected[0], selected[1] = pygame.mouse.get_pos()
+            else:
+                red_border_on = True
 
+        # Draw everything
+        screen.fill(bgColor)
+        # draw the border rectangles
+        pygame.draw.rect(screen, colorOutSideBorder, (0,0, borderLineX, screen_height))
+        pygame.draw.rect(screen, colorOutSideBorder, (borderLine2X, 0, screen_width - borderLine2X, screen_height))
+        pygame.draw.rect(screen, colorOutSideBorder, (0, 0, screen_width, borderLineHeight))
+        pygame.draw.rect(screen, colorOutSideBorder, (0, borderLine2Height, screen_width, screen_height - borderLine2Height))
+        if SHOW_RED_BORDER and red_border_on:
+            pygame.draw.rect(screen, redBorderColor, (redBorderPos, redBorderSize), 0)
+            pygame.draw.rect(screen, drawingAreaColor, (drawingAreaPos, drawingAreaSize), 0)
+
+        # draw the text above
+        screen.blit(pic_textAbove, textAbovePosition)
+        # draw the "frame:" text
+        screen.blit(pic_textFrame, textFramePosition)
+        # draw a rectangle in the middle of the screen to show the laser cutting area
+        pygame.draw.rect(screen, cuttingAreaColor, (cuttingAreaPos[0], cuttingAreaPos[1], cuttingAreaSize[0], cuttingAreaSize[1]))
+        draw_all()
         msgNumCurves(maxCurves - len(curves))
         if show_picture:
             popup_x = centerInsideBorders[0] - infoHebSize[0]/2
