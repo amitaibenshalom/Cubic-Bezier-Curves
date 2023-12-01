@@ -73,7 +73,7 @@ delta1Y = int(0 / const_height_screen * screen_height)
 delta1Z = int(-50 / const_height_screen * screen_height)
 MAX_LINES_PER_ROW = 7
 MAX_LINES_PER_ROW_OUTSIDE_CONTOUR = 4
-MAX_LINES_GENERATED_INSIDE_CONTOUR = 3
+MAX_LINES_GENERATED_INSIDE_CONTOUR = 1
 
 toleranceTouch = 20
 
