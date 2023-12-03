@@ -62,12 +62,18 @@ class Button(object):
         on_button = rect.collidepoint(mouse)
         if click[0] == 0:
             self.img = self.tempimg
-            pygame.draw.rect(screen, self.color, rect)
-            screen.blit(self.img, self.img.get_rect(center=rect.center))
+            # pygame.draw.rect(screen, self.color, rect)
+            if self.img is not None:
+                screen.blit(self.img, self.img.get_rect(center=rect.center))
+            else:
+                pygame.draw.rect(screen, self.color, rect)
             self.done = True
         elif on_button and self.done:
-            pygame.draw.rect(screen, self.coloron, rect)
-            screen.blit(self.imgon, self.imgon.get_rect(center=rect.center))
+            # pygame.draw.rect(screen, self.coloron, rect)
+            if self.imgon is not None:
+                screen.blit(self.imgon, self.imgon.get_rect(center=rect.center))
+            else:
+                pygame.draw.rect(screen, self.coloron, rect)
             self.done = False
             self.img = self.imgon
             if self.function is not None:
@@ -77,13 +83,19 @@ class Button(object):
 #            pygame.draw.rect(screen, self.coloron, rect)
 #            screen.blit(self.imgon, self.imgon.get_rect(center=rect.center))
         else:
-            pygame.draw.rect(screen, self.color, rect)
-            screen.blit(self.img, self.img.get_rect(center=rect.center))
+            # pygame.draw.rect(screen, self.color, rect)
+            if self.img is not None:
+                screen.blit(self.img, self.img.get_rect(center=rect.center))
+            else:
+                pygame.draw.rect(screen, self.color, rect)
 
     def draw_static(self):
         rect = pygame.Rect(self.pos[0], self.pos[1], self.size[0], self.size[1])
-        pygame.draw.rect(screen, self.color, rect)
-        screen.blit(self.img, self.img.get_rect(center=rect.center))
+        # pygame.draw.rect(screen, self.color, rect)
+        if self.img is not None:
+            screen.blit(self.img, self.img.get_rect(center=rect.center))
+        else:
+            pygame.draw.rect(screen, self.color, rect)
 
 
 # object of a curve, defined by 4 points
@@ -209,6 +221,7 @@ delta_outside = [0, 0, 0]
 auto_run = False
 run_index = 0
 sample_index = 0
+letter_index = 0
 info_time_start = time.time()
 preview_time_start = time.time()
 idle_clock = time.time()
@@ -683,6 +696,32 @@ def insert_sample(index_sample):
                                 True, curveColor, curveWidth)
         curves.append(new_curve)
 
+def insert_letter():
+    global curves
+    global letters
+    global letter_index
+    if maxCurves - len(curves) < len(letters[letter_index]):
+        return
+    for i in range(len(letters[letter_index])):
+        new_curve = BezierCurve([letters[letter_index][i][0][0],letters[letter_index][i][0][1]],
+                                [letters[letter_index][i][1][0],letters[letter_index][i][1][1]],
+                                [letters[letter_index][i][2][0],letters[letter_index][i][2][1]],
+                                [letters[letter_index][i][3][0],letters[letter_index][i][3][1]],
+                                True, curveColor, curveWidth)
+        curves.append(new_curve)
+
+def letter_left_arrow():
+    global letter_index
+    letter_index -= 1
+    if letter_index < 0:
+        letter_index = len(letters) - 1
+
+def letter_right_arrow():
+    global letter_index
+    letter_index += 1
+    if letter_index >= len(letters):
+        letter_index = 0
+
 def check_idle():
     global idle_mode
     global idle_clock
@@ -764,8 +803,14 @@ ButtonDrop = Button(buttonDropPosition, buttonDropSize, buttonInactiveColour, bu
                     pic_buttonPressedDrop, drop)
 ButtonSquare = Button(buttonSquarePosition, buttonSquareSize, buttonInactiveColour, buttonPressedColour,
                       pic_buttonSquare, pic_buttonPressedSquare, sqaure)
+buttonLetters = Button(buttonLettersPosition, buttonLettersSize, buttonInactiveColour, buttonPressedColour,
+                       None, None, insert_letter)
+buttonLettersLeftArrow = Button(buttonLettersLeftPosition, buttonLettersLeftSize, buttonInactiveColour, buttonPressedColour,
+                          pic_buttonLettersLeft, pic_buttonPressedLettersLeft, letter_left_arrow)
+buttonLettersRightArrow = Button(buttonLettersRightPosition, buttonLettersRightSize, buttonInactiveColour, buttonPressedColour,
+                            pic_buttonLettersRight, pic_buttonPressedLettersRight, letter_right_arrow)
 
-buttons = [ButtonAdd, ButtonDelete, ButtonInfo, ButtonPreview, ButtonPrint, ButtonHeart, ButtonDrop, ButtonSquare]
+buttons = [ButtonAdd, ButtonDelete, ButtonInfo, ButtonPreview, ButtonPrint, ButtonHeart, ButtonDrop, ButtonSquare, buttonLetters, buttonLettersLeftArrow, buttonLettersRightArrow]
 
 
 # rotate the square contour 45 degrees
@@ -830,6 +875,12 @@ def main():
                         sample_index+=1
                         if sample_index >= len(samples):
                             sample_index = 0
+                    elif event.key == pygame.K_l:
+                        insert_letter()
+                    elif event.key == pygame.K_LEFT:
+                        letter_left_arrow()
+                    elif event.key == pygame.K_RIGHT:
+                        letter_right_arrow()
                     elif event.key == pygame.K_ESCAPE:
                         running = False
                         logger.info("PROGRAM ENDED BY USER")

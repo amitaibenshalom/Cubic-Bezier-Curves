@@ -37,7 +37,7 @@ screenColor = gray
 # logging values
 # get the current diractory the code sits in and create the log file there
 currentDir = os.path.dirname(os.path.realpath(__file__))
-LOG_FILE_PATH = os.path.join(currentDir, "log.txt")
+LOG_FILE_PATH = os.path.join(currentDir, "log.log")
 
 # borderLineHeight = int(142 / const_height_screen * screen_height)
 borderLineHeight = int(142 / const_height_screen * screen_height)
@@ -169,6 +169,9 @@ buttonPrintSize = (int(4.5 / 29.5 * screen_width), button_height)
 buttonHeartSize = buttonInfoSize
 buttonDropSize = buttonInfoSize
 buttonSquareSize = buttonInfoSize
+buttonLettersSize = (int(1 / 16.5 * screen_height), int(1 / 16.5 * screen_height))
+buttonLettersLeftSize = buttonLettersSize
+buttonLettersRightSize = buttonLettersSize
 
 infoHebSize = (int(18.5 / 29.5 * screen_width), int(12.2 / 16.5 * screen_height))
 # infoEngSize = infoHebSize
@@ -188,6 +191,9 @@ buttonPrintPosition = (button_operation_x - 1.3*buttonPrintSize[0], int((button_
 buttonHeartPosition = (button_contour_x, int((6 + button_contour_height0 + 0.5) / 16.5 * screen_height))
 buttonDropPosition = (button_contour_x, int((6 + 2 * (button_contour_height0 + 0.5)) / 16.5 * screen_height))
 buttonSquarePosition = (button_contour_x, int((6 + 3 * (button_contour_height0 + 0.5)) / 16.5 * screen_height))
+buttonLettersPosition = (int(button_operation_x - 0.5*buttonAddSize[0]), int((button_operation_x0-1.3) / 16.5 * screen_height))
+buttonLettersLeftPosition = (int(button_operation_x - 0.5*buttonAddSize[0] - 1.5*buttonLettersSize[0]), int((button_operation_x0-1.3) / 16.5 * screen_height))
+buttonLettersRightPosition = (int(button_operation_x - 0.5*buttonAddSize[0] + 1.5*buttonLettersSize[0]), int((button_operation_x0-1.3) / 16.5 * screen_height))
 textAbovePosition = (centerInsideBorders[0]-textAboveSize[0]/2, borderLineHeight-textAboveSize[1])
 textFramePosition = (buttonHeartPosition[0], buttonHeartPosition[1]-textFrameSize[0])
 
@@ -214,6 +220,12 @@ pic_buttonDrop = pygame.image.load("pictures/buttonDrop.jpg")
 pic_buttonPressedDrop = pygame.image.load("pictures/buttonPressedDrop.jpg")
 pic_buttonSquare = pygame.image.load("pictures/buttonSquare.jpg")
 pic_buttonPressedSquare = pygame.image.load("pictures/buttonPressedSquare.jpg")
+# pic_buttonLetters = pygame.image.load("pictures/buttonLetters.jpg")
+# pic_buttonPressedLetters = pygame.image.load("pictures/buttonPressedLetters.jpg")
+pic_buttonLettersLeft = pygame.image.load("pictures/left_arrow.png")
+pic_buttonPressedLettersLeft = pygame.image.load("pictures/left_arrow.png")
+pic_buttonLettersRight = pygame.image.load("pictures/right_arrow.png")
+pic_buttonPressedLettersRight = pygame.image.load("pictures/right_arrow.png")
 pic_doubleArrow = pygame.image.load("pictures/double_arrow.png")
 pic_textAbove = pygame.image.load("pictures/textAbove2.jpg")
 pic_textFrame = pygame.image.load("pictures/frame.jpg")
@@ -241,6 +253,12 @@ pic_buttonDrop = pygame.transform.scale(pic_buttonDrop, buttonDropSize)
 pic_buttonPressedDrop = pygame.transform.scale(pic_buttonPressedDrop, buttonDropSize)
 pic_buttonSquare = pygame.transform.scale(pic_buttonSquare, buttonSquareSize)
 pic_buttonPressedSquare = pygame.transform.scale(pic_buttonPressedSquare, buttonSquareSize)
+# pic_buttonLetters = pygame.transform.scale(pic_buttonLetters, buttonLettersSize)
+# pic_buttonPressedLetters = pygame.transform.scale(pic_buttonPressedLetters, buttonLettersSize)
+pic_buttonLettersLeft = pygame.transform.scale(pic_buttonLettersLeft, buttonLettersLeftSize)
+pic_buttonPressedLettersLeft = pygame.transform.scale(pic_buttonPressedLettersLeft, buttonLettersLeftSize)
+pic_buttonLettersRight = pygame.transform.scale(pic_buttonLettersRight, buttonLettersRightSize)
+pic_buttonPressedLettersRight = pygame.transform.scale(pic_buttonPressedLettersRight, buttonLettersRightSize)
 pic_doubleArrow = pygame.transform.scale(pic_doubleArrow, doubleArrowSize)
 pic_textAbove = pygame.transform.scale(pic_textAbove, textAboveSize)
 pic_textFrame = pygame.transform.scale(pic_textFrame, textFrameSize)
@@ -468,6 +486,180 @@ sample2 = [[[int(689/const_width_screen*screen_width), int(307/const_height_scre
 
 
 samples = [sample0, sample1, sample2]
+
+alef = [[[943, 255], [879, 257], [878, 190], [946, 188]],
+        [[879, 260], [879, 216], [879, 234], [879, 176]]]
+alef = [[[int(943/const_width_screen*screen_width), int(255/const_height_screen*screen_height)],
+         [int(879/const_width_screen*screen_width), int(257/const_height_screen*screen_height)],
+         [int(878/const_width_screen*screen_width), int(190/const_height_screen*screen_height)],
+         [int(946/const_width_screen*screen_width), int(188/const_height_screen*screen_height)]],
+        [[int(879/const_width_screen*screen_width), int(260/const_height_screen*screen_height)],
+         [int(879/const_width_screen*screen_width), int(216/const_height_screen*screen_height)],
+         [int(879/const_width_screen*screen_width), int(234/const_height_screen*screen_height)],
+         [int(879/const_width_screen*screen_width), int(176/const_height_screen*screen_height)]]]
+bet = [[[916, 266], [940, 204], [889, 174], [859, 205]],
+        [[867, 267], [883, 235], [900, 236], [917, 267]]]
+bet = [[[int(916/const_width_screen*screen_width), int(266/const_height_screen*screen_height)],
+        [int(940/const_width_screen*screen_width), int(204/const_height_screen*screen_height)],
+        [int(889/const_width_screen*screen_width), int(174/const_height_screen*screen_height)],
+        [int(859/const_width_screen*screen_width), int(205/const_height_screen*screen_height)]],
+        [[int(867/const_width_screen*screen_width), int(267/const_height_screen*screen_height)],
+        [int(883/const_width_screen*screen_width), int(235/const_height_screen*screen_height)],
+        [int(900/const_width_screen*screen_width), int(236/const_height_screen*screen_height)],
+        [int(917/const_width_screen*screen_width), int(267/const_height_screen*screen_height)]]]
+gimel = [[[933, 261], [882, 273], [882, 220], [931, 225]],
+        [[932, 225], [931, 194], [932, 208], [931, 184]]]
+gimel = [[[int(933/const_width_screen*screen_width), int(261/const_height_screen*screen_height)],
+        [int(882/const_width_screen*screen_width), int(273/const_height_screen*screen_height)],
+        [int(882/const_width_screen*screen_width), int(220/const_height_screen*screen_height)],
+        [int(931/const_width_screen*screen_width), int(225/const_height_screen*screen_height)]],
+        [[int(931/const_width_screen*screen_width), int(225/const_height_screen*screen_height)],
+        [int(931/const_width_screen*screen_width), int(194/const_height_screen*screen_height)],
+        [int(931/const_width_screen*screen_width), int(208/const_height_screen*screen_height)],
+        [int(931/const_width_screen*screen_width), int(184/const_height_screen*screen_height)]]]
+dalet = [[[913, 273], [926, 240], [921, 200], [898, 228]],
+        [[899, 230], [941, 232], [928, 164], [861, 200]]]
+dalet = [[[int(913/const_width_screen*screen_width), int(273/const_height_screen*screen_height)],
+        [int(926/const_width_screen*screen_width), int(240/const_height_screen*screen_height)],
+        [int(921/const_width_screen*screen_width), int(200/const_height_screen*screen_height)],
+        [int(898/const_width_screen*screen_width), int(228/const_height_screen*screen_height)]],
+        [[int(899/const_width_screen*screen_width), int(230/const_height_screen*screen_height)],
+        [int(941/const_width_screen*screen_width), int(232/const_height_screen*screen_height)],
+        [int(928/const_width_screen*screen_width), int(164/const_height_screen*screen_height)],
+        [int(861/const_width_screen*screen_width), int(200/const_height_screen*screen_height)]]]
+he = [[[926, 254], [930, 200], [934, 177], [874, 182]],
+        [[885, 252], [885, 226], [886, 237], [885, 213]]]
+he = [[[int(926/const_width_screen*screen_width), int(254/const_height_screen*screen_height)],
+        [int(930/const_width_screen*screen_width), int(200/const_height_screen*screen_height)],
+        [int(934/const_width_screen*screen_width), int(177/const_height_screen*screen_height)],
+        [int(874/const_width_screen*screen_width), int(182/const_height_screen*screen_height)]],
+        [[int(885/const_width_screen*screen_width), int(252/const_height_screen*screen_height)],
+        [int(885/const_width_screen*screen_width), int(226/const_height_screen*screen_height)],
+        [int(885/const_width_screen*screen_width), int(237/const_height_screen*screen_height)],
+        [int(885/const_width_screen*screen_width), int(213/const_height_screen*screen_height)]]]
+vav = [[[923, 255], [923, 209], [923, 229], [923, 176]]]
+vav = [[[int(923/const_width_screen*screen_width), int(255/const_height_screen*screen_height)],
+        [int(923/const_width_screen*screen_width), int(209/const_height_screen*screen_height)],
+        [int(923/const_width_screen*screen_width), int(229/const_height_screen*screen_height)],
+        [int(923/const_width_screen*screen_width), int(176/const_height_screen*screen_height)]]]
+zayin = [[[888, 265], [952, 275], [950, 207], [885, 224]],
+        [[885, 225], [884, 203], [884, 209], [885, 188]]]
+zayin = [[[int(888/const_width_screen*screen_width), int(265/const_height_screen*screen_height)],
+        [int(952/const_width_screen*screen_width), int(275/const_height_screen*screen_height)],
+        [int(950/const_width_screen*screen_width), int(207/const_height_screen*screen_height)],
+        [int(885/const_width_screen*screen_width), int(224/const_height_screen*screen_height)]],
+        [[int(885/const_width_screen*screen_width), int(225/const_height_screen*screen_height)],
+        [int(884/const_width_screen*screen_width), int(203/const_height_screen*screen_height)],
+        [int(884/const_width_screen*screen_width), int(209/const_height_screen*screen_height)],
+        [int(885/const_width_screen*screen_width), int(188/const_height_screen*screen_height)]]]
+het = [[[916, 277], [933, 178], [846, 178], [861, 279]]]
+het = [[[int(916/const_width_screen*screen_width), int(277/const_height_screen*screen_height)],
+        [int(933/const_width_screen*screen_width), int(178/const_height_screen*screen_height)],
+        [int(846/const_width_screen*screen_width), int(178/const_height_screen*screen_height)],
+        [int(861/const_width_screen*screen_width), int(279/const_height_screen*screen_height)]]]
+tet = [[[942, 247], [916, 325], [854, 220], [913, 176]]]
+tet = [[[int(942/const_width_screen*screen_width), int(247/const_height_screen*screen_height)],
+        [int(916/const_width_screen*screen_width), int(325/const_height_screen*screen_height)],
+        [int(854/const_width_screen*screen_width), int(220/const_height_screen*screen_height)],
+        [int(913/const_width_screen*screen_width), int(176/const_height_screen*screen_height)]]]
+yud = [[[921, 230], [921, 199], [922, 211], [922, 180]]]
+yud = [[[int(921/const_width_screen*screen_width), int(230/const_height_screen*screen_height)],
+        [int(921/const_width_screen*screen_width), int(199/const_height_screen*screen_height)],
+        [int(922/const_width_screen*screen_width), int(211/const_height_screen*screen_height)],
+        [int(922/const_width_screen*screen_width), int(180/const_height_screen*screen_height)]]]
+kaf = [[[872, 258], [946, 276], [949, 174], [872, 188]]]
+kaf = [[[int(872/const_width_screen*screen_width), int(258/const_height_screen*screen_height)],
+        [int(946/const_width_screen*screen_width), int(276/const_height_screen*screen_height)],
+        [int(949/const_width_screen*screen_width), int(174/const_height_screen*screen_height)],
+        [int(872/const_width_screen*screen_width), int(188/const_height_screen*screen_height)]]]
+lamed = [[[887, 278], [948, 286], [866, 178], [934, 181]],
+        [[889, 277], [867, 277], [887, 241], [908, 267]]]
+lamed = [[[int(887/const_width_screen*screen_width), int(278/const_height_screen*screen_height)],
+        [int(948/const_width_screen*screen_width), int(286/const_height_screen*screen_height)],
+        [int(866/const_width_screen*screen_width), int(178/const_height_screen*screen_height)],
+        [int(934/const_width_screen*screen_width), int(181/const_height_screen*screen_height)]],
+        [[int(889/const_width_screen*screen_width), int(277/const_height_screen*screen_height)],
+        [int(867/const_width_screen*screen_width), int(277/const_height_screen*screen_height)],
+        [int(887/const_width_screen*screen_width), int(241/const_height_screen*screen_height)],
+        [int(908/const_width_screen*screen_width), int(267/const_height_screen*screen_height)]]]
+mem = [[[926, 310], [942, 528], [857, 168], [871, 382]]]
+mem = [[[int(926/const_width_screen*screen_width), int(310/const_height_screen*screen_height)],
+        [int(942/const_width_screen*screen_width), int(528/const_height_screen*screen_height)],
+        [int(857/const_width_screen*screen_width), int(168/const_height_screen*screen_height)],
+        [int(871/const_width_screen*screen_width), int(382/const_height_screen*screen_height)]]]
+nun = [[[926, 177], [930, 275], [931, 258], [885, 257]]]
+nun = [[[int(926/const_width_screen*screen_width), int(177/const_height_screen*screen_height)],
+        [int(930/const_width_screen*screen_width), int(275/const_height_screen*screen_height)],
+        [int(931/const_width_screen*screen_width), int(258/const_height_screen*screen_height)],
+        [int(885/const_width_screen*screen_width), int(257/const_height_screen*screen_height)]]]
+sameh = [[[810, 204], [827, 387], [958, 167], [814, 205]]]
+sameh = [[[int(810/const_width_screen*screen_width), int(204/const_height_screen*screen_height)],
+        [int(827/const_width_screen*screen_width), int(387/const_height_screen*screen_height)],
+        [int(958/const_width_screen*screen_width), int(167/const_height_screen*screen_height)],
+        [int(814/const_width_screen*screen_width), int(205/const_height_screen*screen_height)]]]
+ayin = [[[859, 178], [709, 287], [951, 288], [805, 179]]]
+ayin = [[[int(859/const_width_screen*screen_width), int(178/const_height_screen*screen_height)],
+        [int(709/const_width_screen*screen_width), int(287/const_height_screen*screen_height)],
+        [int(951/const_width_screen*screen_width), int(288/const_height_screen*screen_height)],
+        [int(805/const_width_screen*screen_width), int(179/const_height_screen*screen_height)]]]
+pei = [[[859, 191], [943, 172], [938, 265], [878, 264]],
+        [[879, 263], [847, 266], [849, 211], [894, 234]]]
+pei = [[[int(859/const_width_screen*screen_width), int(191/const_height_screen*screen_height)],
+        [int(943/const_width_screen*screen_width), int(172/const_height_screen*screen_height)],
+        [int(938/const_width_screen*screen_width), int(265/const_height_screen*screen_height)],
+        [int(878/const_width_screen*screen_width), int(264/const_height_screen*screen_height)]],
+        [[int(879/const_width_screen*screen_width), int(263/const_height_screen*screen_height)],
+        [int(847/const_width_screen*screen_width), int(266/const_height_screen*screen_height)],
+        [int(849/const_width_screen*screen_width), int(211/const_height_screen*screen_height)],
+        [int(894/const_width_screen*screen_width), int(234/const_height_screen*screen_height)]]]
+tsadi =[[[878, 277], [940, 285], [947, 226], [878, 230]],
+        [[879, 230], [929, 233], [932, 187], [876, 198]]]
+tsadi =[[[int(878/const_width_screen*screen_width), int(277/const_height_screen*screen_height)],
+        [int(940/const_width_screen*screen_width), int(285/const_height_screen*screen_height)],
+        [int(947/const_width_screen*screen_width), int(226/const_height_screen*screen_height)],
+        [int(878/const_width_screen*screen_width), int(230/const_height_screen*screen_height)]],
+        [[int(879/const_width_screen*screen_width), int(230/const_height_screen*screen_height)],
+        [int(929/const_width_screen*screen_width), int(233/const_height_screen*screen_height)],
+        [int(932/const_width_screen*screen_width), int(187/const_height_screen*screen_height)],
+        [int(876/const_width_screen*screen_width), int(198/const_height_screen*screen_height)]]]
+kuf =[[[918, 260], [945, 209], [917, 174], [872, 202]],
+        [[894, 308], [893, 259], [894, 275], [893, 234]]]
+kuf =[[[int(918/const_width_screen*screen_width), int(260/const_height_screen*screen_height)],
+        [int(945/const_width_screen*screen_width), int(209/const_height_screen*screen_height)],
+        [int(917/const_width_screen*screen_width), int(174/const_height_screen*screen_height)],
+        [int(872/const_width_screen*screen_width), int(202/const_height_screen*screen_height)]],
+        [[int(894/const_width_screen*screen_width), int(308/const_height_screen*screen_height)],
+        [int(893/const_width_screen*screen_width), int(259/const_height_screen*screen_height)],
+        [int(894/const_width_screen*screen_width), int(275/const_height_screen*screen_height)],
+        [int(893/const_width_screen*screen_width), int(234/const_height_screen*screen_height)]]]
+resh = [[[927, 255], [938, 208], [918, 171], [870, 186]]]
+resh = [[[int(927/const_width_screen*screen_width), int(255/const_height_screen*screen_height)],
+        [int(938/const_width_screen*screen_width), int(208/const_height_screen*screen_height)],
+        [int(918/const_width_screen*screen_width), int(171/const_height_screen*screen_height)],
+        [int(870/const_width_screen*screen_width), int(186/const_height_screen*screen_height)]]]
+shin = [[[924, 267], [899, 306], [832, 269], [865, 216]],
+        [[866, 216], [889, 180], [930, 229], [865, 266]]]
+shin = [[[int(924/const_width_screen*screen_width), int(267/const_height_screen*screen_height)],
+        [int(899/const_width_screen*screen_width), int(306/const_height_screen*screen_height)],
+        [int(832/const_width_screen*screen_width), int(269/const_height_screen*screen_height)],
+        [int(865/const_width_screen*screen_width), int(216/const_height_screen*screen_height)]],
+        [[int(866/const_width_screen*screen_width), int(216/const_height_screen*screen_height)],
+        [int(889/const_width_screen*screen_width), int(180/const_height_screen*screen_height)],
+        [int(930/const_width_screen*screen_width), int(229/const_height_screen*screen_height)],
+        [int(865/const_width_screen*screen_width), int(266/const_height_screen*screen_height)]]]
+taf = [[[937, 278], [944, 184], [878, 181], [884, 277]],
+        [[885, 278], [857, 279], [862, 279], [838, 279]]]
+taf = [[[int(937/const_width_screen*screen_width), int(278/const_height_screen*screen_height)],
+        [int(944/const_width_screen*screen_width), int(184/const_height_screen*screen_height)],
+        [int(878/const_width_screen*screen_width), int(181/const_height_screen*screen_height)],
+        [int(884/const_width_screen*screen_width), int(277/const_height_screen*screen_height)]],
+        [[int(885/const_width_screen*screen_width), int(277/const_height_screen*screen_height)],
+        [int(857/const_width_screen*screen_width), int(277/const_height_screen*screen_height)],
+        [int(862/const_width_screen*screen_width), int(277/const_height_screen*screen_height)],
+        [int(838/const_width_screen*screen_width), int(277/const_height_screen*screen_height)]]]
+
+letters = [alef, bet, gimel, dalet, he, vav, zayin, het, tet, yud, kaf, lamed, mem, nun, sameh, ayin, pei, tsadi, kuf, resh, shin, taf]
+
 
 buttons_enabled = True
 IS_MOVING_ALL_CURVE = True
