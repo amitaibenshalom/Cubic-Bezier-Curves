@@ -18,6 +18,8 @@ white = (255, 255, 255)
 black = (0, 0, 0)
 brown = (139, 69, 19)
 orange = (255, 165, 0)
+button_color = (199, 33, 47)
+button_pressed_color = (242, 188, 27)
 colorOutSideBorder = (226, 233, 241)
 cuttingAreaColor = white
 bgColor = white
@@ -229,6 +231,12 @@ pic_buttonPressedLettersRight = pygame.image.load("pictures/right_arrow.png")
 pic_doubleArrow = pygame.image.load("pictures/double_arrow.png")
 pic_textAbove = pygame.image.load("pictures/textAbove2.jpg")
 pic_textFrame = pygame.image.load("pictures/frame.jpg")
+
+# load the images of the letters and transform them to the right size
+pic_letters = []
+for i in range(0, 27):
+    pic_letters.append(pygame.image.load("pictures/letters/" + str(i) + ".png"))
+    pic_letters[i] = pygame.transform.scale(pic_letters[i], buttonLettersSize)
 
 # resize the images
 pic_buttonDelete = pygame.transform.scale(pic_buttonDelete, buttonDeleteSize)
@@ -572,6 +580,16 @@ kaf = [[[int(872/const_width_screen*screen_width), int(258/const_height_screen*s
         [int(946/const_width_screen*screen_width), int(276/const_height_screen*screen_height)],
         [int(949/const_width_screen*screen_width), int(174/const_height_screen*screen_height)],
         [int(872/const_width_screen*screen_width), int(188/const_height_screen*screen_height)]]]
+kaf_sofit = [[[869, 190], [943, 169], [934, 251], [880, 245]],
+             [[879, 325], [881, 274], [879, 296], [879, 245]]]
+kaf_sofit = [[[int(869/const_width_screen*screen_width), int(190/const_height_screen*screen_height)],
+            [int(943/const_width_screen*screen_width), int(169/const_height_screen*screen_height)],
+            [int(934/const_width_screen*screen_width), int(251/const_height_screen*screen_height)],
+            [int(880/const_width_screen*screen_width), int(245/const_height_screen*screen_height)]],
+            [[int(879/const_width_screen*screen_width), int(325/const_height_screen*screen_height)],
+            [int(881/const_width_screen*screen_width), int(274/const_height_screen*screen_height)],
+            [int(879/const_width_screen*screen_width), int(296/const_height_screen*screen_height)],
+            [int(879/const_width_screen*screen_width), int(245/const_height_screen*screen_height)]]]
 lamed = [[[887, 278], [948, 286], [866, 178], [934, 181]],
         [[889, 277], [867, 277], [887, 241], [908, 267]]]
 lamed = [[[int(887/const_width_screen*screen_width), int(278/const_height_screen*screen_height)],
@@ -587,11 +605,21 @@ mem = [[[int(926/const_width_screen*screen_width), int(310/const_height_screen*s
         [int(942/const_width_screen*screen_width), int(528/const_height_screen*screen_height)],
         [int(857/const_width_screen*screen_width), int(168/const_height_screen*screen_height)],
         [int(871/const_width_screen*screen_width), int(382/const_height_screen*screen_height)]]]
+mem_sofit = [[[815, 349], [815, 162], [952, 368], [823, 340]]]
+mem_sofit = [[[int(815/const_width_screen*screen_width), int(349/const_height_screen*screen_height)],
+            [int(815/const_width_screen*screen_width), int(162/const_height_screen*screen_height)],
+            [int(952/const_width_screen*screen_width), int(368/const_height_screen*screen_height)],
+            [int(823/const_width_screen*screen_width), int(340/const_height_screen*screen_height)]]]
 nun = [[[926, 177], [930, 275], [931, 258], [885, 257]]]
 nun = [[[int(926/const_width_screen*screen_width), int(177/const_height_screen*screen_height)],
         [int(930/const_width_screen*screen_width), int(275/const_height_screen*screen_height)],
         [int(931/const_width_screen*screen_width), int(258/const_height_screen*screen_height)],
         [int(885/const_width_screen*screen_width), int(257/const_height_screen*screen_height)]]]
+nun_sofit = [[[921, 295], [921, 210], [921, 258], [921, 179]]]
+nun_sofit = [[[int(921/const_width_screen*screen_width), int(295/const_height_screen*screen_height)],
+            [int(921/const_width_screen*screen_width), int(210/const_height_screen*screen_height)],
+            [int(921/const_width_screen*screen_width), int(258/const_height_screen*screen_height)],
+            [int(921/const_width_screen*screen_width), int(179/const_height_screen*screen_height)]]]
 sameh = [[[810, 204], [827, 387], [958, 167], [814, 205]]]
 sameh = [[[int(810/const_width_screen*screen_width), int(204/const_height_screen*screen_height)],
         [int(827/const_width_screen*screen_width), int(387/const_height_screen*screen_height)],
@@ -612,6 +640,16 @@ pei = [[[int(859/const_width_screen*screen_width), int(191/const_height_screen*s
         [int(847/const_width_screen*screen_width), int(266/const_height_screen*screen_height)],
         [int(849/const_width_screen*screen_width), int(211/const_height_screen*screen_height)],
         [int(894/const_width_screen*screen_width), int(234/const_height_screen*screen_height)]]]
+pei_sofit = [[[905, 265], [881, 305], [946, 290], [893, 197]],
+             [[903, 245], [788, 266], [958, 200], [893, 197]]]
+pei_sofit = [[[int(905/const_width_screen*screen_width), int(265/const_height_screen*screen_height)],
+            [int(881/const_width_screen*screen_width), int(305/const_height_screen*screen_height)],
+            [int(946/const_width_screen*screen_width), int(290/const_height_screen*screen_height)],
+            [int(893/const_width_screen*screen_width), int(197/const_height_screen*screen_height)]],
+            [[int(903/const_width_screen*screen_width), int(245/const_height_screen*screen_height)],
+            [int(788/const_width_screen*screen_width), int(266/const_height_screen*screen_height)],
+            [int(958/const_width_screen*screen_width), int(200/const_height_screen*screen_height)],
+            [int(893/const_width_screen*screen_width), int(197/const_height_screen*screen_height)]]]
 tsadi =[[[878, 277], [940, 285], [947, 226], [878, 230]],
         [[879, 230], [929, 233], [932, 187], [876, 198]]]
 tsadi =[[[int(878/const_width_screen*screen_width), int(277/const_height_screen*screen_height)],
@@ -622,6 +660,16 @@ tsadi =[[[int(878/const_width_screen*screen_width), int(277/const_height_screen*
         [int(929/const_width_screen*screen_width), int(233/const_height_screen*screen_height)],
         [int(932/const_width_screen*screen_width), int(187/const_height_screen*screen_height)],
         [int(876/const_width_screen*screen_width), int(198/const_height_screen*screen_height)]]]
+tsadi_sofit = [[[886, 267], [840, 299], [936, 309], [874, 199]],
+                [[852, 199], [812, 228], [936, 217], [878, 199]]]
+tsadi_sofit = [[[int(886/const_width_screen*screen_width), int(267/const_height_screen*screen_height)],
+                [int(840/const_width_screen*screen_width), int(299/const_height_screen*screen_height)],
+                [int(936/const_width_screen*screen_width), int(309/const_height_screen*screen_height)],
+                [int(874/const_width_screen*screen_width), int(199/const_height_screen*screen_height)]],
+                [[int(852/const_width_screen*screen_width), int(199/const_height_screen*screen_height)],
+                [int(812/const_width_screen*screen_width), int(228/const_height_screen*screen_height)],
+                [int(936/const_width_screen*screen_width), int(217/const_height_screen*screen_height)],
+                [int(878/const_width_screen*screen_width), int(199/const_height_screen*screen_height)]]]
 kuf =[[[918, 260], [945, 209], [917, 174], [872, 202]],
         [[894, 308], [893, 259], [894, 275], [893, 234]]]
 kuf =[[[int(918/const_width_screen*screen_width), int(260/const_height_screen*screen_height)],
@@ -658,8 +706,7 @@ taf = [[[int(937/const_width_screen*screen_width), int(278/const_height_screen*s
         [int(862/const_width_screen*screen_width), int(277/const_height_screen*screen_height)],
         [int(838/const_width_screen*screen_width), int(277/const_height_screen*screen_height)]]]
 
-letters = [alef, bet, gimel, dalet, he, vav, zayin, het, tet, yud, kaf, lamed, mem, nun, sameh, ayin, pei, tsadi, kuf, resh, shin, taf]
-
+letters = [alef, bet, gimel, dalet, he, vav, zayin, het, tet, yud, kaf, kaf_sofit, lamed, mem, mem_sofit, nun, nun_sofit, sameh, ayin, pei, pei_sofit, tsadi, tsadi_sofit, kuf, resh, shin, taf]
 
 buttons_enabled = True
 IS_MOVING_ALL_CURVE = True

@@ -712,15 +712,26 @@ def insert_letter():
 
 def letter_left_arrow():
     global letter_index
+    global ButtonLetters
     letter_index -= 1
     if letter_index < 0:
         letter_index = len(letters) - 1
+    # update the button letters to the new letter
+    ButtonLetters.img = pic_letters[letter_index]
+    ButtonLetters.imgon = pic_letters[letter_index]
+    ButtonLetters.tempimg = pic_letters[letter_index]
 
 def letter_right_arrow():
     global letter_index
+    global ButtonLetters
     letter_index += 1
     if letter_index >= len(letters):
         letter_index = 0
+    # update the button letters to the new letter
+    ButtonLetters.img = pic_letters[letter_index]
+    ButtonLetters.imgon = pic_letters[letter_index]
+    ButtonLetters.tempimg = pic_letters[letter_index]
+
 
 def check_idle():
     global idle_mode
@@ -803,14 +814,14 @@ ButtonDrop = Button(buttonDropPosition, buttonDropSize, buttonInactiveColour, bu
                     pic_buttonPressedDrop, drop)
 ButtonSquare = Button(buttonSquarePosition, buttonSquareSize, buttonInactiveColour, buttonPressedColour,
                       pic_buttonSquare, pic_buttonPressedSquare, sqaure)
-buttonLetters = Button(buttonLettersPosition, buttonLettersSize, buttonInactiveColour, buttonPressedColour,
-                       None, None, insert_letter)
-buttonLettersLeftArrow = Button(buttonLettersLeftPosition, buttonLettersLeftSize, buttonInactiveColour, buttonPressedColour,
+ButtonLetters = Button(buttonLettersPosition, buttonLettersSize, buttonInactiveColour, buttonPressedColour,
+                       pic_letters[0], pic_letters[0], insert_letter)
+ButtonLettersLeftArrow = Button(buttonLettersLeftPosition, buttonLettersLeftSize, buttonInactiveColour, buttonPressedColour,
                           pic_buttonLettersLeft, pic_buttonPressedLettersLeft, letter_left_arrow)
-buttonLettersRightArrow = Button(buttonLettersRightPosition, buttonLettersRightSize, buttonInactiveColour, buttonPressedColour,
+ButtonLettersRightArrow = Button(buttonLettersRightPosition, buttonLettersRightSize, buttonInactiveColour, buttonPressedColour,
                             pic_buttonLettersRight, pic_buttonPressedLettersRight, letter_right_arrow)
 
-buttons = [ButtonAdd, ButtonDelete, ButtonInfo, ButtonPreview, ButtonPrint, ButtonHeart, ButtonDrop, ButtonSquare, buttonLetters, buttonLettersLeftArrow, buttonLettersRightArrow]
+buttons = [ButtonAdd, ButtonDelete, ButtonInfo, ButtonPreview, ButtonPrint, ButtonHeart, ButtonDrop, ButtonSquare, ButtonLetters, ButtonLettersLeftArrow, ButtonLettersRightArrow]
 
 
 # rotate the square contour 45 degrees
