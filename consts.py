@@ -193,9 +193,9 @@ buttonPrintPosition = (button_operation_x - 1.3*buttonPrintSize[0], int((button_
 buttonHeartPosition = (button_contour_x, int((6 + button_contour_height0 + 0.5) / 16.5 * screen_height))
 buttonDropPosition = (button_contour_x, int((6 + 2 * (button_contour_height0 + 0.5)) / 16.5 * screen_height))
 buttonSquarePosition = (button_contour_x, int((6 + 3 * (button_contour_height0 + 0.5)) / 16.5 * screen_height))
-buttonLettersPosition = (int(button_operation_x - 0.5*buttonAddSize[0]), int((button_operation_x0-1.3) / 16.5 * screen_height))
-buttonLettersLeftPosition = (int(button_operation_x - 0.5*buttonAddSize[0] - 1.5*buttonLettersSize[0]), int((button_operation_x0-1.3) / 16.5 * screen_height))
-buttonLettersRightPosition = (int(button_operation_x - 0.5*buttonAddSize[0] + 1.5*buttonLettersSize[0]), int((button_operation_x0-1.3) / 16.5 * screen_height))
+buttonLettersPosition = (buttonAddPosition[0] + 0.5*(buttonAddSize[0]-buttonLettersSize[0]), int((button_operation_x0 - 0.3) / 16.5 * screen_height)-buttonLettersSize[1])
+buttonLettersLeftPosition = (buttonLettersPosition[0] - 1.5*buttonLettersSize[0], buttonLettersPosition[1])
+buttonLettersRightPosition = (buttonLettersPosition[0] + 1.5*buttonLettersSize[0], buttonLettersPosition[1])
 textAbovePosition = (centerInsideBorders[0]-textAboveSize[0]/2, borderLineHeight-textAboveSize[1])
 textFramePosition = (buttonHeartPosition[0], buttonHeartPosition[1]-textFrameSize[0])
 
