@@ -717,9 +717,9 @@ def letter_left_arrow():
     if letter_index < 0:
         letter_index = len(letters) - 1
     # update the button letters to the new letter
-    ButtonLetters.img = pic_letters[letter_index]
-    ButtonLetters.imgon = pic_letters[letter_index]
-    ButtonLetters.tempimg = pic_letters[letter_index]
+    ButtonLetters.tempimg = pic_letters[2*letter_index]
+    ButtonLetters.img = pic_letters[2*letter_index]
+    ButtonLetters.imgon = pic_letters[2*letter_index+1]
 
 def letter_right_arrow():
     global letter_index
@@ -728,9 +728,9 @@ def letter_right_arrow():
     if letter_index >= len(letters):
         letter_index = 0
     # update the button letters to the new letter
-    ButtonLetters.img = pic_letters[letter_index]
-    ButtonLetters.imgon = pic_letters[letter_index]
-    ButtonLetters.tempimg = pic_letters[letter_index]
+    ButtonLetters.tempimg = pic_letters[2*letter_index]
+    ButtonLetters.img = pic_letters[2*letter_index]
+    ButtonLetters.imgon = pic_letters[2*letter_index+1]
 
 
 def check_idle():
@@ -815,7 +815,7 @@ ButtonDrop = Button(buttonDropPosition, buttonDropSize, buttonInactiveColour, bu
 ButtonSquare = Button(buttonSquarePosition, buttonSquareSize, buttonInactiveColour, buttonPressedColour,
                       pic_buttonSquare, pic_buttonPressedSquare, sqaure)
 ButtonLetters = Button(buttonLettersPosition, buttonLettersSize, buttonInactiveColour, buttonPressedColour,
-                       pic_letters[0], pic_letters[0], insert_letter)
+                       pic_letters[0], pic_letters[1], insert_letter)
 ButtonLettersLeftArrow = Button(buttonLettersLeftPosition, buttonLettersLeftSize, buttonInactiveColour, buttonPressedColour,
                           pic_buttonLettersLeft, pic_buttonPressedLettersLeft, letter_left_arrow)
 ButtonLettersRightArrow = Button(buttonLettersRightPosition, buttonLettersRightSize, buttonInactiveColour, buttonPressedColour,

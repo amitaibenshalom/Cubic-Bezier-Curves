@@ -39,7 +39,7 @@ screenColor = gray
 # logging values
 # get the current diractory the code sits in and create the log file there
 currentDir = os.path.dirname(os.path.realpath(__file__))
-LOG_FILE_PATH = os.path.join(currentDir, "log.log")
+LOG_FILE_PATH = os.path.join(currentDir, "log.txt")
 
 # borderLineHeight = int(142 / const_height_screen * screen_height)
 borderLineHeight = int(142 / const_height_screen * screen_height)
@@ -236,7 +236,9 @@ pic_textFrame = pygame.image.load("pictures/frame.jpg")
 pic_letters = []
 for i in range(0, 27):
     pic_letters.append(pygame.image.load("pictures/letters/" + str(i) + ".png"))
-    pic_letters[i] = pygame.transform.scale(pic_letters[i], buttonLettersSize)
+    pic_letters[2*i] = pygame.transform.scale(pic_letters[2*i], buttonLettersSize)
+    pic_letters.append(pygame.image.load("pictures/letters/" + str(i) + "_pressed.png"))
+    pic_letters[2*i+1] = pygame.transform.scale(pic_letters[2*i+1], buttonLettersSize)
 
 # resize the images
 pic_buttonDelete = pygame.transform.scale(pic_buttonDelete, buttonDeleteSize)
@@ -261,8 +263,8 @@ pic_buttonDrop = pygame.transform.scale(pic_buttonDrop, buttonDropSize)
 pic_buttonPressedDrop = pygame.transform.scale(pic_buttonPressedDrop, buttonDropSize)
 pic_buttonSquare = pygame.transform.scale(pic_buttonSquare, buttonSquareSize)
 pic_buttonPressedSquare = pygame.transform.scale(pic_buttonPressedSquare, buttonSquareSize)
-# pic_buttonLetters = pygame.transform.scale(pic_buttonLetters, buttonLettersSize)
-# pic_buttonPressedLetters = pygame.transform.scale(pic_buttonPressedLetters, buttonLettersSize)
+pic_buttonLetters = pygame.transform.scale(pic_letters[0], buttonLettersSize)
+pic_buttonPressedLetters = pygame.transform.scale(pic_letters[1], buttonLettersSize)
 pic_buttonLettersLeft = pygame.transform.scale(pic_buttonLettersLeft, buttonLettersLeftSize)
 pic_buttonPressedLettersLeft = pygame.transform.scale(pic_buttonPressedLettersLeft, buttonLettersLeftSize)
 pic_buttonLettersRight = pygame.transform.scale(pic_buttonLettersRight, buttonLettersRightSize)
