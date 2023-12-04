@@ -745,6 +745,8 @@ def check_idle():
     global send_to_arduino
     global logger
     global enable_idle_drawing
+    global letter_index
+    global ButtonLetters
 
     if not idle_mode and time.time() - idle_clock > IDLE_TIME and not auto_run and not send_to_arduino:
         idle_mode = True
@@ -752,6 +754,10 @@ def check_idle():
         heart(log_flag=False)
         clear_all(log_flag=False)
         add_curve0(log_flag=False)
+        letter_index = 0
+        ButtonLetters.tempimg = pic_letters[0]
+        ButtonLetters.img = pic_letters[0]
+        ButtonLetters.imgon = pic_letters[1]
 #            idle_clock = time.time()
         idle_clock_draw = time.time()
 
