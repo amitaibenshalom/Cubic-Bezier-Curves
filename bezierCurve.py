@@ -523,8 +523,8 @@ def add_curve0(log_flag=True):
         add_curve()
     else:
         print("cannot add more curves")
-        if log_flag:
-            logger.warning("clicked on add curve button when max curves reached")
+#        if log_flag:
+#            logger.warning("clicked on add curve button when max curves reached")
 
 
 def msgNumCurves(num):
@@ -581,8 +581,8 @@ def clear(log_flag=True):
     global delta_outside
     global logger
     if len(curves) == 0:
-        if log_flag:
-            logger.warning("clicked on delete button with no curves on screen")
+#        if log_flag:
+#            logger.warning("clicked on delete button with no curves on screen")
         return
     curves.pop()
     selected_curve = None
@@ -674,8 +674,8 @@ def add_curve(log_flag=True):
             delta_outside[0] = 0
             delta_outside[1] = delta_outside[2] * delta1Z
 
-    if log_flag:
-        logger.info("added curve: now " + str(len(curves)) + " curves")
+#    if log_flag:
+#        logger.info("added curve: now " + str(len(curves)) + " curves")
 
 def add_contour(p0, p1, p2, p3):
     global contour
