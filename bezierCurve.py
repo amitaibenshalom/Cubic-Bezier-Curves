@@ -16,11 +16,10 @@ arduino = None
 logging.basicConfig(filename=LOG_FILE_PATH, filemode='a', level=logging.INFO)
 handler = RotatingFileHandler(LOG_FILE_PATH, maxBytes=37500, backupCount=100)
 logger = logging.getLogger("Rotating Log")
-formatter = logging.Formatter('%(asctime)s.%(msecs)03d %(message)s', '%Y-%m-%d %H:%M:%S')
+formatter = logging.Formatter('%(asctime)s.%(msecs)03d;%(message)s', '%Y-%m-%d %H:%M:%S')
 handler.setFormatter(formatter)
 logger.propagate = False
 logger.addHandler(handler)
-logger.info('')
 logger.info('--------------- PROGRAM START ---------------')
 
 try:
@@ -282,8 +281,8 @@ def check_arduino(log_flag=True):
             received_data = arduino.readline().decode('utf-8').rstrip()
             waiting[1] = False
             print("arduino finished drawing curve " + str(curve_index))
-            if log_flag:
-                logger.info("arduino finished drawing curve " + str(curve_index))
+            # if log_flag:
+            #     logger.info("arduino finished drawing curve " + str(curve_index))
             curve_index += 1
             if curve_index >= len(curves_to_send):
                 dc_motor_on = True
@@ -291,12 +290,12 @@ def check_arduino(log_flag=True):
                 # send a key that will tell the arduino to stop reading
                 print("sent all curves")
                 if log_flag:
-                    logger.info("sent all curves")
+                    # logger.info("sent all curves")
                     logger.info("arduino finished drawing all curves successfully")
                 send_one_number(end_key)
                 print("sent end key for arduino")
-                if log_flag:
-                    logger.info("sent end key for arduino")
+                # if log_flag:
+                #     logger.info("sent end key for arduino")
                 estimated_time = 0
                 show_estimated_time = False
                 idle_clock = time.time()
@@ -321,8 +320,8 @@ def check_arduino(log_flag=True):
             waiting[1] = True
             last_time[1] = time.time()
             print("arduino finished reading curve " + str(curve_index))
-            if log_flag:
-                logger.info("arduino finished reading curve " + str(curve_index))
+            # if log_flag:
+            #     logger.info("arduino finished reading curve " + str(curve_index))
         elif time.time() - last_time[0] > MAX_TIME_WAITING_FOR_ARDUINO:
             print("ERROR: arduino didn't send reading done key")
             logger.error("ERROR: arduino didn't send reading done key")
@@ -334,8 +333,8 @@ def check_arduino(log_flag=True):
         for point in curve.vertices:
             send_one_number(point[1])
             send_one_number(point[0])
-        if log_flag:
-            logger.info("sent curve " + str(curve_index))
+        # if log_flag:
+        #     logger.info("sent curve " + str(curve_index))
         drawing_curve = True
         waiting[0] = True  # waiting for arduino to send key that will tell us it finished reading the curve
         waiting[1] = False  # NOT waiting for arduino to send key that will tell us it finished drawing the curve
@@ -363,19 +362,23 @@ def send_to_laser(log_flag=True):
         return False
     if log_flag:
         logger.info("clicked on print button")
-    # print all curves
-    for curve in curves:
-        print(curve.vertices)
-        if log_flag:
-            logger.info(curve.vertices)
+
+    # send all of the curve's vertices to log file in one line
+    if log_flag:
+        str_log = f"{len(curves)};["
+        for curve in curves:
+            str_log += str(curve.vertices) + ","
+        str_log = str_log[:-1] + "]"
+        logger.info(str_log)
+
     if not found_arduino:
         print("ERROR: No Laser Connected")
         logger.error("ERROR: No Laser Connected")
         return False
     if len(curves) == 0:
         print("No curves to send")
-        if log_flag:
-            logger.warning("Clicked on print button with no curves to send")
+        # if log_flag:
+        #     logger.warning("Clicked on print button with no curves to send")
         return True
     estimated = 0 # estimated time to finish drawing in seconds
     last_send_time = time.time()
@@ -404,16 +407,16 @@ def send_to_laser(log_flag=True):
     if not send_one_number(starting_key):  # first, send a key that will tell the arduino to start reading
         return False
     print("sent starting key to laser")
-    if log_flag:
-        logger.info("sent starting key to laser")
+    # if log_flag:
+    #     logger.info("sent starting key to laser")
     # then, send the number of curves
     if not send_one_number(-len(curves_to_send)):
         return False
     if not send_one_number(-times*len(contour)):
         return False
     print("sent number of curves and contour")
-    if log_flag:
-        logger.info("sent number of curves and contour")
+    # if log_flag:
+    #     logger.info("sent number of curves and contour")
     drawing_curve = False
     curve_index = 0
     send_to_arduino = True
@@ -584,8 +587,8 @@ def clear(log_flag=True):
     curves.pop()
     selected_curve = None
     selected = None
-    if log_flag:
-        logger.info("deleted curve: now " + str(len(curves)) + " curves")
+    # if log_flag:
+    #     logger.info("deleted curve: now " + str(len(curves)) + " curves")
     if len(curves) == 0:  # just in case something doesnt work
         delta = [0, 0, 0]
         delta_outside = [0, 0, 0]

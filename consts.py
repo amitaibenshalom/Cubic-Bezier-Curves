@@ -37,9 +37,12 @@ screen_height = infoObject.current_h
 screenColor = gray
 
 # logging values
-# get the current diractory the code sits in and create the log file there
+log_name = "log.txt"
+log_dir = "logs"
 currentDir = os.path.dirname(os.path.realpath(__file__))
-LOG_FILE_PATH = os.path.join(currentDir, "log.txt")
+if not os.path.exists(os.path.join(currentDir, log_dir)):
+    os.makedirs(os.path.join(currentDir, log_dir))
+LOG_FILE_PATH = os.path.join(currentDir, log_dir, log_name)
 
 # borderLineHeight = int(142 / const_height_screen * screen_height)
 borderLineHeight = int(142 / const_height_screen * screen_height)
