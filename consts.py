@@ -1,6 +1,5 @@
 import pygame
 import os
-import platform
 from pygame.locals import *
 
 # consts
@@ -28,6 +27,7 @@ bgColor = white
 # screen_height = 600
 const_width_screen = 1366  # DO NOT CHANGE - for calculations of proportional sizes
 const_height_screen = 768  # DO NOT CHANGE - for calculations of proportional sizes
+saved_image_width, saved_image_height = 720, 480
 
 pygame.init()
 infoObject = pygame.display.Info()

@@ -3,6 +3,7 @@ import logging
 import serial
 import struct
 import time
+from datetime import datetime
 from consts import *
 from logging.handlers import RotatingFileHandler
 
@@ -169,11 +170,11 @@ class BezierCurve(object):
 
         return result
 
-    def draw(self):
+    def draw(self, surface = None):
         global screen
         # Draw control points
         control_points = self.vertices
-        if show_control_lines and self.moveable:
+        if show_control_lines and self.moveable and surface is None:
             # Draw control "lines"
             # pygame.draw.lines(screen, lightgray, False, [(x[0], x[1]) for x in control_points])
             pygame.draw.lines(screen, control_lines_color, False,
@@ -194,7 +195,7 @@ class BezierCurve(object):
                     pygame.draw.circle(screen, circleColor1, (int(p[0]), int(p[1])), circleRadius1)
         # Draw bezier curve
         b_points = self.compute_bezier_points()
-        pygame.draw.lines(screen, self.color, False, b_points, self.width)
+        pygame.draw.lines(screen if surface is None else surface, self.color, False, b_points, self.width)
 
     def get_length(self):
         # get the spatial length of the curve
@@ -233,6 +234,51 @@ screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
 
 # screen = pygame.display.set_mode((screen_width, screen_height))
+def insert_drawing_to_surface(surf):
+    global curves
+    global contour
+    for i in range(len(curves)):
+        new_curve = BezierCurve([int((curves[i].vertices[0][0] - borderLineX) / (borderLine2X - borderLineX) * saved_image_width),
+                                 int((curves[i].vertices[0][1] - borderLineHeight) / (
+                                             borderLine2Height - borderLineHeight) * saved_image_height)],
+                                [int((curves[i].vertices[1][0] - borderLineX) / (borderLine2X - borderLineX) * saved_image_width),
+                                 int((curves[i].vertices[1][1] - borderLineHeight) / (
+                                             borderLine2Height - borderLineHeight) * saved_image_height)],
+                                [int((curves[i].vertices[2][0] - borderLineX) / (borderLine2X - borderLineX) * saved_image_width),
+                                 int((curves[i].vertices[2][1] - borderLineHeight) / (
+                                             borderLine2Height - borderLineHeight) * saved_image_height)],
+                                [int((curves[i].vertices[3][0] - borderLineX) / (borderLine2X - borderLineX) * saved_image_width),
+                                 int((curves[i].vertices[3][1] - borderLineHeight) / (
+                                             borderLine2Height - borderLineHeight) * saved_image_height)],
+                                False, curveColor, curveWidth)
+        new_curve.draw(surface=surf)
+    for i in range(len(contour)):
+        new_curve = BezierCurve([int((contour[i].vertices[0][0] - borderLineX) / (borderLine2X - borderLineX) * saved_image_width),
+                                 int((contour[i].vertices[0][1] - borderLineHeight) / (
+                                             borderLine2Height - borderLineHeight) * saved_image_height)],
+                                [int((contour[i].vertices[1][0] - borderLineX) / (borderLine2X - borderLineX) * saved_image_width),
+                                 int((contour[i].vertices[1][1] - borderLineHeight) / (
+                                             borderLine2Height - borderLineHeight) * saved_image_height)],
+                                [int((contour[i].vertices[2][0] - borderLineX) / (borderLine2X - borderLineX) * saved_image_width),
+                                 int((contour[i].vertices[2][1] - borderLineHeight) / (
+                                             borderLine2Height - borderLineHeight) * saved_image_height)],
+                                [int((contour[i].vertices[3][0] - borderLineX) / (borderLine2X - borderLineX) * saved_image_width),
+                                 int((contour[i].vertices[3][1] - borderLineHeight) / (
+                                             borderLine2Height - borderLineHeight) * saved_image_height)],
+                                False, contourColor, contourWidth)
+        new_curve.draw(surface=surf)
+
+def save_drawing_img():
+    saving_surface = pygame.Surface((saved_image_width, saved_image_height))
+    saving_surface.fill(bgColor)
+    insert_drawing_to_surface(saving_surface)
+    currentDirectory = os.getcwd()
+    drawings_dir = os.path.join(currentDirectory, r'drawings')
+    if not os.path.exists(drawings_dir):
+        os.makedirs(drawings_dir)
+    # save the image with the current date and time in the folder drawings_dir png format
+    pygame.image.save(saving_surface, os.path.join(drawings_dir, datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + '.png'))
+
 
 def check_buttons():
     global buttons
@@ -362,7 +408,7 @@ def send_to_laser(log_flag=True):
         return False
     if log_flag:
         logger.info("clicked on print button")
-
+    save_drawing_img()
     # send all of the curve's vertices to log file in one line
     if log_flag:
         str_log = f"{len(curves)};["
