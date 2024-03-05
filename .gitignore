@@ -31,3 +31,9 @@ log.txt.11
 drawings/
 
 logs/
+
+.idea/
+
+outdated/
+
+__pycache__/
