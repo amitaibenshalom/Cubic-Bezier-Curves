@@ -408,7 +408,6 @@ def send_to_laser(log_flag=True):
         return False
     if log_flag:
         logger.info("clicked on print button")
-    save_drawing_img()
     # send all of the curve's vertices to log file in one line
     if log_flag:
         str_log = f"{len(curves)};["
@@ -426,6 +425,7 @@ def send_to_laser(log_flag=True):
         # if log_flag:
         #     logger.warning("Clicked on print button with no curves to send")
         return True
+    save_drawing_img()
     estimated = 0 # estimated time to finish drawing in seconds
     last_send_time = time.time()
     curves_to_send = curves.copy()
