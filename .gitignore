@@ -1,32 +1,7 @@
 
 mimeinfo.cache
 
-__pycache__/consts.cpython-310.pyc
-*.log
-
 log.txt
-
-log.txt.1
-
-log.txt.10
-
-log.txt.2
-
-log.txt.3
-
-log.txt.4
-
-log.txt.5
-
-log.txt.6
-
-log.txt.7
-
-log.txt.8
-
-log.txt.9
-
-log.txt.11
 
 drawings/
 
@@ -37,3 +12,5 @@ logs/
 outdated/
 
 __pycache__/
+
+old logs/
